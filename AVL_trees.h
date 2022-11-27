@@ -79,33 +79,34 @@ private:
         rotator = rotatee;
     }
 
-    void updatePath(Node* start){
-        start->height = start->getHeight();
-        while(abs(start->prev->heightDiff) < 2){ //climb to top
-            start = start->prev;
-            if(start->prev == dummyHead){ //top reached
-                return;
+    void updatePath(Node* start, bool updateRollsToRoot){
+        do {
+            start->height = start->getHeight();
+            while (abs(start->prev->heightDiff) < 2) { //climb to top
+                start = start->prev;
+                if (start->prev == dummyHead) { //top reached
+                    return;
+                }
+                start->height = start->getHeight();
             }
-            start->height = start->getHeight();
-        }
-        string dir1,dir2;
-        if (start->heightDIff > 0) {
-            dir1 = "r";
-        }else{
-            dir1 = "l";
-        }
-        if(start->prev->heightDiff > 0) {
-            dir2 = "r";
-        }else{
-            dir2 = "l";
-        }
-        FullRotation(start,dir1,dir2);
+            string dir1, dir2;
+            if (start->heightDIff > 0) {
+                dir1 = "r";
+            } else {
+                dir1 = "l";
+            }
+            if (start->prev->heightDiff > 0) {
+                dir2 = "r";
+            } else {
+                dir2 = "l";
+            }
+            FullRotation(start, dir1, dir2);
 
-        if(start->prev->height == start->prev->getHeight()) //check if a new  layer formed (if we need to update heights)
-            return;
-        while(start->prev != dummyHead){ // update heights
-            start = start->prev;
+        }while(updateRollsToRoot && start->prev != dummyHead);
+
+        while (start != dummyHead) { // update heights
             start->height = start->getHeight();
+            start = start->prev;
         }
     }
 
@@ -193,41 +194,33 @@ public:
         }catch(...){
             return AVLStatus::AVL_Fail;
         }
-        updatePath(newNode);
+        updatePath(newNode, false);
         return AVLStatus::AVL_Success;
     }
 
-    AVLStatus deleteNode(T* ptrToDelete){
-        Node* ptr = find(ptrToDelete);
-        if(!ptr)
+    AVLStatus deleteNode(T* ptrToDelete) {
+        Node *ptr = find(ptrToDelete);
+        Node *lowestInPath;
+        if (!ptr) //ptr to delete not found
             return AVLStatus::AVL_Fail;
-        Node* replacement = ptr;
-        while(replacement->height >= 2) {
-            if (replacement->heightDiff() <= 0)
-                replacement = replacement->right->left;
-            else {
-                replacement = replacement->left->right;
+        Node *replacement = ptr;
+        if (replacement->right) { //go to next node in inorder if has children
+            replacement= replacement->right;
+            while (replacement->left) {
+                replacement = replacement->left;
             }
-            ptr->data = replacement->data;
-        }
-        if(replacement->left && replacement->right) {
-            if (replacement->prev->left == replacement) {
-                swapOut(replacement, replacement->right, replacement->left);
-            } else {
-                swapOut(replacement, replacement->left, replacement->right);
-            }
-            updatePath(replacement->left);
-        }else {
-            if (replacement->left) {
-                swapOut(replacement, replacement->left);
-            } else if (replacement->right) {
+            if (replacement->right) { // this corrects the tree where we took replacement
+                lowestInPath = replacement->right;
                 swapOut(replacement, replacement->right);
-            } else {
-                swapOut(replacement);
             }
-            updatePath(replacement->prev);
+            swapOut(ptr, replacement, ptr->left, ptr->right); //swap out ptr, swap in replacement
         }
-        delete replacement;
+        else {
+            lowestInPath = ptr->left;
+            swapOut(ptr, ptr->left); //simple case (only left children)
+        }
+        delete ptr;
+        updatePath(lowestInPath,true);
         return AVLStatus::AVL_Success;
     }
 

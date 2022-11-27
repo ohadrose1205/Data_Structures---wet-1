@@ -3,13 +3,5 @@
 //
 #include "AVL_trees.h"
 
-template <class T>
-
-}
-
-template<class T>
-AVLTree<T>::~AVLTree() {
-
-}
 
 

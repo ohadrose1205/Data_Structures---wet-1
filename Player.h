@@ -1,23 +1,17 @@
 //
-// Created by ohadr on 11/26/2022.
+// Created by shach on 11/22/2022.
 //
 
-#ifndef AVL_TREES_H_PLAYER_H
-#define AVL_TREES_H_PLAYER_H
+#ifndef MIVNEWET1_PLAYER_H
+#define MIVNEWET1_PLAYER_H
 
 
-class Player{
-private:
-    int playerId;
-    int goals;
-    int cards;
-    int gamesPlayed; ///should be different from the teams gamesPlayedAsTeam
-    bool gkFlag;
+class Player {
 public:
-    Player(int id, int initGamesPlayed, int initGoals, int initCards, bool gk);
+    Player(const int ID, const int teamID, int gamesPlayed, int goals, int cards, const bool gkFlag);
     ~Player() =default;
     Player(const Player& p) =delete; ///cannot copy players, each player unique
-    Player& operator=(const Player& p) =default;
+    Player& operator=(const Player& p) = delete;
 
     int getPlayerId() const;
     int getGoals() const;
@@ -26,6 +20,15 @@ public:
 
     bool compareIdPlayers(const Player& p1, const Player& p2) const; ///check if p1 id is greater than p2
     bool compareGoals(const Player& p1, const Player& p2) const; ///check if p1 goals is greater than p2
+
+private:
+    int playerId;
+    int teamId;
+    int gamesPlayed;
+    int goals;
+    int cards;
+    bool gkFlag;
 };
 
-#endif //AVL_TREES_H_PLAYER_H
+
+#endif //MIVNEWET1_PLAYER_H

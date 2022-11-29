@@ -4,8 +4,8 @@
 
 #include "Player.h"
 
-Player::Player(int id, int initGamesPlayed, int initGoals, int initCards, bool gk) :
-playerId(id), gamesPlayed(initGamesPlayed), goals(initGoals), cards(initCards), gkFlag(gk){}
+Player::Player(const int ID, const int teamID, int gamesPlayed, int goals, int cards, const bool gkFlag)  :
+playerId(ID), gamesPlayed(gamesPlayed), goals(goals), cards(cards), gkFlag(gkFlag){}
 
 int Player::getPlayerId() const {
     return playerId;
@@ -48,22 +48,22 @@ int compareCards(const Player& p1, const Player& p2){
 }
 
 
-bool Player::operator>(const Player &p1, const Player &p2) const {
-    if(compareGoals(p1, p2) != 0){ ///option 1: if p1 has more goals
-        if(compareGoals(p1, p2) == 1){
+bool Player::operator>(const Player &p2) const {
+    if(compareGoals(*this, p2) != 0){ ///option 1: if p1 has more goals
+        if(compareGoals(*this, p2) == 1){
             return true;
         }else{
             return false;
         }
     }else{
-        if(compareCards(p1, p2) != 0) { ///option 2: if p1 has less cards
-            if (compareCards(p1, p2) == -1) {
+        if(compareCards(*this, p2) != 0) { ///option 2: if p1 has less cards
+            if (compareCards(*this, p2) == -1) {
                 return true;
             } else {
                 return false;
             }
         }else{
-            if(compareIdPlayers(p1,p2) == 1){ ///option 3: if p1 has greater ID
+            if(compareIdPlayers(*this,p2) == 1){ ///option 3: if p1 has greater ID
                 return true;
             }else{
                 return false;

@@ -22,6 +22,7 @@ public:
     int compareGoals(const Player& p1, const Player& p2) const; ///check if p1 goals is greater than p2
     int compareCards(const Player& p1, const Player& p2) const;
     bool sortFantasy(const Player& p1, const Player& p2) const;
+    bool operator>(const Player& p2) const;
 
 private:
     int playerId;
@@ -32,6 +33,6 @@ private:
     bool gkFlag;
 };
 
-bool operator>(const Player& p1, const Player& p2);
+
 
 #endif //MIVNEWET1_PLAYER_H

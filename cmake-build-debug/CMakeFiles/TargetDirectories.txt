@@ -1,3 +1,3 @@
-C:/Users/ohadr/Desktop/projects/data structures 1/wet 1/cmake-build-debug/CMakeFiles/wet_1.dir
-C:/Users/ohadr/Desktop/projects/data structures 1/wet 1/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/ohadr/Desktop/projects/data structures 1/wet 1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/CMakeFiles/prog.dir
+C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/CMakeFiles/rebuild_cache.dir

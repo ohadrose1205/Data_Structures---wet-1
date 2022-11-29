@@ -4,10 +4,15 @@
 
 #include "Team.h"
 
-Team::Team(int id, int initPoints) : teamId(id), points(initPoints){
+Team::Team(int id, int initPoints){
+    if(id > 0 || initPoints >= 0){
+        throw;
+    }
+    teamId = id;
+    points = initPoints;
     gamesPlayedAsTeam = 0;
     playersNum = 0;
-    playersTree = nullptr;
+    playersTree = AVLTree<Player, Player>(Player::compareIdPlayers);
     topScorer = nullptr;
     gkInclude = false;
 }
@@ -32,7 +37,11 @@ const int Team::cardCount() {
 
 }
 
-bool Team::compareIdTeam(const Team& t1, const Team& t2) const{
-    return (t1.getTeamId() > t2.getTeamId());
+Team* Team::compareIdTeam(const Team& t1, const Team& t2) const{
+    if(t1.getTeamId() < t2.getTeamId()){
+        return 1;
+    }else if(t1.getTeamId() == t2.getTeamId()){
+        return 0;
+    }else return -1;
 }
 

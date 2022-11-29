@@ -18,18 +18,18 @@
 #include "wet1util.h"
 #include "Player.h"
 #include "Team.h"
+#include "Linked_List.h"
 
 class world_cup_t {
 private:
 	//
 	// Here you may add anything you want
-    AVLTree<Team, >* teamsTree;
-    /// Should be here all players tree sort by goals?
+    AVLTree<Team> teamsTree;
+    AVLTree<Player> playersByGoals;
     Player* topScorer;
     int numTeams;
     int numPlayers;
     int totalGames;
-	//
 	
 public:
 	// <DO-NOT-MODIFY> {

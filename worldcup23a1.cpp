@@ -1,28 +1,44 @@
 #include "worldcup23a1.h"
-
-
+#include <functional>
 
 world_cup_t::world_cup_t()
 {
 	// TODO: Your code goes here
-    teamsTree = AVLTree<Team, >
+    teamsTree = new AVLTree<Team>(Team::compareIdTeam) ;
+    playersByID = new AVLTree<Player>(Player::compareIdPlayers);
+    playersByGoals = new AVLTree<Player>(Player::compareGoals);
+
+    numPlayers = 0;
+    numTeams = 0;
+    topScorer = nullptr;
+    totalGames = 0;
 }
 
 world_cup_t::~world_cup_t()
 {
 	// TODO: Your code goes here
+    ///as default
 }
 
 
 StatusType world_cup_t::add_team(int teamId, int points)
 {
+    StatusType result;
 	// TODO: Your code goes here
-	return StatusType::SUCCESS;
+    try {
+        newTeam = new Team(teamId, points);
+    }catch(...){
+        throw;
+    }
+    result = teamsTree.insert(newTeam);
+	return result;
 }
 
 StatusType world_cup_t::remove_team(int teamId)
 {
+    StatusType result;
 	// TODO: Your code goes here
+    result =
 	return StatusType::FAILURE;
 }
 

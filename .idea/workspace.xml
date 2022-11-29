@@ -1,12 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="CMakeRunConfigurationManager">
+    <generated>
+      <config projectName="Data_Structures---wet1" targetName="prog" />
+    </generated>
+  </component>
   <component name="CMakeSettings">
     <configurations>
       <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="57bf06bf-9d16-4222-9864-69ea596c7b98" name="Changes" comment="" />
+    <list default="true" id="57bf06bf-9d16-4222-9864-69ea596c7b98" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Linked_List.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Data_Structures---wet-1.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AVL_trees.h" beforeDir="false" afterPath="$PROJECT_DIR$/AVL_trees.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/Player.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Team.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team.h" beforeDir="false" afterPath="$PROJECT_DIR$/Team.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CMakeDetermineCompilerABI_C.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdC/a.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdC/a.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdCXX/a.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdCXX/a.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/rules.ninja" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/build.ninja" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worldcup23a1.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/worldcup23a1.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worldcup23a1.h" beforeDir="false" afterPath="$PROJECT_DIR$/worldcup23a1.h" afterDir="false" />
+    </list>
+    <list id="7383f042-a2c8-4d10-8a6c-34e6be069831" name="Changes by shach" comment="">
+      <change beforePath="$PROJECT_DIR$/AVL_trees.h" beforeDir="false" afterPath="$PROJECT_DIR$/AVL_trees.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Team.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main23a1.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main23a1.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worldcup23a1.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/worldcup23a1.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,22 +51,96 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="LineStatusTrackerManager">
+    <file path="$PROJECT_DIR$/worldcup23a1.cpp">
+      <ranges>
+        <range start1="1" end1="3" start2="1" end2="2" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="7" end1="8" start2="6" end2="14" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="13" end1="13" start2="19" end2="20" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="18" end1="18" start2="25" end2="26" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="19" end1="20" start2="27" end2="34" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="24" end1="24" start2="38" end2="39" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="25" end1="25" start2="40" end2="41" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+      </ranges>
+    </file>
+    <file path="$PROJECT_DIR$/Team.cpp">
+      <ranges>
+        <range start1="6" end1="7" start2="6" end2="12" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="9" end1="10" start2="14" end2="15" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="34" end1="36" start2="39" end2="45" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+      </ranges>
+    </file>
+    <file path="$PROJECT_DIR$/AVL_trees.h">
+      <ranges>
+        <range start1="4" end1="4" start2="4" end2="6" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="7" end1="8" start2="9" end2="10" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="9" end1="10" start2="11" end2="12" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="12" end1="13" start2="14" end2="15" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="15" end1="19" start2="17" end2="19" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="20" end1="21" start2="20" end2="21" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="39" end1="39" start2="39" end2="151" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="41" end1="80" start2="153" end2="153" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="81" end1="103" start2="154" end2="154" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="104" end1="105" start2="155" end2="158" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="106" end1="113" start2="159" end2="163" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="120" end1="150" start2="170" end2="170" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="151" end1="152" start2="171" end2="172" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="155" end1="163" start2="175" end2="177" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="165" end1="166" start2="179" end2="179" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="170" end1="172" start2="183" end2="185" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="173" end1="174" start2="186" end2="189" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="176" end1="177" start2="191" end2="192" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="178" end1="179" start2="193" end2="194" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="182" end1="183" start2="197" end2="198" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="184" end1="185" start2="199" end2="200" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="189" end1="189" start2="204" end2="207" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="190" end1="192" start2="208" end2="209" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="200" end1="202" start2="217" end2="219" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="226" end1="226" start2="243" end2="244" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="228" end1="238" start2="246" end2="274" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="241" end1="246" start2="277" end2="282" changelist="7383f042-a2c8-4d10-8a6c-34e6be069831" />
+        <range start1="247" end1="248" start2="283" end2="283" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="249" end1="264" start2="284" end2="286" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+        <range start1="277" end1="277" start2="299" end2="301" changelist="57bf06bf-9d16-4222-9864-69ea596c7b98" />
+      </ranges>
+    </file>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2I7w0mEJo9o8C4GgwkOz1hvRJBU" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.cidr.known.project.marker": "true",
     "WebServerToolWindowFactoryState": "false",
     "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true"
+    "cidr.known.project.marker": "true",
+    "cmake.loaded.for.project": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "last_opened_file_path": "C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/CMakeLists.txt"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="prog" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Data_Structures---wet1" TARGET_NAME="prog" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Data_Structures---wet1" RUN_TARGET_NAME="prog">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -40,6 +150,7 @@
       <option name="presentableId" value="Default" />
       <updated>1669545709848</updated>
       <workItem from="1669545712542" duration="15000" />
+      <workItem from="1669560997646" duration="23295000" />
     </task>
     <servers />
   </component>

@@ -10,7 +10,7 @@
 class Team{
 private:
     int teamId;
-    AVLTree<Player, > playersTree;
+    AVLTree<Player> playersTree;
     int gamesPlayedAsTeam;
     int points;
     int playersNum;
@@ -28,7 +28,7 @@ public:
     const int goalsCount();
     const int cardCount();
 
-    bool compareIdTeam(const Team& t1, const Team& t2) const; ///check if t1 id is greater than t2
+    Team* compareIdTeam(const Team& t1, const Team& t2) const; ///check if t1 id is greater than t2
     AVLStatus updateTopScorer();
 };
 

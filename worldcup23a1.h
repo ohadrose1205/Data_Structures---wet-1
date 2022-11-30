@@ -24,12 +24,13 @@ class world_cup_t {
 private:
 	//
 	// Here you may add anything you want
-    AVLTree<Team> teamsTree;
-    AVLTree<Player> playersByGoals;
-    Player* topScorer;
-    int numTeams;
-    int numPlayers;
-    int totalGames;
+    AVLTree<Team, int> m_teamsTree;
+    AVLTree<Player, int> m_playersById;
+    AVLTree<Player, Player> m_playersByGoals;
+    Player* m_topScorer;
+    int m_numTeams;
+    int m_numPlayers;
+    int m_totalGames;
 	
 public:
 	// <DO-NOT-MODIFY> {
@@ -66,7 +67,7 @@ public:
 	output_t<int> get_closest_player(int playerId, int teamId);
 	
 	output_t<int> knockout_winner(int minTeamId, int maxTeamId);
-	
+
 	// } </DO-NOT-MODIFY>
 };
 

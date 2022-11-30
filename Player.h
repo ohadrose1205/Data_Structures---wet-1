@@ -6,6 +6,8 @@
 #define MIVNEWET1_PLAYER_H
 
 
+#include "AVL_trees.h"
+
 class Player {
 public:
     explicit Player(const int ID, const int teamID, int gamesPlayed, int goals, int cards, const bool gkFlag);
@@ -18,21 +20,22 @@ public:
     int getCards() const;
     bool isGk() const;
 
-    int compareIdPlayers(const Player& p1, const Player& p2) const; ///check if p1 id is greater than p2
+    bool compareIdPlayers(const Player& p1, const Player& p2) const; ///check if p1 id is greater than p2
     int compareGoals(const Player& p1, const Player& p2) const; ///check if p1 goals is greater than p2
     int compareCards(const Player& p1, const Player& p2) const;
-    bool sortFantasy(const Player& p1, const Player& p2) const;
     bool operator>(const Player& p2) const;
 
 private:
-    int playerId;
-    int teamId;
-    int gamesPlayed;
-    int goals;
-    int cards;
-    bool gkFlag;
+    int m_playerId;
+    int m_teamId;
+    int m_gamesPlayed;
+    int m_goals;
+    int m_cards;
+    bool m_gkFlag;
 };
 
-
+static bool sortFantasy(const Player& p1, const Player& p2){
+        return (p1 > p2);
+}
 
 #endif //MIVNEWET1_PLAYER_H

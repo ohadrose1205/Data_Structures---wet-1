@@ -1,17 +1,16 @@
 #include "worldcup23a1.h"
 #include <functional>
 
-world_cup_t::world_cup_t()
+world_cup_t::world_cup_t() : m_teamsTree(AVLTree<Team, int>()),
+                             m_playersById(AVLTree<Player, int>()),
+                             m_playersByGoals(AVLTree<Player, Player>())
 {
 	// TODO: Your code goes here
-    teamsTree = new AVLTree<Team>(Team::compareIdTeam) ;
-    playersByID = new AVLTree<Player>(Player::compareIdPlayers);
-    playersByGoals = new AVLTree<Player>(Player::compareGoals);
+    m_numPlayers = 0;
+    m_numTeams = 0;
+    m_topScorer = nullptr;
+    m_totalGames = 0;
 
-    numPlayers = 0;
-    numTeams = 0;
-    topScorer = nullptr;
-    totalGames = 0;
 }
 
 world_cup_t::~world_cup_t()
@@ -23,22 +22,30 @@ world_cup_t::~world_cup_t()
 
 StatusType world_cup_t::add_team(int teamId, int points)
 {
-    StatusType result;
+    if(teamId <= 0 || points < 0){
+        return StatusType::INVALID_INPUT;
+    }
+    if(m_teamsTree.find(teamId)){
+        return StatusType::FAILURE;
+    }
 	// TODO: Your code goes here
     try {
-        newTeam = new Team(teamId, points);
+        Team newTeam = Team(teamId, points);
+        AVLStatus status = m_teamsTree.insert(newTeam,teamId);
+        if(status == AVLStatus::AVL_Fail){
+            return StatusType::ALLOCATION_ERROR;
+        }else{
+            return StatusType::SUCCESS;
+        }
     }catch(...){
         throw;
     }
-    result = teamsTree.insert(newTeam);
-	return result;
 }
 
 StatusType world_cup_t::remove_team(int teamId)
 {
-    StatusType result;
+    this->m_teamsTree.find(teamId);
 	// TODO: Your code goes here
-    result =
 	return StatusType::FAILURE;
 }
 

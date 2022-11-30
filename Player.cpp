@@ -5,22 +5,22 @@
 #include "Player.h"
 
 Player::Player(const int ID, const int teamID, int gamesPlayed, int goals, int cards, const bool gkFlag)  :
-playerId(ID), gamesPlayed(gamesPlayed), goals(goals), cards(cards), gkFlag(gkFlag){}
+m_playerId(ID), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards), m_gkFlag(gkFlag){}
 
 int Player::getPlayerId() const {
-    return playerId;
+    return m_playerId;
 }
 
 int Player::getGoals() const {
-    return goals;
+    return m_goals;
 }
 
 int Player::getCards() const {
-    return cards;
+    return m_cards;
 }
 
 bool Player::isGk() const {
-    return gkFlag;
+    return m_gkFlag;
 }
 
 int Player::compareGoals(const Player &p1, const Player &p2) const {
@@ -31,12 +31,14 @@ int Player::compareGoals(const Player &p1, const Player &p2) const {
     else return -1;
 }
 
-int Player::compareIdPlayers(const Player &p1, const Player &p2) const {
+ bool Player::compareIdPlayers(const Player &p1, const Player &p2) const {
     if(p1.getPlayerId() < p2.getPlayerId()){
-        return 1;
-    }else if(p1.getPlayerId() == p2.getPlayerId())
-        return 0;
-    else return -1;
+        return true;
+    }else if(p1.getPlayerId() > p2.getPlayerId())
+        return false;
+    else{
+        ///exeption
+    }
 }
 
 int compareCards(const Player& p1, const Player& p2){
@@ -71,7 +73,7 @@ bool Player::operator>(const Player &p2) const {
         }
     }
 }
-
-bool Player::sortFantasy(const Player &p1, const Player &p2) const {
-    return (p1 > p2);
-}
+//
+//bool sortFantasy(const Player &p1, const Player &p2){
+//    return (p1 > p2);
+//}

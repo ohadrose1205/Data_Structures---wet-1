@@ -5,9 +5,9 @@
 #include "Team.h"
 
 Team::Team(int id, int initPoints): m_playersTree(AVLTree<Player, int>()){
-    if(id > 0 || initPoints >= 0){
-        throw;
-    }
+//    if(id <= 0 || initPoints < 0){
+//        throw;
+//    }
     m_teamId = id;
     m_points = initPoints;
     m_gamesPlayedAsTeam = 0;

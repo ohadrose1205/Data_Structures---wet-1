@@ -1,5 +1,4 @@
 #include "worldcup23a1.h"
-#include <functional>
 
 world_cup_t::world_cup_t() : m_teamsTree(AVLTree<Team, int>()),
                              m_playersById(AVLTree<Player, int>()),
@@ -25,7 +24,7 @@ StatusType world_cup_t::add_team(int teamId, int points)
     if(teamId <= 0 || points < 0){
         return StatusType::INVALID_INPUT;
     }
-    if(m_teamsTree.find(teamId)){
+    if(m_teamsTree.find(teamId) != nullptr){
         return StatusType::FAILURE;
     }
 	// TODO: Your code goes here
@@ -44,7 +43,6 @@ StatusType world_cup_t::add_team(int teamId, int points)
 
 StatusType world_cup_t::remove_team(int teamId)
 {
-    this->m_teamsTree.find(teamId);
 	// TODO: Your code goes here
 	return StatusType::FAILURE;
 }
@@ -66,6 +64,7 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
                                         int scoredGoals, int cardsReceived)
 {
 	// TODO: Your code goes here
+    shared_ptr<Player> playerPtr = m_playersById.find(playerId);
 	return StatusType::SUCCESS;
 }
 

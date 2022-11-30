@@ -1,9 +1,10 @@
+
 //
 // Created by ohadr on 11/22/2022.
 //
 #include <memory>
 #include <functional>
-
+#include <iostream>
 #ifndef WORLDCUP23A1_CPP_AVL_TREES_H
 #define WORLDCUP23A1_CPP_AVL_TREES_H
 using std::shared_ptr;
@@ -18,70 +19,8 @@ private:
     class Node;
     shared_ptr<Node> m_dummyHead;
     //std::function<int(const T&, const T&)> compareFunc; ///TRUE = RIGHT, FALSE = LEFT
-    void swapOut(Node* dest, Node* src = nullptr, Node* dest_r = nullptr, Node* dest_l = nullptr){
-        if(dest == m_dummyHead)
-            return;
-        src->m_prev = dest->m_prev;
-        if(dest->m_prev->m_left == dest){
-            dest->m_prev->m_left = src;
-        }
-        else{
-            dest->m_prev->m_right = src;
-        }
-        if(src) {
-            src->m_left = dest_l;
-            src->m_right = dest_r;
-            if (dest_l) {
-                dest_l->m_prev = src;
-            }
-            if (dest_r) {
-                dest_r->m_prev = src;
-            }
-        }
-    }
 
-    AVLStatus FullRotation(Node* rotator, const string& dir1,const string& dir2){
-        RotationAUX(rotator, dir1);
-        rotator = rotator->m_prev; //root
-        RotationAUX(rotator, dir2);
-    }
-
-    AVLStatus RotationAUX(Node* rotator , const char dir){ ///get a pointer to the unstable node (-2)
-        Node* root = rotator->m_prev;
-        Node* rotatee;
-        Node* weight_shift;
-        if(dir == 'r'){ //R rotation
-            rotatee = rotator->m_left;
-            weight_shift = rotatee->m_right;
-            rotatee->m_right = rotator;
-            rotator->m_left = weight_shift;
-        }else if(dir == 'l'){ // L rotation
-            rotatee = rotator->m_right;
-            weight_shift = rotatee->m_left;
-            rotatee->m_left = rotator;
-            rotator->m_right = weight_shift;
-        }
-        else{ // wrong use of this function
-            return AVLStatus::AVL_Fail;
-        }
-        //adjust heirarchy
-        rotatee->m_prev = root;
-        rotator->m_prev = rotatee;
-        if(root != m_dummyHead){
-            if (root->m_left == rotator)
-                root->m_left = rotatee;
-            else
-                root->m_right = rotatee;
-        }
-        //adjust heights
-        rotator->m_height = rotator->getHeight();
-        rotatee->m_height = rotatee->getHeight();
-        //the new rotator position is now rotatee actually
-        rotator = rotatee;
-    }
-
-    ///What is that run_func???
-    AVLStatus inOrderScanAUX(shared_ptr<Node> root, bool (run_func*)(T), AVLStatus result) const{ ///should get an input function
+    AVLStatus inOrderScanAUX(shared_ptr<Node> root, bool (run_func)(const T&), AVLStatus result) const{ ///should get an input function
         if(result != AVLStatus::AVL_Success){
             return result;
         }
@@ -90,7 +29,8 @@ private:
         }
         result = inOrderScanAUX(root->m_left,run_func,result);
         try{
-            if(visit_func(*(root->m_data))){
+            root->printOut();
+            if(run_func(*(root->m_data))){
                 result = AVLStatus::AVL_Success;
             }else{
                 result = AVLStatus::AVL_Fail;
@@ -102,90 +42,100 @@ private:
         return result;
     }
 
+    AVLStatus FullRotation(shared_ptr<Node>& rotator, const string& dir1,const string& dir2){
+        //std::cout << "\n------------------FullRotation---------------\n\n" <<std::endl;
+
+        if(dir1 == dir2){
+            rotator = rotator->m_prev;
+            RotationAUX(rotator, dir1);
+        }
+        else {
+            RotationAUX(rotator, dir1);
+            rotator = rotator->m_prev; //root
+            RotationAUX(rotator, dir2);
+        }
+        return AVLStatus::AVL_Success;
+    }
+
+    AVLStatus RotationAUX(shared_ptr<Node>& rotator , const string& dir){ ///get a pointer to the unstable node (-2)
+        // std::cout << "________________RotationAUX________________\n" <<std::endl;
+        shared_ptr<Node> root = rotator->m_prev;
+        shared_ptr<Node> rotatee;
+        shared_ptr<Node> weight_shift;
+        if(dir == "l"){ //L rotation
+            rotatee = rotator->m_left;
+            weight_shift = rotatee->m_right;
+            rotatee->m_right = rotator;
+            rotator->m_left = weight_shift;
+        }else if(dir == "r"){ // R rotation
+            rotatee = rotator->m_right;
+//            std::cout <<"rotator->height: "<< rotator->m_height <<std::endl;
+//            std::cout <<"rotatee->height: "<< rotator->m_height <<std::endl;
+            weight_shift = rotatee->m_left;
+            rotatee->m_left = rotator;
+            rotator->m_right = weight_shift;
+        }
+        else{ // wrong use of this function
+            return AVLStatus::AVL_Fail;
+        }
+
+        //adjust heirarchy
+        if(weight_shift) {
+            weight_shift->m_prev = rotator;
+        }
+        rotatee->m_prev = rotator->m_prev;
+        rotator->m_prev = rotatee;
+        if (rotatee->m_prev->m_left == rotator)
+            rotatee->m_prev->m_left = rotatee;
+        else
+            rotatee->m_prev->m_right = rotatee;
+        //adjust stats
+        updateNode(rotator);
+        updateNode(rotatee);
+        //the new rotator position is now rotatee actually
+        rotator = rotatee;
+        return AVLStatus::AVL_Success;
+    }
+
+    void updateNode(shared_ptr<Node> nodeToUpdate){
+        nodeToUpdate->setHeight();
+        nodeToUpdate->setSize();
+    }
+
     void updatePath(shared_ptr<Node> start, bool updateRollsToRoot){
         do {
-            start->m_height = start->getHeight();
-            while (abs(start->m_prev->heightDiff()) < 2) { //climb to top
+            updateNode(start);
+            if(start == m_dummyHead){
+                return;
+            }
+            while ((start->m_prev == m_dummyHead || abs(start->m_prev->heightDiff()) < 2)) { //climb to top
                 start = start->m_prev;
-                if (start->m_prev == m_dummyHead) { //top reached
+                updateNode(start);
+                if (start == m_dummyHead) { //top reached
                     return;
                 }
-                start->m_height = start->getHeight();
             }
-            char dir1, dir2;
-            if (start->heightDIff() > 0) {
-                dir1 = 'l';
+            string dir1, dir2;
+            if (start->heightDiff() > 0) {
+                dir1 = "l";
             } else {
-                dir1 = 'r';
+                dir1 = "r";
             }
             if (start->m_prev->heightDiff() > 0) {
-                dir2 = 'l';
+                dir2 = "l";
             } else {
-                dir2 = 'r';
+                dir2 = "r";
             }
             FullRotation(start, dir1, dir2);
-
         }while(updateRollsToRoot && start->m_prev != m_dummyHead);
 
-        while (start != m_dummyHead) { // update heights
-            start->m_height = start->getHeight();
+        while (start->m_prev) { // update heights
             start = start->m_prev;
+            updateNode(start);
         }
     }
 
-public:
-    AVLTree() : m_dummyHead(new Node()){}
-
-    virtual ~AVLTree() = default; ///CANT BE DEFAULT!
-//    {
-//        deleter(dummyHead);
-//    }
-/////////////////////////////////////////////////////
-    ///--------------------------------help function for cop constructor-----------------------------------
-    bool copyHelp(Node* copyPtr, Node* orignPtr){
-        copyPtr = orignPtr;
-        copyPtr->m_right = new Node();
-        copyPtr->m_left = new Node();
-        if(orignPtr->m_left != nullptr){
-            copyHelp(copyPtr->m_left, orignPtr->m_left);
-        }
-        if(orignPtr->m_right != nullptr){
-            copyHelp(copyPtr->m_right, orignPtr->m_right);
-        }
-    }
-
-    AVLTree(const AVLTree& tree){
-        m_dummyHead = new Node();
-        copyHelp(this->m_dummyHead, tree.m_dummyHead);
-    }
-/////////////////////////////////////////////////////
-
-    AVLTree& operator= (AVLTree& tree){
-        if(this == *tree)
-            return *this;
-        AVLTree<T,K> tempTree(tree);
-        AVLTree<T,K>* swapper = this;
-        this = &tempTree;
-        tempTree = *swapper;
-    }
-    AVLStatus inOrderScan(bool (run_func)(const T&)) const{ ///should get an input function
-        AVLTree<T,K> tempTree = *this;
-        AVLStatus result = inOrderScan(tempTree.m_dummyHead->left, run_func);
-        if(result == AVLStatus::AVL_Success){
-            *this = tempTree;
-        }
-        return result;
-
-    }
-
-
-
-
-    /// @brief
-    /// @param start
-    /// @param updateRollsToRoot
-
-///-----------------------------help function for delete----------------------------------------
+    ///-----------------------------help function for delete----------------------------------------
 //    /// @brief help-function for destroyer of AVL_tree, works on post-order
 //    /// @param ptr
 //    void deleter(Node* ptr){
@@ -197,44 +147,66 @@ public:
 //    }
 
     ///get pointer to the head and pointer to the item we wanna find, make a recursive calls depend on the comparefunc of the tree, if didnt find / empty return nullptr.
-    shared_ptr<Node> find(const K& item) const{
-        if(m_dummyHead->m_height == 0)
+    shared_ptr<Node> findAUX(const K& item) const {
+        if (m_dummyHead->m_height == 0)
             return nullptr;
         shared_ptr<Node> result_ptr = m_dummyHead->m_left;
-        while(*result_ptr->m_key != item){
+        while (*result_ptr->m_key != item) {
             result_ptr = *result_ptr->m_key > item ? result_ptr->m_left : result_ptr->m_right;
-            if(!result_ptr)
+            if (!result_ptr)
                 return nullptr;
         }
         return result_ptr;
     }
+public:
+
+    AVLTree(): m_dummyHead(new Node()){}
+
+////////////////////     TO-DO     /////////////////////////////////
+
+    virtual ~AVLTree() = default;
+//    {
+//        deleter(dummyHead);
+//    }
+
+    AVLTree(const AVLTree& tree){}
+
+    AVLTree& operator= (AVLTree& tree){
+        if(this == *tree)
+            return *this;
+        AVLTree<T,K> tempTree(tree);
+        AVLTree<T,K>* swapper = this;
+        this = &tempTree;
+        tempTree = *swapper;
+    }
+
+////////////////////////////////////////////////////////////////////
 
     AVLStatus insert(const T& newItem,  const K& key){
-        shared_ptr<Node> newNode = nullptr;
+        shared_ptr<Node> newNode;
         try {
             if (m_dummyHead->m_height == 0) {
-                newNode = m_dummyHead->m_left = new Node(newItem, key,m_dummyHead);
+                newNode = m_dummyHead->m_left = std::shared_ptr<Node>(new Node(newItem, key,m_dummyHead));
             }else{
                 shared_ptr<Node> ptr = m_dummyHead->m_left;
                 while (true) { //add to leafs
-                    if (*(ptr->m_key) > *key) {
-                        if (!ptr->m_left) {
-                            ptr->m_left = newNode;
-                            break;
-                        }
-                        ptr = ptr->m_left;
-                    } else if(*(ptr->m_key) < *key){
+                    if (*(ptr->m_key) < key) {
                         if (!ptr->m_right) {
-                            ptr->m_right = newNode;
+                            ptr->m_right = newNode =  std::shared_ptr<Node>(new Node(newItem, key,ptr));
                             break;
                         }
                         ptr = ptr->m_right;
+                    } else if(*(ptr->m_key) > key){
+                        if (!ptr->m_left) {
+                            ptr->m_left = newNode =  std::shared_ptr<Node>(new Node(newItem, key,ptr));
+                            break;
+                        }
+                        ptr = ptr->m_left;
                     }
                     else{
                         return AVLStatus::AVL_Fail;
                     }
                 }
-                newNode = new Node(newItem, key, ptr);
             }
         }catch(...){
             return AVLStatus::AVL_Fail;
@@ -244,30 +216,71 @@ public:
     }
 
     AVLStatus remove(const K& ptrKeyDelete) {
-        shared_ptr<Node> ptr = find(ptrKeyDelete);
+        shared_ptr<Node> ptr = findAUX(ptrKeyDelete);
         shared_ptr<Node> lowestInPath;
+        shared_ptr<Node> toDelete;
         if (!ptr) //ptr to delete not found
             return AVLStatus::AVL_Not_Found;
         shared_ptr<Node> replacement = ptr;
-        if(replacement->right) { //go to next node in inorder if has children
-            replacement= replacement->right;
-            while (replacement->left) {
-                replacement = replacement->left;
+        if(replacement->m_right) { //go to next node in inorder if has children
+            replacement= replacement->m_right;
+            while (replacement->m_left) {
+                replacement = replacement->m_left;
             }
-            if (replacement->right) { // this corrects the tree where we took replacement
-                lowestInPath = replacement->right;
-                swapOut(replacement, replacement->right);
+            ptr->m_data = replacement->m_data;
+            ptr->m_key = replacement->m_key;
+            if (replacement->m_right) { // this corrects the tree where we took replacement
+                lowestInPath = replacement->m_right;
+                replacement->m_prev->m_left = replacement->m_right;
+                replacement->m_right->m_prev = replacement->m_prev;
+            }else{
+                lowestInPath = replacement->m_prev;
+                if(replacement->m_prev->m_left == replacement){
+                    replacement->m_prev->m_left = nullptr;
+                }else{
+                    replacement->m_prev->m_right = nullptr;
+                }
+
             }
-            swapOut(ptr, replacement, ptr->left, ptr->right); //swap out ptr, swap in replacement
+            toDelete = replacement;
         }
         else {
-            lowestInPath = ptr->left;
-            swapOut(ptr, ptr->left); //simple case (only left children)
+            lowestInPath = ptr->m_left;
+            if(ptr->m_prev->m_left == ptr){
+                ptr->m_prev->m_left = ptr->m_left;
+            }else{
+                ptr->m_prev->m_right = ptr->m_left;
+            }
+            ptr->m_left->m_prev = ptr->m_prev;
+            toDelete = ptr;
         }
-        delete ptr;
+        toDelete.reset();
         updatePath(lowestInPath,true);
         return AVLStatus::AVL_Success;
     }
+
+    AVLStatus inOrderScan(bool (run_func)(const T&)) const{ ///should get an input function
+        AVLStatus result = inOrderScanAUX(m_dummyHead->m_left, run_func, AVLStatus::AVL_Success);
+        return result;
+    }
+
+    const T& find(const K& item) const {
+        if (m_dummyHead->m_height == 0)
+            return nullptr;
+        shared_ptr<Node> result_ptr = m_dummyHead->m_left;
+        while (*result_ptr->m_key != item) {
+            result_ptr = *result_ptr->m_key > item ? result_ptr->m_left : result_ptr->m_right;
+            if (!result_ptr)
+                return nullptr;
+        }
+        return *result_ptr->m_data;
+    }
+    /// @brief
+    /// @param start
+    /// @param updateRollsToRoot
+
+
+
 
 ///----------------------implementation of Node class---------------------------
 private:
@@ -292,8 +305,8 @@ private:
                  m_left(nullptr),
                  m_prev(nullptr),
                  m_height(0),
-                 m_size(0){}
-
+                 m_size(1)
+        {}
 
         Node(const Node& n) : m_data(new T(n.m_data)),
                               m_key(new K(n.m_key)),
@@ -303,7 +316,7 @@ private:
                               m_height(n.m_height),
                               m_size(n.m_size){}
 
-        virtual ~Node() = default;
+
 
         Node& operator= (const Node& n){
             Node temp = n;
@@ -315,18 +328,41 @@ private:
 
         /// @brief getter for height
         /// @return
+
+        void printOut(){
+            std::cout << "\n \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\  printOut / / / / / / / / / / / \n" <<std::endl;
+            string str1 = m_prev->m_data ? *m_prev->m_data : "m_dummyNode";
+            if(m_data){
+                std::cout << "this is printing: " << *m_data <<" (prev: "<< str1+")" << std::endl;
+            }else{
+                std::cout << "this is is printing: m_dummyNode" << std::endl;
+            }
+            if(!m_left && !m_right) {
+                std::cout << "leaf:  " << *m_data << std::endl;
+            }else if(m_left && m_right){
+                if(m_data)
+                    std::cout << "is " << * m_left->m_data<<
+                              " (h,s:" <<m_left->m_height<<", "<< m_left->m_size <<") father and "<<
+                              *m_right->m_data <<" (h,s:" <<m_right->m_height<<", "<< m_right->m_size <<
+                              ") father, height, size: " <<m_height << ", " << m_size<< std::endl;
+            }else if(m_right){
+                if(m_data)
+                    std::cout << "is " << * m_right->m_data <<" father. height, size: " <<m_height << ", " << m_size<< std::endl;
+            }else{
+                if(m_data)
+                    std::cout << "is " << *m_left->m_data <<" father. height, size: " <<m_height << ", " << m_size<< std::endl;
+            }
+        }
+
         void setSize(){
             if(!m_left && !m_right){
-                if(this == m_dummyHead){
-                    m_size = 0;
-                }
-                m_size = 1;
-            }else if(!m_right){
-                m_size = this->m_left->m_size;
-            }else if(!m_left){
-                m_size = this->m_right->m_size;
+                m_size = 0;
+            }else if(m_left && m_right){
+                m_size = m_right->m_size + m_left->m_size;
+            }else if(m_right){
+                m_size = m_right->m_size;
             }else{
-                m_size = this->m_right->m_size + this->m_left->m_size;
+                m_size = m_left->m_size;
             }
             m_size++;
         }
@@ -334,14 +370,14 @@ private:
         void setHeight(){
             if(!m_left && !m_right){
                 m_height = 0;
-            }else if(!m_right){
-                m_height = this->m_left->m_height;
-            }else if(!m_left){
-                m_height = m_right->m_height;
-            }else{
+            }else if(m_left && m_right){
                 m_height = m_right->m_height > m_left->m_height ? m_right->m_height : m_left->m_height;
+                m_height++;
+            }else if(m_right){
+                m_height = m_right->m_height + 1;
+            }else{
+                m_height = m_left->m_height + 1;
             }
-            m_height++;
         }
         /// @brief method to calculate balance factor
         /// @return
@@ -349,20 +385,22 @@ private:
             int delta_h = 0;
             if(!m_left && !m_right){
                 return delta_h;
-            }else if(!m_right){
-                delta_h = m_left->m_height + 1;
-            }else if(!m_left){
-                delta_h = m_right->m_height + 1;
-            }else{
+            }else if(m_right && m_left){
                 delta_h = m_left->m_height - m_right->m_height;
+            }else if(m_left){
+                delta_h = m_left->m_height + 1;
+            }else{
+                delta_h = -(m_right->m_height + 1);
             }
             return delta_h;
         }
+    public:
+        virtual ~Node() = default;
     };
 };
+
 
 #endif //WORLDCUP23A1_CPP_AVL_TREES_H
 //
 // Created by ohadr on 11/22/2022.
 //
-

@@ -31,7 +31,7 @@ private:
     int m_numTeams;
     int m_numPlayers;
     int m_totalGames;
-	
+
 public:
 	// <DO-NOT-MODIFY> {
 	
@@ -69,6 +69,10 @@ public:
 	output_t<int> knockout_winner(int minTeamId, int maxTeamId);
 
 	// } </DO-NOT-MODIFY>
+    ///---------extra methods-------------
+    StatusType updateTopScorer(Player* messi){
+        m_topScorer = messi;
+    }
 };
 
 

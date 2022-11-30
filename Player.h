@@ -15,15 +15,24 @@ public:
     Player(const Player& p) =default; ///cannot copy players, each player unique
     Player& operator=(const Player& p) = default;
 
+    ///-----getters--------
     int getPlayerId() const;
+    int getTeamId() const;
     int getGoals() const;
     int getCards() const;
+    int getGames() const;
     bool isGk() const;
+
+    ///------setters-------
+    void setExtraGoals(int goals);
+    void setExtraCards(int cards);
+    void setExtraGames(int games);
 
     bool compareIdPlayers(const Player& p1, const Player& p2) const; ///check if p1 id is greater than p2
     int compareGoals(const Player& p1, const Player& p2) const; ///check if p1 goals is greater than p2
     int compareCards(const Player& p1, const Player& p2) const;
     bool operator>(const Player& p2) const;
+    bool operator!=(const Player& p2) const;
 
 private:
     int m_playerId;

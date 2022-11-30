@@ -11,12 +11,32 @@ int Player::getPlayerId() const {
     return m_playerId;
 }
 
+int Player::getTeamId() const {
+    return m_teamId;
+}
+
+int Player::getGames() const {
+    return m_gamesPlayed;
+}
+
+void Player::setExtraGames(int games) {
+    m_gamesPlayed += games;
+}
+
 int Player::getGoals() const {
     return m_goals;
 }
 
+void Player::setExtraGoals(int goals) {
+    m_goals += goals;
+}
+
 int Player::getCards() const {
     return m_cards;
+}
+
+void Player::setExtraCards(int cards) {
+    m_cards += cards;
 }
 
 bool Player::isGk() const {
@@ -73,6 +93,15 @@ bool Player::operator>(const Player &p2) const {
         }
     }
 }
+
+bool Player::operator!=(const Player &p2) const {
+    if(!(*this > p2) && !(p2 > *this)){
+        return false;
+    }else{
+        return true;
+    }
+}
+
 //
 //bool sortFantasy(const Player &p1, const Player &p2){
 //    return (p1 > p2);

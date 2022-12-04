@@ -8,7 +8,8 @@
 #include "Pair.h"
 #ifndef WORLDCUP23A1_CPP_AVL_TREES_H
 #define WORLDCUP23A1_CPP_AVL_TREES_H
-using std::shared_ptr;
+#define ERROR -1
+
 using std::unique_ptr;
 using std::string;
 
@@ -21,33 +22,54 @@ private:
     Node* m_dummyHead;
     //std::function<int(const T&, const T&)> compareFunc; ///TRUE = RIGHT, FALSE = LEFT
 
+    void inOrderWithFuncAUX(Node* root, void* runFunc){
+        if(root == nullptr){
+            return;
+        }
+        inOrderWithFuncAUX(root->m_left);
+        runFunc(root);
+        inOrderWithFuncAUX(root->m_right);
+    }
+
     int inOrderScanToArrAUX(Node* root, Pair<T,K>* arr, int top) const{ ///should get an input function
-        if(!root){
+        if(!root || top == ERROR){
             return top;
         }
         top = inOrderScanToArrAUX(root->m_left, arr, top);
-        root->printOut();
-        arr[top] = *(root->m_nodeData);
+        try {
+            arr[top] = *root->m_nodeData;
+        }catch(...){
+            return ERROR;
+        }
+//        root->printOut();
         top++;
         top = inOrderScanToArrAUX(root->m_right, arr, top);
         return top;
     }
-    int inOrderScanAssignment(Node* root, Pair<T,K>* arr, int top){ ///should get an input function
-        if(!root){
-            return top;
+
+    AVLStatus createTreeByListAUX(Node* root,Node* prev, Pair<T,K>* arr, int h,int bottom ,int top, string dir){ ///should get an input function
+        if(h == -1 || bottom == top){
+            return AVLStatus::AVL_Success;
         }
-        top = inOrderScanAssignment(root->m_left, arr, top);
-        root->m_nodeData.reset(new Pair<T,K>(arr[top]));
-        //root->printOut();
-        top++;
-        top = inOrderScanAssignment(root->m_right, arr, top);
+        int root_index = (top - bottom) >=  pow(2,h) + pow(2,h-1) - 1? (int)pow(2,h)-1 : (top - bottom) - (int)pow(2,h-1);
+        root_index += bottom;
+        try {
+            root = new Node(arr[root_index], prev);
+        }catch(std::bad_alloc& a){
+            return AVLStatus::AVL_Fail;
+        }
+        if(dir == "l"){
+            prev->m_left = root;
+        }else{
+            prev->m_right = root;
+        }
+        createTreeByListAUX(root->m_left, root, arr,h-1,bottom , root_index,"l");
+        createTreeByListAUX(root->m_right, root, arr,h-1,root_index+1 , top,"r");
         updateNode(root);
-        return top;
+        return AVLStatus::AVL_Success;
     }
 
-    AVLStatus FullRotation(Node* rotator, const string& dir1,const string& dir2){
-        //std::cout << "\n------------------FullRotation---------------\n\n" <<std::endl;
-
+    void FullRotation(Node* rotator, const string& dir1,const string& dir2){
         if(dir1 == dir2){
             rotator = rotator->m_prev;
             RotationAUX(rotator, dir1);
@@ -57,11 +79,9 @@ private:
             rotator = rotator->m_prev; //root
             RotationAUX(rotator, dir2);
         }
-        return AVLStatus::AVL_Success;
     }
 
-    AVLStatus RotationAUX(Node* rotator , const string& dir){ ///get a pointer to the unstable node (-2)
-        // std::cout << "________________RotationAUX________________\n" <<std::endl;
+    void RotationAUX(Node* rotator , const string& dir){ ///get a pointer to the unstable node (-2)
         Node* root = rotator->m_prev;
         Node* rotatee;
         Node* weight_shift;
@@ -72,14 +92,12 @@ private:
             rotator->m_left = weight_shift;
         }else if(dir == "r"){ // R rotation
             rotatee = rotator->m_right;
-//            std::cout <<"rotator->height: "<< rotator->m_height <<std::endl;
-//            std::cout <<"rotatee->height: "<< rotator->m_height <<std::endl;
             weight_shift = rotatee->m_left;
             rotatee->m_left = rotator;
             rotator->m_right = weight_shift;
         }
         else{ // wrong use of this function
-            return AVLStatus::AVL_Fail;
+            return;
         }
 
         //adjust heirarchy
@@ -97,42 +115,6 @@ private:
         updateNode(rotatee);
         //the new rotator position is now rotatee actually
         rotator = rotatee;
-        return AVLStatus::AVL_Success;
-    }
-
-    AVLTree<T,K>* createEmptyTree(int depth, int offset){
-        Node* root = new Node();
-        createNodes(root, depth);
-        cleanEmptyNodes(root, offset);
-        AVLTree<T,K>* tree = new AVLTree<T,K>();
-        tree->m_dummyHead->m_left = root;
-        return tree;
-    }
-
-    void createNodes(Node* father, int depth){
-        if(depth == 0){
-            return;
-        }
-        father->m_left = new Node();
-        father->m_left->m_prev = father;
-        father->m_right = new Node();
-        father->m_right->m_prev = father;
-        createNodes(father->m_left, depth-1);
-        createNodes(father->m_right, depth-1);
-    }
-
-    int cleanEmptyNodes(Node* root, int offset){
-        if(offset == 0 || !root){
-            return offset;
-        }
-        if(!root->m_left && !root->m_right) {
-            delete root;
-            offset--;
-            return offset;
-        }
-        offset = cleanEmptyNodes(root->m_right,offset);
-        offset = cleanEmptyNodes(root->m_left,offset);
-        return offset;
     }
 
     void updateNode(Node* nodeToUpdate){
@@ -147,6 +129,7 @@ private:
                 return;
             }
             while ((start->m_prev == m_dummyHead || abs(start->m_prev->heightDiff()) < 2)) { //climb to top
+//                std::cout<<"data :" << start->data() << std::endl;
                 start = start->m_prev;
                 updateNode(start);
                 if (start == m_dummyHead) { //top reached
@@ -186,15 +169,42 @@ private:
 
     ///get pointer to the head and pointer to the item we wanna find, make a recursive calls depend on the comparefunc of the tree, if didnt find / empty return nullptr.
     Node* findAUX(const K& item) const {
-        if (m_dummyHead->m_height == 0)
+        if (empty())
             return nullptr;
         Node* result_ptr = m_dummyHead->m_left;
-        while (*result_ptr->key() != item) {
-            result_ptr = *result_ptr->key() > item ? result_ptr->m_left : result_ptr->m_right;
+        while (result_ptr->key() != item) {
+            result_ptr = result_ptr->key() > item ? result_ptr->m_left : result_ptr->m_right;
             if (!result_ptr)
                 return nullptr;
         }
         return result_ptr;
+    }
+
+    Node* createCopy(Node* srcCopy, Node* prevDest){
+        Node *destCopy = new Node(*srcCopy->m_nodeData, prevDest, srcCopy->m_height, srcCopy->m_size);
+        if(srcCopy->m_left){
+            destCopy->m_left = createCopy(srcCopy->m_left, destCopy);
+        }
+        if(srcCopy->m_right){
+            destCopy->m_right = createCopy(srcCopy->m_right, destCopy);
+        }
+      //  destCopy->printOut();
+        return destCopy;
+    }
+
+        int inOrderConditionToArrAUX(Node* root, int* size, Pair<T,K>* pairArray, K min = NULL, K max = NULL, int ptrArr = 0) const{
+        if(root == nullptr){
+            return ptrArr;
+        }
+        Node* ptr = m_dummyHead->m_left;
+        inOrderConditionToArrAUX(ptr->m_left, size, pairArray, ptrArr, min, max);
+        if(ptr->key() >= min && ptr->key() <= max){
+            pairArray[ptrArr] = *ptr->m_nodeData;
+            ptrArr++;
+            size++;
+        }
+        inOrderConditionToArrAUX(ptr->m_right, size, pairArray, ptrArr, min, max);
+        return ptrArr;
     }
 public:
 
@@ -204,137 +214,202 @@ public:
         deleter(m_dummyHead);
     }
 
-////////////////////     TO-DO     /////////////////////////////////
-    AVLTree(const AVLTree& tree){}
-
-    AVLTree& operator= (AVLTree& tree){
-        if(this == *tree)
-            return *this;
-        AVLTree<T,K> tempTree(tree);
-        AVLTree<T,K>* swapper = this;
-        this = &tempTree;
-        tempTree = *swapper;
+    AVLTree(const AVLTree& tree): m_dummyHead(new Node()){
+        m_dummyHead->m_size = tree.m_dummyHead->m_size;
+        m_dummyHead->m_height = tree.m_dummyHead->m_height;
+        Node* ptrCopyTree = tree.m_dummyHead->m_left;
+        m_dummyHead->m_left = createCopy(ptrCopyTree,m_dummyHead);
     }
 
-////////////////////////////////////////////////////////////////////
+    AVLTree& operator= (const AVLTree& tree){
+        if(this == &tree)
+            return *this;
+        AVLTree<T,K> tempTree(tree);
+        Node* swapper = tempTree.m_dummyHead;
+        tempTree.m_dummyHead = this->m_dummyHead;
+        this->m_dummyHead = swapper;
+        return *this;
+    }
+
+    bool empty() const{
+        return !m_dummyHead->m_left;
+    }
+
     int size() const{
         return m_dummyHead->m_left->m_size;
     }
+
     AVLStatus insert(const T& newItem,  const K& key){
-        Node* newNode;
-        try {
-            if (m_dummyHead->m_height == 0) {
-                newNode = m_dummyHead->m_left = new Node(newItem, key,m_dummyHead);
-            }else{
-                Node* ptr = m_dummyHead->m_left;
-                while (true) { //add to leafs
-                    if (key > *(ptr->key())) {
-                        if (!ptr->m_right) {
-                            ptr->m_right = newNode =  new Node(newItem, key,ptr);
-                            break;
-                        }
-                        ptr = ptr->m_right;
-                    } else if(*(ptr->key()) > key){
-                        if (!ptr->m_left) {
-                            ptr->m_left = newNode = new Node(newItem, key,ptr);
-                            break;
-                        }
-                        ptr = ptr->m_left;
+        Node** newNodePlace;
+        Node* ptr = m_dummyHead;
+        if (empty()) {
+            newNodePlace = &m_dummyHead->m_left;
+        }else{
+            ptr = m_dummyHead->m_left;
+            while (true) { //add to leafs
+                if (ptr->key() > key) {
+                    if (!ptr->m_right) {
+                        newNodePlace = &ptr->m_right;
+                        break;
                     }
-                    else{
-                        return AVLStatus::AVL_Fail;
+                    ptr = ptr->m_right;
+                } else if(key > ptr->key()){
+                    if (!ptr->m_left) {
+                        newNodePlace = &ptr->m_left;
+                        break;
                     }
+                    ptr = ptr->m_left;
+                }
+                else{
+                    return AVLStatus::AVL_Fail;
                 }
             }
+        }try {
+            *newNodePlace = new Node(newItem, key, ptr);
         }catch(...){
             return AVLStatus::AVL_Fail;
         }
-        updatePath(newNode, false);
+        updatePath(*newNodePlace, false);
         return AVLStatus::AVL_Success;
     }
 
-    AVLStatus remove(const K& ptrKeyDelete) {
-        Node* ptr = findAUX(ptrKeyDelete);
+    AVLStatus remove(const K& keyDelete) {
+        Node* ptr = findAUX(keyDelete);
         Node* lowestInPath;
         Node* toDelete;
         if (!ptr) //ptr to delete not found
             return AVLStatus::AVL_Not_Found;
         Node* replacement = ptr;
-        if(!replacement->m_right && !replacement->m_left){
-            if(ptr->m_prev->m_left == ptr){
-                ptr->m_prev->m_left = nullptr;
-            }else{
-                ptr->m_prev->m_right = nullptr;
-            }
-            toDelete = ptr;
-        }
-        else if(replacement->m_right) { //go to next node in inorder if has children
+        if(replacement->m_right){
             replacement= replacement->m_right;
             while (replacement->m_left) {
                 replacement = replacement->m_left;
             }
             ptr->m_nodeData = std::move(replacement->m_nodeData);
-            if (replacement->m_right) { // this corrects the tree where we took replacement
-                lowestInPath = replacement->m_right;
-                replacement->m_prev->m_left = replacement->m_right;
-                replacement->m_right->m_prev = replacement->m_prev;
-            }else{
-                lowestInPath = replacement->m_prev;
-                if(replacement->m_prev->m_left == replacement){
-                    replacement->m_prev->m_left = nullptr;
-                }else{
-                    replacement->m_prev->m_right = nullptr;
-                }
-
-            }
+        }
+        Node** fatherLeg = replacement->m_prev->m_left == replacement ? &replacement->m_prev->m_left : &replacement->m_prev->m_right;
+        if(!replacement->m_right && !replacement->m_left){
+            lowestInPath = replacement->m_prev;
+            *fatherLeg = nullptr;
             toDelete = replacement;
         }
-        else {
-            lowestInPath = ptr->m_left;
-            if(ptr->m_prev->m_left == ptr){
-                ptr->m_prev->m_left = ptr->m_left;
-            }else{
-                ptr->m_prev->m_right = ptr->m_left;
-            }
-            ptr->m_left->m_prev = ptr->m_prev;
-            toDelete = ptr;
+        else if(replacement->m_right) { //go to next node in inorder if has children
+            lowestInPath = replacement->m_right;
+            *fatherLeg = replacement->m_right;
+            replacement->m_right->m_prev = replacement->m_prev;
+            toDelete = replacement;
+        }else{
+            lowestInPath = replacement->m_left;
+            *fatherLeg = replacement->m_left;
+            replacement->m_left->m_prev = replacement->m_prev;
+            toDelete = replacement;
         }
         delete toDelete;
         updatePath(lowestInPath,true);
         return AVLStatus::AVL_Success;
     }
 
-    Pair<T,K>* inOrderScanToArray() const{ ///should get an input function
-        Pair<T,K>* pairArray = new Pair<T,K>[size()]();
-        inOrderScanToArrAUX(m_dummyHead->m_left, pairArray, 0);
-        for(int i = 0; i < size(); i++){
-            std::cout<< *(pairArray[i].Data()) << std::endl;
+        ///----------------------help functions for knockout------------------------
+    Pair<T, K>* conditionArr(int* size, K min = NULL, K max = NULL) const{
+        if(this->empty()){
+            return nullptr;
         }
-        return pairArray;
+        Pair<T, K>* arr = new Pair<T, K>[this->size()];
+        inOrderConditionToArrAUX(m_dummyHead->m_left, size, arr, min, max);
+        return (arr);
     }
 
-    const Pair<T,K>* find(const K& item) const {
-        if (m_dummyHead->m_height == 0)
-            return nullptr;
+    int rank(const K& dataKey) const{
+        if(empty()){
+            return ERROR;
+        }
+        Node* ptr = m_dummyHead->m_left;
+        int sideRank;
+        int rankIndex = ptr->m_left ? ptr->m_left->m_size+1 : 1;
+        while(ptr->key() != dataKey){
+            if( dataKey > ptr->key() && ptr->m_right){
+                ptr = ptr->m_right;
+                sideRank = ptr->m_left ? ptr->m_left->m_size : 0;
+                rankIndex +=  sideRank + 1;
+            }else if(ptr->key() > dataKey && ptr->m_left){
+                ptr = ptr->m_left;
+                sideRank = ptr->m_right ? ptr->m_right->m_size : 0;
+                rankIndex -= sideRank +1;
+            }else{
+                return ERROR;
+            }
+        }
+        return rankIndex;
+    }
+
+    const Pair<T,K>& select(int rank) const{
+        if(rank < 1 || rank > size()){
+            return *m_dummyHead->m_nodeData;
+        }
+        Node* ptr = m_dummyHead->m_left;
+        int leftSideSize;
+        Node* result;
+        while(rank > 0){
+            result = ptr;
+            leftSideSize = ptr->m_left ? ptr->m_left->m_size : 0;
+            if(rank > leftSideSize) {
+                rank -= leftSideSize+1;
+                ptr = ptr->m_right;
+            }
+            else{
+                ptr = ptr->m_left;
+            }
+        }
+        return *result->m_nodeData;
+    }
+
+    const Pair<T,K>* find(const K& dataKey) const{ ///PROBLEM BECAUSE OF UNIQUE...CANT BE ASSIGN DO IT CANT RETURN AS A VALUE
+        if (empty())
+            return m_dummyHead->m_nodeData;
         Node* result_ptr = m_dummyHead->m_left;
-        while (*result_ptr->m_nodeData->Key() != item) {
-            result_ptr = *result_ptr->m_nodeData->Key() > item ? result_ptr->m_left : result_ptr->m_right;
+        while (result_ptr->key() != dataKey) {
+            result_ptr = result_ptr->key() > dataKey ? result_ptr->m_left : result_ptr->m_right;
             if (!result_ptr)
                 return nullptr;
         }
-        return *result_ptr->m_nodeData;
+        return m_dummyHead->m_nodeData;
     }
     /// @brief
     /// @param start
     /// @param updateRollsToRoot
 
-    void createTreeByList(int size ,Pair<T,K>* arr){
-        int depth = (int)log2(size);
-        int offset = pow(2,depth) - size;
-        AVLTree<T,K>* result = createEmptyTree(depth,offset);
-        result->inOrderScanAssignment(result->m_dummyHead->m_left, arr, 0);
+    Pair<T,K>* inOrderScanToArray() const{ ///should get an input function
+        Pair<T,K>* pairArray;
+        try{
+            pairArray = new Pair<T,K>[size()]();
+        }catch (std::bad_alloc& a){
+            return nullptr;
+        }
+        if(inOrderScanToArrAUX(m_dummyHead->m_left, pairArray, 0) == ERROR){
+            delete[]pairArray;
+            return nullptr;
+        }
+        return pairArray;
     }
 
+    AVLStatus createTreeByList(int size ,Pair<T,K>* arr){
+        int h = (int)log2(size + 1) ;
+        Node* newTree = nullptr;
+        Node* oldTree = m_dummyHead->m_left;
+        if(createTreeByListAUX(newTree,m_dummyHead, arr,h, 0, size,"l") == AVLStatus::AVL_Success){
+            deleter(oldTree);
+            return  AVLStatus::AVL_Success;
+        }
+        else{
+            deleter(newTree);
+            return AVLStatus::AVL_Fail;
+        }
+    }
+
+
+    void inOrderWithFunc(void* runFunc(T*)){
+        inOrderScanToArrAUX(this->m_dummyHead->m_left);
+    }
 
 
 ///----------------------implementation of Node class---------------------------
@@ -350,52 +425,60 @@ private:
         int m_size;
 
         Node(const T& dataPtr, const K& key, Node* previous) : m_nodeData(new Pair<T,K>(dataPtr,key)),
+                                                                    m_right(nullptr),
+                                                                    m_left(nullptr), m_prev(previous),
+                                                                    m_height(0),m_size(1){}
+        Node(const Pair<T,K>& pairData, Node* previous) : m_nodeData(new Pair<T,K>(pairData)),
                                                                m_right(nullptr),
                                                                m_left(nullptr), m_prev(previous),
                                                                m_height(0),m_size(1){}
-        Node() : m_nodeData(new Pair<T,K>()),
+        Node(const Pair<T,K>& pairData, Node* previous, int height, int size) : m_nodeData(new Pair<T,K>(pairData)),
+                                                          m_right(nullptr),
+                                                          m_left(nullptr), m_prev(previous),
+                                                          m_height(height),m_size(size){}
+        Node() : m_nodeData(nullptr),
                  m_right(nullptr),
                  m_left(nullptr),
                  m_prev(nullptr),
                  m_height(0),
                  m_size(1)
-        {}
-
+                 {}
+    public:
         Node(const Node& n) = delete;
         Node& operator= (const Node& n) = delete;
 
         /// @brief getter for height
         /// @return
-        T* data(){
-            return m_nodeData->Data();
+        bool empty(){
+            return m_nodeData == nullptr;
+        }
+        T& data(){
+            return *m_nodeData->data();
         }
 
-        const K* key(){
-            return m_nodeData->Key();
+        const K& key(){
+            return *m_nodeData->key();
         }
 
         void printOut(){
             std::cout << "\n \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\  printOut / / / / / / / / / / / \n" <<std::endl;
-            string str1 = m_prev->data() ? *m_prev->data() : "m_dummyNode";
-            if(data()){
-                std::cout << "this is printing: " << *data() <<" (prev: "<< str1+")" << std::endl;
+            string str1 = !m_prev->empty() ? m_prev->data() : "m_dummyNode";
+            if(!empty()){
+                std::cout << "this is printing: " << data() <<", key: "<< key() <<" (prev: "<< str1+")" << std::endl;
             }else{
                 std::cout << "this is is printing: m_dummyNode" << std::endl;
             }
             if(!m_left && !m_right) {
-                std::cout << "leaf:  " << *data() << std::endl;
+                std::cout << "leaf" << std::endl;
             }else if(m_left && m_right){
-                if(data())
-                    std::cout << "is " << * m_left->data()<<
-                              " (h,s:" <<m_left->m_height<<", "<< m_left->m_size <<") father and "<<
-                              *m_right->data() <<" (h,s:" <<m_right->m_height<<", "<< m_right->m_size <<
-                              ") father, height, size: " <<m_height << ", " << m_size<< std::endl;
+                std::cout << "left: " <<  m_left->data()<<
+                " (l_h: " <<m_left->m_height<<", l_s: "<< m_left->m_size <<") , right: "<<
+                m_right->data() <<" (r_h: " <<m_right->m_height<<", r_s: "<< m_right->m_size <<
+                ") "<<std::endl <<"h: " <<m_height << ", s:" << m_size<< std::endl;
             }else if(m_right){
-                if(data())
-                    std::cout << "is " << * m_right->data() <<" father. height, size: " <<m_height << ", " << m_size<< std::endl;
+                std::cout << "right: " << m_right->data() << std::endl << "height: " <<m_height << ", size: " << m_size<< std::endl;
             }else{
-                if(data())
-                    std::cout << "is " << *m_left->data() <<" father. height, size: " <<m_height << ", " << m_size<< std::endl;
+                std::cout << "left: " << m_left->data() << std::endl << "height: " <<m_height << ", size: " << m_size<< std::endl;
             }
         }
 
@@ -415,14 +498,16 @@ private:
         void setHeight(){
             if(!m_left && !m_right){
                 m_height = 0;
+                return;
             }else if(m_left && m_right){
                 m_height = m_right->m_height > m_left->m_height ? m_right->m_height : m_left->m_height;
-                m_height++;
             }else if(m_right){
-                m_height = m_right->m_height + 1;
+                m_height = m_right->m_height;
             }else{
-                m_height = m_left->m_height + 1;
+                m_height = m_left->m_height;
             }
+            m_height++;
+
         }
         /// @brief method to calculate balance factor
         /// @return
@@ -439,22 +524,29 @@ private:
             }
             return delta_h;
         }
-    public:
         virtual ~Node() = default;
     };
 };
 
 template<class T, class K>
-AVLTree<T,K>* mergeTreesByKeyGenFunc(AVLTree<T,K>& avl1 , AVLTree<T,K>& avl2){
+AVLTree<T,K>* mergeTrees(AVLTree<T,K>& avl1 , AVLTree<T,K>& avl2){
     Pair<T,K> *avl1Arr = avl1.inOrderScanToArray();
     Pair<T,K> *avl2Arr = avl2.inOrderScanToArray();
+    if(!avl1Arr || !avl2Arr){
+        return nullptr;
+    }
     int l_len = avl1.size();
     int r_len = avl2.size();
-    Pair<T,K>* destArr = new Pair<T,K>[l_len+r_len]();
+    Pair<T, K> *destArr;
+    try {
+        destArr = new Pair<T, K>[l_len + r_len]();
+    }catch(...){
+        return nullptr;
+    }
 
     int k= 0,l = 0, r = 0;
     while(l < l_len && r < r_len){
-        if(*(avl1Arr[l].Key()) < *(avl2Arr[r].Key()))
+        if(avl1Arr[l].key() < avl2Arr[r].key())
             destArr[k++] = avl1Arr[l++];
         else
             destArr[k++] = avl2Arr[r++];
@@ -466,11 +558,14 @@ AVLTree<T,K>* mergeTreesByKeyGenFunc(AVLTree<T,K>& avl1 , AVLTree<T,K>& avl2){
     while (r < r_len) {
         destArr[k++] = avl2Arr[r++];
     }
-    for(int i = 0; i < r_len+l_len; i++){
-        std::cout<< "Key: "<< *(destArr[i].Key()) << ", Value:" <<  *(destArr[i].Data()) << std::endl;
-    }
+    delete[] avl1Arr;
+    delete[] avl2Arr;
     AVLTree<T,K>* result = new AVLTree<T,K>();
-    result->createTreeByList(l_len+r_len, destArr);
+    if(result->createTreeByList(l_len+r_len, destArr) != AVLTree<T,K>::AVLStatus::AVL_Success){
+        delete result;
+        result = nullptr;
+    }
+    delete[] destArr;
     return result;
 }
 
@@ -479,3 +574,5 @@ AVLTree<T,K>* mergeTreesByKeyGenFunc(AVLTree<T,K>& avl1 , AVLTree<T,K>& avl2){
 //
 // Created by ohadr on 11/22/2022.
 //
+
+

@@ -18,13 +18,13 @@
 #include "wet1util.h"
 #include "Player.h"
 #include "Team.h"
-#include "Linked_List.h"
 
 class world_cup_t {
 private:
 	//
 	// Here you may add anything you want
     AVLTree<Team, int> m_teamsTree;
+    AVLTree<Team, int> m_validTeamsTree;
     AVLTree<Player, int> m_playersById;
     AVLTree<Player, Player> m_playersByGoals;
     Player* m_topScorer;
@@ -73,6 +73,8 @@ public:
     StatusType updateTopScorer(Player* messi){
         m_topScorer = messi;
     }
+
+    Pair<Team, int> validTeamsArr(int minTeamId, int maxTeamId);
 };
 
 

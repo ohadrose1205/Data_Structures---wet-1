@@ -7,10 +7,11 @@
 
 
 #include "AVL_trees.h"
+#include "Team.h"
 
 class Player {
 public:
-    explicit Player(const int ID, const int teamID, int gamesPlayed, int goals, int cards, const bool gkFlag);
+    explicit Player(const int ID, Team* team, int gamesPlayed, int goals, int cards, const bool gkFlag);
     ~Player() =default;
     Player(const Player& p) =default; ///cannot copy players, each player unique
     Player& operator=(const Player& p) = default;
@@ -36,7 +37,7 @@ public:
 
 private:
     int m_playerId;
-    int m_teamId;
+    Team* m_team;
     int m_gamesPlayed;
     int m_goals;
     int m_cards;

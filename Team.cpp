@@ -4,7 +4,7 @@
 
 #include "Team.h"
 
-Team::Team(int id, int initPoints): m_playersTree(AVLTree<Player, int>()){
+Team::Team(int id, int initPoints): m_playersTree(AVLTree<Player, int>()), m_playersByGoalsTree(AVLTree<Player, Player>()){
 //    if(id <= 0 || initPoints < 0){
 //        throw;
 //    }
@@ -13,13 +13,13 @@ Team::Team(int id, int initPoints): m_playersTree(AVLTree<Player, int>()){
     m_gamesPlayedAsTeam = 0;
     m_playersNum = 0;
     m_topScorer = nullptr;
-    m_gkInclude = false;
+    m_goalKeepers = 0;
     m_totalGoals = 0;
     m_totalCards = 0;
 }
 
 const bool Team::isTeamValid() {
-    return (m_playersNum > 10 && m_gkInclude);
+    return (m_playersNum > 10 && getGK() > 0);
 }
 
 const int Team::getPoints() const {
@@ -30,8 +30,37 @@ const int Team::getTeamId() const{
     return m_teamId;
 }
 
+AVLTree<Player, int> Team::getPlayersTree() const {
+    return m_playersTree;
+}
+
 const int Team::getNumPlayers() {
     return m_playersNum;
+}
+
+const int Team::getGK() const {
+    return m_goalKeepers;
+}
+
+const int Team::getTeamGames() const {
+    return m_gamesPlayedAsTeam;
+}
+
+const int Team::getTotalGoals() const {
+    return m_totalGoals;
+}
+
+const int Team::getTotalsCards() const {
+    return m_totalCards;
+}
+
+void Team::changeGK(bool isAdded) {
+    if(isAdded){
+        m_goalKeepers++;
+    }
+    else{
+        m_goalKeepers--;
+    }
 }
 
 const int Team::teamValue() {
@@ -54,11 +83,17 @@ AVLStatus Team::insertPlayer(Player* playerToInsert) {
     }
     try{
         if(m_playersTree.find(playerToInsert->getTeamId()) != nullptr){
-            AVLStatus checker = m_playersTree.insert(*playerToInsert, playerToInsert->getTeamId());
+            AVLStatus checker1 = m_playersTree.insert(*playerToInsert, playerToInsert->getTeamId());
+            AVLStatus checker2 = m_playersByGoalsTree.insert(*playerToInsert, *playerToInsert);
             m_totalGoals += playerToInsert->getGoals();
             m_totalCards += playerToInsert->getCards();
             m_playersNum += 1;
-            return checker;
+            if(checker1 == AVLStatus::AVL_Success && checker2 == AVLStatus::AVL_Success){
+                return AVLStatus::AVL_Success;
+            }
+            else{
+                return AVLStatus::AVL_Fail;
+            }
         }
 
     }
@@ -67,19 +102,29 @@ AVLStatus Team::insertPlayer(Player* playerToInsert) {
     }
 }
 
+std::ostream operator<<(std::ostream out, const Team* team) {
+    out << team->getTeamId() << std::endl;
+}
+
 
 AVLStatus Team::removePlayer(int playerId) {
     if(playerId <= 0 ){
         return AVLStatus::AVL_Fail;
     }
     try{
-        Player* playerToRemove = m_playersTree.find(playerId)->Data();
+        Player* playerToRemove = m_playersTree.find(playerId)->data();
         if(playerToRemove != nullptr){
             m_totalGoals -= playerToRemove->getGoals();
             m_totalCards -= playerToRemove->getCards();
-            AVLStatus checker = m_playersTree.remove(playerId);
+            AVLStatus checker1 = m_playersTree.remove(playerId);
+            AVLStatus checker2 = m_playersByGoalsTree.remove(*playerToRemove);
             m_playersNum -= 1;
-            return checker;
+            if(checker1 == AVLStatus::AVL_Success && checker2 == AVLStatus::AVL_Success){
+                return AVLStatus::AVL_Success;
+            }
+            else{
+                return AVLStatus::AVL_Fail;
+            }
         }
 
     }
@@ -102,3 +147,30 @@ AVLStatus Team::updateTopScorer(Player *messi) {
     }
 }
 
+AVLStatus Team::playGame(char victoryFlag) {
+        if(victoryFlag != 'W' && victoryFlag != 'L' && victoryFlag != 'T'){
+            return AVLStatus::AVL_Fail;
+        }
+        m_gamesPlayedAsTeam += 1;
+        if(victoryFlag == 'W'){ //Win
+            m_points += 3;
+        } else if(victoryFlag == 'T'){ //Tie
+            m_points += 1;
+            return AVLStatus::AVL_Success;
+        }else{ //Lose
+            return AVLStatus::AVL_Success;
+        }
+    }
+
+AVLStatus Team::updateTeam(AVLTree<Player, int> &playerTree, int goals, int cards, int GK, Player* topScorer) {
+    m_playersNum = playerTree.size();
+    m_playersTree = playerTree;
+    m_totalGoals = goals;
+    m_totalCards = cards;
+    m_goalKeepers = GK;
+    m_topScorer = topScorer;
+}
+
+Pair<Player, Player>* Team::arrByGoals() {
+    return m_playersByGoalsTree.inOrderScanToArray();
+}

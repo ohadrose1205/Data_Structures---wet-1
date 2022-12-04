@@ -1,34 +1,55 @@
-//
-// Created by shach on 11/30/2022.
-//
+
 
 #ifndef MIVNEWET1_PAIR_H
 #define MIVNEWET1_PAIR_H
+
+#include <memory>
+
+using std::bad_alloc;
 
 template<class T, class K>
 struct Pair{
 private:
     T* m_data;
-    const K* m_key;
+    K* m_key;
 public:
     Pair(): m_data(nullptr), m_key(nullptr){}
     Pair(const T& data,const K& key):  m_data(new T(data)), m_key(new K(key)){}
     Pair(const Pair<T,K>& p):m_data(new T(*p.m_data)), m_key(new K(*p.m_key)){}
     Pair& operator= (const Pair& p){
-        T* newData = new T(*p.m_data);
-        T* oldData = this->m_data;
+        if(this == &p){
+            return *this;
+        }
+        K *oldKey, *newKey;
+        T *oldData, *newData;
+        try{
+            newKey = new K(*p.m_key);
+            newData = new T(*p.m_data);
+        }catch(...){
+            throw bad_alloc();
+        }
+        oldKey = this->m_key;
+        oldData = this->m_data;
         this->m_data = newData;
+        this->m_key = newKey;
         delete oldData;
+        delete oldKey;
         return *this;
+    }
+    bool empty() const{
+        return (!m_data || !m_key);
     }
     ~Pair(){
         delete m_data;
         delete m_key;
     }
-    T* Data() const{
+    T* data() const{
         return m_data;
     }
-    const K* Key() const{
+//    const T* data() const{
+//        return m_data;
+//    }
+    K* key() const{
         return m_key;
     }
 };

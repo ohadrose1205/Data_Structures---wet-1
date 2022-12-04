@@ -4,7 +4,7 @@
 
 #include "Player.h"
 
-Player::Player(const int ID, const int teamID, int gamesPlayed, int goals, int cards, const bool gkFlag)  :
+Player::Player(const int ID, Team* team, int gamesPlayed, int goals, int cards, const bool gkFlag)  :
 m_playerId(ID), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards), m_gkFlag(gkFlag){}
 
 int Player::getPlayerId() const {
@@ -12,11 +12,11 @@ int Player::getPlayerId() const {
 }
 
 int Player::getTeamId() const {
-    return m_teamId;
+    return m_team->getTeamId();
 }
 
 int Player::getGames() const {
-    return m_gamesPlayed;
+    return m_gamesPlayed + m_team->getTeamGames();
 }
 
 void Player::setExtraGames(int games) {

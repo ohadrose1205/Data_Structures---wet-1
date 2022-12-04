@@ -15,6 +15,7 @@ private:
 public:
     Pair(): m_data(nullptr), m_key(nullptr){}
     Pair(const T& data,const K& key):  m_data(new T(data)), m_key(new K(key)){}
+    Pair(T& data,K& key):  m_data(new T(data)), m_key(new K(key)){}
     Pair(const Pair<T,K>& p):m_data(new T(*p.m_data)), m_key(new K(*p.m_key)){}
     Pair& operator= (const Pair& p){
         if(this == &p){

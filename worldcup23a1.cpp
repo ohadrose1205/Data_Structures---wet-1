@@ -381,17 +381,51 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
     if(minTeamId <= 0 || maxTeamId <= 0 || maxTeamId < minTeamId){
         return output_t<int>(StatusType::INVALID_INPUT);
     }
-    int* sizeArr = 0;
-    Pair<Team, int>* arrayOfLegalTeam = m_validTeamsTree.conditionArr(sizeArr, minTeamId, maxTeamId);
-    if(*sizeArr == 0){
+    int sizeArr = 0;
+    Pair<Team, int>* arrayOfLegalTeam = m_validTeamsTree.conditionArr(&sizeArr, minTeamId, maxTeamId);
+    if(sizeArr == 0){
         return output_t<int>(StatusType::FAILURE);
     }
-    int ptrArrTeam1 = 0;
-    int ptrArrTeam2 = 1;
-    for(; ptrArrTeam1 < *sizeArr && ptrArrTeam2 < *sizeArr;){
-        Team* team1 = arrayOfLegalTeam[ptrArrTeam1].data();
-        Team* team2 = arrayOfLegalTeam[ptrArrTeam2].data();
+    try{
+        Pair<int, int>* teamValuesAndId = new Pair<int, int>[sizeArr]();
+        for(int i = 0; i < sizeArr; i++){ //good complexity cause sizeArr equal to r valid teams
+            teamValuesAndId[i] = Pair<int, int>(arrayOfLegalTeam[i].data()->teamValue(), arrayOfLegalTeam[i].data()->getTeamId());
+        }
+        while(sizeArr > 1){
+            int ptrArrTeam1 = 0;
+            int ptrArrTeam2 = 1;
+            int nextRoundSize;
+            if(sizeArr % 2 != 0){
+                nextRoundSize = (sizeArr / 2) + 1;
+            }
+            else{
+                nextRoundSize = (sizeArr / 2);
+            }
+            Pair<int, int>* nextRoundTeam = new Pair<int, int>[sizeArr / 2]();
+            for(int i = 0; ptrArrTeam1 < sizeArr && ptrArrTeam2 < sizeArr && i < nextRoundSize; ptrArrTeam1+2, ptrArrTeam2+2, i++){
+                int idWinner;
+                if(teamValuesAndId[ptrArrTeam1].data() > teamValuesAndId[ptrArrTeam2].data()){
+                    idWinner = *(teamValuesAndId[ptrArrTeam1].key());
+                }
+                else if(teamValuesAndId[ptrArrTeam1].data() < teamValuesAndId[ptrArrTeam2].data()){
+                    idWinner = *(teamValuesAndId[ptrArrTeam2].key());
+                }
+                else{
+                    idWinner = teamValuesAndId[ptrArrTeam1].data() > teamValuesAndId[ptrArrTeam2].data() ? *(teamValuesAndId[ptrArrTeam1].key()) : *(teamValuesAndId[ptrArrTeam2].key());
+                }
+                int valuesWinner = *(teamValuesAndId[ptrArrTeam1].data()) + *(teamValuesAndId[ptrArrTeam1].data()) + 3;
+                nextRoundTeam[i] = Pair<int, int>(valuesWinner, idWinner);
+            }
+            if(ptrArrTeam1 == sizeArr - 1){
+                nextRoundTeam[nextRoundSize-1] = teamValuesAndId[ptrArrTeam1];
+            }
+            teamValuesAndId = nextRoundTeam;
+            sizeArr = nextRoundSize;
 
-        ///use Pair if <id, teamValue> and compare
+        }
+        return output_t<int>(*(teamValuesAndId[0].key()));
+    }
+    catch(bad_alloc){
+        return output_t<int>(StatusType::ALLOCATION_ERROR);
     }
 }

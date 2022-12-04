@@ -12,17 +12,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57bf06bf-9d16-4222-9864-69ea596c7b98" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AVL_trees.h" beforeDir="false" afterPath="$PROJECT_DIR$/AVL_trees.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pair.h" beforeDir="false" afterPath="$PROJECT_DIR$/Pair.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Team.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Team.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Team.h" beforeDir="false" afterPath="$PROJECT_DIR$/Team.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/worldcup23a1.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/worldcup23a1.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worldcup23a1.h" beforeDir="false" afterPath="$PROJECT_DIR$/worldcup23a1.h" afterDir="false" />
     </list>
     <list id="7383f042-a2c8-4d10-8a6c-34e6be069831" name="Changes by shach" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -80,7 +72,7 @@
       <workItem from="1669921294944" duration="8256000" />
       <workItem from="1670000138330" duration="65000" />
       <workItem from="1670000218971" duration="132000" />
-      <workItem from="1670000364692" duration="38658000" />
+      <workItem from="1670000364692" duration="42682000" />
     </task>
     <servers />
   </component>

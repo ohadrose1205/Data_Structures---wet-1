@@ -82,7 +82,7 @@ private:
     }
 
     void RotationAUX(Node* rotator , const string& dir){ ///get a pointer to the unstable node (-2)
-        Node* root = rotator->m_prev;
+//        Node* root = rotator->m_prev;
         Node* rotatee;
         Node* weight_shift;
         if(dir == "l"){ //L rotation
@@ -368,14 +368,14 @@ public:
 
     const Pair<T,K>* find(const K& dataKey) const{ ///PROBLEM BECAUSE OF UNIQUE...CANT BE ASSIGN DO IT CANT RETURN AS A VALUE
         if (empty())
-            return m_dummyHead->m_nodeData;
+            return &*(m_dummyHead->m_nodeData);
         Node* result_ptr = m_dummyHead->m_left;
         while (result_ptr->key() != dataKey) {
             result_ptr = result_ptr->key() > dataKey ? result_ptr->m_left : result_ptr->m_right;
             if (!result_ptr)
                 return nullptr;
         }
-        return m_dummyHead->m_nodeData;
+        return &*(result_ptr->m_nodeData);
     }
 
     Pair<T,K>* inOrderScanToArray() const{ ///should get an input function
@@ -412,7 +412,7 @@ private:
     class Node{
         friend AVLTree;
 
-        Pair<T,K>* m_nodeData;
+        unique_ptr<Pair<T,K>> m_nodeData;
         Node* m_right;
         Node* m_left;
         Node* m_prev;

@@ -27,6 +27,7 @@ public:
     void setExtraGoals(int goals);
     void setExtraCards(int cards);
     void setExtraGames(int games);
+    void setTeamId(int newTeamId);
 
     bool compareIdPlayers(const Player& p1, const Player& p2) const; ///check if p1 id is greater than p2
     int compareGoals(const Player& p1, const Player& p2) const; ///check if p1 goals is greater than p2

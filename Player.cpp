@@ -15,6 +15,10 @@ int Player::getTeamId() const {
     return m_playerTeamId;
 }
 
+void Player::setTeamId(int newTeamId) {
+    m_playerTeamId = newTeamId;
+}
+
 int Player::getIndividualGames() const {
     return m_gamesPlayed;
 }

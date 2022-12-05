@@ -23,9 +23,9 @@ private:
 public:
     Team(int id, int initPoints);
     Team(int id, int initPoints, AVLTree<Player, int>& players, int GK, int totalGoals, int totalCards, Player* topScorer);
-    ~Team(); ///Should be default? because AVL destroyer
+    ~Team()=default;
     Team(const Team& t) =default; ///cannot copy a team, each team unique
-    Team& operator=(const Team& t);
+    Team& operator=(const Team& t)=default;
 
     ///-------getters-------
     const int teamValue();

@@ -18,6 +18,16 @@ Team::Team(int id, int initPoints): m_playersTree(AVLTree<Player, int>()), m_pla
     m_totalCards = 0;
 }
 
+Team::Team(int id, int initPoints, AVLTree<Player, int> &players, int GK, int totalGoals, int totalCards,
+           Player *topScorer) {
+    m_teamId = id;
+    m_points = initPoints;
+    m_playersTree = players;
+    m_goalKeepers = GK;
+    m_totalGoals = totalGoals;
+    m_topScorer = topScorer;
+}
+
 const bool Team::isTeamValid() {
     return (m_playersNum > 10 && getGK() > 0);
 }
@@ -105,8 +115,9 @@ AVLStatus Team::insertPlayer(Player* playerToInsert) {
     }
 }
 
-std::ostream operator<<(std::ostream out, const Team* team) {
+std::ostream& operator<<(std::ostream& out, const Team* team) {
     out << team->getTeamId() << std::endl;
+    return out;
 }
 
 

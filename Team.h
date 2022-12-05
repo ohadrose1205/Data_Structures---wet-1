@@ -29,13 +29,13 @@ public:
 
     ///-------getters-------
     const int teamValue();
-    AVLTree<Player, int> getPlayersTree() const;
+    const AVLTree<Player, int>* getPlayersTree() const;
     const int getTeamId() const;
     const int getPoints() const;
     const int getNumPlayers();
     const bool isTeamValid();
     const int getGK() const;
-    const Player* getTopScorer() const;
+    Player* getTopScorer() const;
     const int getTotalGoals() const;
     const int getTotalsCards() const;
     const int getTeamGames() const;
@@ -50,7 +50,6 @@ public:
     AVLStatus updateTeam(AVLTree<Player, int>& playerTree, int goals, int cards, int GK, Player* topScorer);
 
     Pair<Player, Player>* arrByGoals();
-    }
 };
 
 std::ostream operator<<(std::ostream out, const Team& team);

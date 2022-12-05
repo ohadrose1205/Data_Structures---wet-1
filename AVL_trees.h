@@ -13,7 +13,7 @@
 using std::unique_ptr;
 using std::string;
 
-enum class AVLStatus{AVL_Success, AVL_Fail, AVL_Not_Found};
+enum class AVLStatus{AVL_Success, AVL_Fail, AVL_Not_Found, AVL_Alloc};
 
 template <class T , class K>
 class AVLTree{
@@ -22,14 +22,14 @@ private:
     Node* m_dummyHead;
     //std::function<int(const T&, const T&)> compareFunc; ///TRUE = RIGHT, FALSE = LEFT
 
-    void inOrderWithFuncAUX(Node* root, void* runFunc){
-        if(root == nullptr){
-            return;
-        }
-        inOrderWithFuncAUX(root->m_left);
-        runFunc(root);
-        inOrderWithFuncAUX(root->m_right);
-    }
+//    void inOrderWithFuncAUX(Node* root, void* runFunc){
+//        if(root == nullptr){
+//            return;
+//        }
+//        inOrderWithFuncAUX(root->m_left);
+//        runFunc(root);
+//        inOrderWithFuncAUX(root->m_right);
+//    }
 
     int inOrderScanToArrAUX(Node* root, Pair<T,K>* arr, int top) const{ ///should get an input function
         if(!root || top == ERROR){
@@ -192,19 +192,22 @@ private:
         return destCopy;
     }
 
-        int inOrderConditionToArrAUX(Node* root, int* size, Pair<T,K>* pairArray, K min = NULL, K max = NULL, int ptrArr = 0) const{
-        if(root == nullptr){
-            return ptrArr;
+        void inOrderConditionToArrAUX(Node* root, int* size, Pair<T,K>* pairArray, K min = NULL, K max = NULL, int ptrArr = 0) const{
+        if(root == nullptr || root->key() < min){ //avoid go to smaller keys
+            return;
         }
-        Node* ptr = m_dummyHead->m_left;
+        Node* ptr = root;
         inOrderConditionToArrAUX(ptr->m_left, size, pairArray, ptrArr, min, max);
         if(ptr->key() >= min && ptr->key() <= max){
             pairArray[ptrArr] = *ptr->m_nodeData;
             ptrArr++;
             size++;
         }
+        else if(ptr->key() > max){ //avoid go for greater keys
+            return;
+        }
         inOrderConditionToArrAUX(ptr->m_right, size, pairArray, ptrArr, min, max);
-        return ptrArr;
+        return;
     }
 public:
 
@@ -374,9 +377,6 @@ public:
         }
         return m_dummyHead->m_nodeData;
     }
-    /// @brief
-    /// @param start
-    /// @param updateRollsToRoot
 
     Pair<T,K>* inOrderScanToArray() const{ ///should get an input function
         Pair<T,K>* pairArray;
@@ -407,17 +407,12 @@ public:
     }
 
 
-    void inOrderWithFunc(void* runFunc(T*)){
-        inOrderScanToArrAUX(this->m_dummyHead->m_left);
-    }
-
-
 ///----------------------implementation of Node class---------------------------
 private:
     class Node{
         friend AVLTree;
 
-        std::unique_ptr<Pair<T,K>> m_nodeData;
+        Pair<T,K>* m_nodeData;
         Node* m_right;
         Node* m_left;
         Node* m_prev;
@@ -529,14 +524,14 @@ private:
 };
 
 template<class T, class K>
-AVLTree<T,K>* mergeTrees(AVLTree<T,K>& avl1 , AVLTree<T,K>& avl2){
-    Pair<T,K> *avl1Arr = avl1.inOrderScanToArray();
-    Pair<T,K> *avl2Arr = avl2.inOrderScanToArray();
+AVLTree<T,K>* mergeTrees(const AVLTree<T,K>* avl1 ,const AVLTree<T,K>* avl2){
+    Pair<T,K> *avl1Arr = avl1->inOrderScanToArray();
+    Pair<T,K> *avl2Arr = avl2->inOrderScanToArray();
     if(!avl1Arr || !avl2Arr){
         return nullptr;
     }
-    int l_len = avl1.size();
-    int r_len = avl2.size();
+    int l_len = avl1->size();
+    int r_len = avl2->size();
     Pair<T, K> *destArr;
     try {
         destArr = new Pair<T, K>[l_len + r_len]();
@@ -561,7 +556,7 @@ AVLTree<T,K>* mergeTrees(AVLTree<T,K>& avl1 , AVLTree<T,K>& avl2){
     delete[] avl1Arr;
     delete[] avl2Arr;
     AVLTree<T,K>* result = new AVLTree<T,K>();
-    if(result->createTreeByList(l_len+r_len, destArr) != AVLTree<T,K>::AVLStatus::AVL_Success){
+    if(result->createTreeByList(l_len+r_len, destArr) != AVLStatus::AVL_Success){
         delete result;
         result = nullptr;
     }

@@ -14,9 +14,7 @@
 
 #ifndef WORLDCUP23A1_H_
 #define WORLDCUP23A1_H_
-#include "AVL_trees.h"
 #include "wet1util.h"
-#include "Player.h"
 #include "Team.h"
 
 class world_cup_t {
@@ -71,10 +69,12 @@ public:
 	// } </DO-NOT-MODIFY>
     ///---------extra methods-------------
     StatusType updateTopScorer(Player* messi){
-        m_topScorer = messi;
+        if(*messi > *m_topScorer){
+            m_topScorer = messi;
+            return StatusType::SUCCESS;
+        }
+        return StatusType::FAILURE;
     }
-
-    Pair<Team, int> validTeamsArr(int minTeamId, int maxTeamId);
 };
 
 

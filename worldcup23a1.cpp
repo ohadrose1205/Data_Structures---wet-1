@@ -31,8 +31,8 @@ StatusType world_cup_t::add_team(int teamId, int points)
     }
 	// TODO: Your code goes here
     try {
-        Team newTeam = Team(teamId, points);
-        AVLStatus status = m_teamsTree.insert(newTeam,teamId);
+        Team* newTeam = new Team(teamId, points);
+        AVLStatus status = m_teamsTree.insert(*newTeam,teamId);
         if(status == AVLStatus::AVL_Fail){
             return StatusType::ALLOCATION_ERROR;
         }else{
@@ -83,7 +83,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     }
     try{
         Team* playerTeam = m_teamsTree.find(teamId)->data();
-        Player newPlayer = Player(playerId, playerTeam, gamesPlayed, goals, cards, goalKeeper);
+        Player newPlayer = Player(playerId, playerTeam->getTeamId(), gamesPlayed, goals, cards, goalKeeper);
         AVLStatus checker1 = m_playersById.insert(newPlayer, playerId);
         AVLStatus checker2 = m_playersByGoals.insert(newPlayer, newPlayer);
         AVLStatus checker3 = playerTeam->insertPlayer(&newPlayer);
@@ -100,7 +100,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
         }
     }
     catch (...){
-        throw;
+        return StatusType::ALLOCATION_ERROR;
     }
 }
 
@@ -109,6 +109,9 @@ StatusType world_cup_t::remove_player(int playerId)
 	// TODO: Your code goes here
 
     try{
+        if(playerId <= 0){
+            return StatusType::INVALID_INPUT;
+        }
         Player* playerInId = m_playersById.find(playerId)->data();
         bool isGK = playerInId->isGk();
         if(playerInId == nullptr){
@@ -130,7 +133,7 @@ StatusType world_cup_t::remove_player(int playerId)
         }
     }
     catch (...){
-
+        return StatusType::ALLOCATION_ERROR;
     }
 }
 
@@ -200,7 +203,8 @@ output_t<int> world_cup_t::get_num_played_games(int playerId)
     if(playerPtr == nullptr){
         return output_t<int>(StatusType::FAILURE);
     }
-	return output_t<int>(playerPtr->getGames());;
+    Team* teamPlayer = m_teamsTree.find(playerPtr->getTeamId())->data();
+	return output_t<int>(playerPtr->getIndividualGames() + teamPlayer->getTeamGames());
 }
 
 output_t<int> world_cup_t::get_team_points(int teamId)
@@ -217,22 +221,22 @@ output_t<int> world_cup_t::get_team_points(int teamId)
 }
 
 
-///-------------help function of unite----------------
-StatusType removeAndAdd(world_cup_t* tournament, Player* player, int newTeamId){
-    int playerId = player->getPlayerId();
-    int playerGames = player->getGames();
-    int playerGoals = player->getGoals();
-    int playerCards = player->getCards();
-    bool playerGK = player->isGk();
-    StatusType result = tournament->remove_player(playerId);
-    if(result == StatusType::SUCCESS){
-        result = tournament->add_player(playerId, newTeamId, playerGames, playerGoals, playerCards, playerGames);
-        return result;
-    }
-    else{
-        return StatusType::ALLOCATION_ERROR;
-    }
-}
+/////-------------help function of unite----------------
+//StatusType removeAndAdd(world_cup_t* tournament, Player* player, int newTeamId){
+//    int playerId = player->getPlayerId();
+//    int playerGames = player->getGames();
+//    int playerGoals = player->getGoals();
+//    int playerCards = player->getCards();
+//    bool playerGK = player->isGk();
+//    StatusType result = tournament->remove_player(playerId);
+//    if(result == StatusType::SUCCESS){
+//        result = tournament->add_player(playerId, newTeamId, playerGames, playerGoals, playerCards, playerGames);
+//        return result;
+//    }
+//    else{
+//        return StatusType::ALLOCATION_ERROR;
+//    }
+//}
 
 StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 {
@@ -246,14 +250,14 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
         return StatusType::FAILURE;
     }
     add_team(newTeamId, team1->getPoints() + team2->getPoints());
-    AVLTree<Player, int> unitePlayers = mergeTrees(team1->getPlayersTree(), team2->getPlayersTree());
+    AVLTree<Player, int>* unitePlayers = mergeTrees(team1->getPlayersTree(), team2->getPlayersTree());
     ///UPDATE EACH PLAYER TEAM ID
     Team* uniteTeamPtr = m_teamsTree.find(newTeamId)->data();
     int uniteGK = team1->getGK() + team2->getGK();
     int totalGoals = team1->getTotalGoals() + team2->getTotalGoals();
     int totalCards = team1->getTotalsCards() + team2->getTotalsCards();
     Player* uniteTopScorer = *team1->getTopScorer() > *team2->getTopScorer() ? team1->getTopScorer() : team2->getTopScorer();
-    uniteTeamPtr->updateTeam(unitePlayers, totalGoals, totalCards, uniteGK, uniteTopScorer);
+    uniteTeamPtr->updateTeam(*unitePlayers, totalGoals, totalCards, uniteGK, uniteTopScorer);
     return StatusType::SUCCESS;
 //    Pair<Player, int>* arr1 =team1->getPlayersTree().inOrderScanToArray();
 //    Pair<Player, int>* arr2 = team2->getPlayersTree().inOrderScanToArray();

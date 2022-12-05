@@ -30,8 +30,8 @@ const int Team::getTeamId() const{
     return m_teamId;
 }
 
-AVLTree<Player, int> Team::getPlayersTree() const {
-    return m_playersTree;
+const AVLTree<Player, int>* Team::getPlayersTree() const {
+    return &m_playersTree;
 }
 
 const int Team::getNumPlayers() {
@@ -68,12 +68,13 @@ const int Team::teamValue() {
 }
 
 bool Team::compareIdTeam(const Team& t1, const Team& t2) const{
+    if((t1.getTeamId() == t2.getTeamId())){
+        throw AVLStatus::AVL_Fail;
+    }
     if(t1.getTeamId() < t2.getTeamId()){
         return true;
-    }else if(t1.getTeamId() > t2.getTeamId()){
-        return false;
     }else {
-        ///exeption;
+        return false;
     }
 }
 
@@ -95,10 +96,12 @@ AVLStatus Team::insertPlayer(Player* playerToInsert) {
                 return AVLStatus::AVL_Fail;
             }
         }
-
+        else{
+            return AVLStatus::AVL_Fail;
+        }
     }
     catch (...){
-
+        return AVLStatus::AVL_Alloc;
     }
 }
 
@@ -126,14 +129,17 @@ AVLStatus Team::removePlayer(int playerId) {
                 return AVLStatus::AVL_Fail;
             }
         }
+        else{
+            return AVLStatus::AVL_Not_Found;
+        }
 
     }
     catch (...){
-
+        return AVLStatus::AVL_Alloc;
     }
 }
 
-const Player *Team::getTopScorer() const {
+Player *Team::getTopScorer() const {
     return m_topScorer;
 }
 
@@ -145,6 +151,9 @@ AVLStatus Team::updateTopScorer(Player *messi) {
         m_topScorer = messi;
         return AVLStatus::AVL_Success;
     }
+    else{
+        return AVLStatus::AVL_Fail;
+    }
 }
 
 AVLStatus Team::playGame(char victoryFlag) {
@@ -154,6 +163,7 @@ AVLStatus Team::playGame(char victoryFlag) {
         m_gamesPlayedAsTeam += 1;
         if(victoryFlag == 'W'){ //Win
             m_points += 3;
+            return AVLStatus::AVL_Success;
         } else if(victoryFlag == 'T'){ //Tie
             m_points += 1;
             return AVLStatus::AVL_Success;
@@ -163,12 +173,16 @@ AVLStatus Team::playGame(char victoryFlag) {
     }
 
 AVLStatus Team::updateTeam(AVLTree<Player, int> &playerTree, int goals, int cards, int GK, Player* topScorer) {
+    if(goals < 0 || cards < 0 || GK < 0 || topScorer == nullptr){
+        return AVLStatus::AVL_Fail;
+    }
     m_playersNum = playerTree.size();
     m_playersTree = playerTree;
     m_totalGoals = goals;
     m_totalCards = cards;
     m_goalKeepers = GK;
     m_topScorer = topScorer;
+    return AVLStatus::AVL_Success;
 }
 
 Pair<Player, Player>* Team::arrByGoals() {

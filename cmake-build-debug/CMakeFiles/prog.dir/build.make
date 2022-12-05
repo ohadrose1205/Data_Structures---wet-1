@@ -68,33 +68,65 @@ include CMakeFiles/prog.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/prog.dir/flags.make
 
-CMakeFiles/prog.dir/testing.cpp.obj: CMakeFiles/prog.dir/flags.make
-CMakeFiles/prog.dir/testing.cpp.obj: ../testing.cpp
-CMakeFiles/prog.dir/testing.cpp.obj: CMakeFiles/prog.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/prog.dir/testing.cpp.obj"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/prog.dir/testing.cpp.obj -MF CMakeFiles\prog.dir\testing.cpp.obj.d -o CMakeFiles\prog.dir\testing.cpp.obj -c C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\testing.cpp
+CMakeFiles/prog.dir/worldcup23a1.cpp.obj: CMakeFiles/prog.dir/flags.make
+CMakeFiles/prog.dir/worldcup23a1.cpp.obj: ../worldcup23a1.cpp
+CMakeFiles/prog.dir/worldcup23a1.cpp.obj: CMakeFiles/prog.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/prog.dir/worldcup23a1.cpp.obj"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/prog.dir/worldcup23a1.cpp.obj -MF CMakeFiles\prog.dir\worldcup23a1.cpp.obj.d -o CMakeFiles\prog.dir\worldcup23a1.cpp.obj -c C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\worldcup23a1.cpp
 
-CMakeFiles/prog.dir/testing.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/prog.dir/testing.cpp.i"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\testing.cpp > CMakeFiles\prog.dir\testing.cpp.i
+CMakeFiles/prog.dir/worldcup23a1.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/prog.dir/worldcup23a1.cpp.i"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\worldcup23a1.cpp > CMakeFiles\prog.dir\worldcup23a1.cpp.i
 
-CMakeFiles/prog.dir/testing.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/prog.dir/testing.cpp.s"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\testing.cpp -o CMakeFiles\prog.dir\testing.cpp.s
+CMakeFiles/prog.dir/worldcup23a1.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/prog.dir/worldcup23a1.cpp.s"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\worldcup23a1.cpp -o CMakeFiles\prog.dir\worldcup23a1.cpp.s
+
+CMakeFiles/prog.dir/Team.cpp.obj: CMakeFiles/prog.dir/flags.make
+CMakeFiles/prog.dir/Team.cpp.obj: ../Team.cpp
+CMakeFiles/prog.dir/Team.cpp.obj: CMakeFiles/prog.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/prog.dir/Team.cpp.obj"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/prog.dir/Team.cpp.obj -MF CMakeFiles\prog.dir\Team.cpp.obj.d -o CMakeFiles\prog.dir\Team.cpp.obj -c C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\Team.cpp
+
+CMakeFiles/prog.dir/Team.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/prog.dir/Team.cpp.i"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\Team.cpp > CMakeFiles\prog.dir\Team.cpp.i
+
+CMakeFiles/prog.dir/Team.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/prog.dir/Team.cpp.s"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\Team.cpp -o CMakeFiles\prog.dir\Team.cpp.s
+
+CMakeFiles/prog.dir/Player.cpp.obj: CMakeFiles/prog.dir/flags.make
+CMakeFiles/prog.dir/Player.cpp.obj: ../Player.cpp
+CMakeFiles/prog.dir/Player.cpp.obj: CMakeFiles/prog.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/prog.dir/Player.cpp.obj"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/prog.dir/Player.cpp.obj -MF CMakeFiles\prog.dir\Player.cpp.obj.d -o CMakeFiles\prog.dir\Player.cpp.obj -c C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\Player.cpp
+
+CMakeFiles/prog.dir/Player.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/prog.dir/Player.cpp.i"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\Player.cpp > CMakeFiles\prog.dir\Player.cpp.i
+
+CMakeFiles/prog.dir/Player.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/prog.dir/Player.cpp.s"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\Player.cpp -o CMakeFiles\prog.dir\Player.cpp.s
 
 # Object files for target prog
 prog_OBJECTS = \
-"CMakeFiles/prog.dir/testing.cpp.obj"
+"CMakeFiles/prog.dir/worldcup23a1.cpp.obj" \
+"CMakeFiles/prog.dir/Team.cpp.obj" \
+"CMakeFiles/prog.dir/Player.cpp.obj"
 
 # External object files for target prog
 prog_EXTERNAL_OBJECTS =
 
-prog.exe: CMakeFiles/prog.dir/testing.cpp.obj
+prog.exe: CMakeFiles/prog.dir/worldcup23a1.cpp.obj
+prog.exe: CMakeFiles/prog.dir/Team.cpp.obj
+prog.exe: CMakeFiles/prog.dir/Player.cpp.obj
 prog.exe: CMakeFiles/prog.dir/build.make
 prog.exe: CMakeFiles/prog.dir/linklibs.rsp
 prog.exe: CMakeFiles/prog.dir/objects1.rsp
 prog.exe: CMakeFiles/prog.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable prog.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\ohadr\Documents\GitHub\Data_Structures---wet-1\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable prog.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\prog.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

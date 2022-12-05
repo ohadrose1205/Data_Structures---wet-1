@@ -128,29 +128,77 @@ prog/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\prog.dir\build.make CMakeFiles/prog.dir/build
 .PHONY : prog/fast
 
-testing.obj: testing.cpp.obj
-.PHONY : testing.obj
+Player.obj: Player.cpp.obj
+.PHONY : Player.obj
 
 # target to build an object file
-testing.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\prog.dir\build.make CMakeFiles/prog.dir/testing.cpp.obj
-.PHONY : testing.cpp.obj
+Player.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\prog.dir\build.make CMakeFiles/prog.dir/Player.cpp.obj
+.PHONY : Player.cpp.obj
 
-testing.i: testing.cpp.i
-.PHONY : testing.i
+Player.i: Player.cpp.i
+.PHONY : Player.i
 
 # target to preprocess a source file
-testing.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\prog.dir\build.make CMakeFiles/prog.dir/testing.cpp.i
-.PHONY : testing.cpp.i
+Player.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\prog.dir\build.make CMakeFiles/prog.dir/Player.cpp.i
+.PHONY : Player.cpp.i
 
-testing.s: testing.cpp.s
-.PHONY : testing.s
+Player.s: Player.cpp.s
+.PHONY : Player.s
 
 # target to generate assembly for a file
-testing.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\prog.dir\build.make CMakeFiles/prog.dir/testing.cpp.s
-.PHONY : testing.cpp.s
+Player.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\prog.dir\build.make CMakeFiles/prog.dir/Player.cpp.s
+.PHONY : Player.cpp.s
+
+Team.obj: Team.cpp.obj
+.PHONY : Team.obj
+
+# target to build an object file
+Team.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\prog.dir\build.make CMakeFiles/prog.dir/Team.cpp.obj
+.PHONY : Team.cpp.obj
+
+Team.i: Team.cpp.i
+.PHONY : Team.i
+
+# target to preprocess a source file
+Team.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\prog.dir\build.make CMakeFiles/prog.dir/Team.cpp.i
+.PHONY : Team.cpp.i
+
+Team.s: Team.cpp.s
+.PHONY : Team.s
+
+# target to generate assembly for a file
+Team.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\prog.dir\build.make CMakeFiles/prog.dir/Team.cpp.s
+.PHONY : Team.cpp.s
+
+worldcup23a1.obj: worldcup23a1.cpp.obj
+.PHONY : worldcup23a1.obj
+
+# target to build an object file
+worldcup23a1.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\prog.dir\build.make CMakeFiles/prog.dir/worldcup23a1.cpp.obj
+.PHONY : worldcup23a1.cpp.obj
+
+worldcup23a1.i: worldcup23a1.cpp.i
+.PHONY : worldcup23a1.i
+
+# target to preprocess a source file
+worldcup23a1.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\prog.dir\build.make CMakeFiles/prog.dir/worldcup23a1.cpp.i
+.PHONY : worldcup23a1.cpp.i
+
+worldcup23a1.s: worldcup23a1.cpp.s
+.PHONY : worldcup23a1.s
+
+# target to generate assembly for a file
+worldcup23a1.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\prog.dir\build.make CMakeFiles/prog.dir/worldcup23a1.cpp.s
+.PHONY : worldcup23a1.cpp.s
 
 # Help Target
 help:
@@ -161,9 +209,15 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... prog
-	@echo ... testing.obj
-	@echo ... testing.i
-	@echo ... testing.s
+	@echo ... Player.obj
+	@echo ... Player.i
+	@echo ... Player.s
+	@echo ... Team.obj
+	@echo ... Team.i
+	@echo ... Team.s
+	@echo ... worldcup23a1.obj
+	@echo ... worldcup23a1.i
+	@echo ... worldcup23a1.s
 .PHONY : help
 
 

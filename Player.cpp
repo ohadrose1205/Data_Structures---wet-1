@@ -4,19 +4,19 @@
 
 #include "Player.h"
 
-Player::Player(const int ID, Team* team, int gamesPlayed, int goals, int cards, const bool gkFlag)  :
-m_playerId(ID), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards), m_gkFlag(gkFlag){}
+Player::Player(const int ID, int teamId, int gamesPlayed, int goals, int cards, const bool gkFlag)  :
+m_playerId(ID), m_playerTeamId(teamId), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards), m_gkFlag(gkFlag){}
 
 int Player::getPlayerId() const {
     return m_playerId;
 }
 
 int Player::getTeamId() const {
-    return m_team->getTeamId();
+    return m_playerTeamId;
 }
 
-int Player::getGames() const {
-    return m_gamesPlayed + m_team->getTeamGames();
+int Player::getIndividualGames() const {
+    return m_gamesPlayed;
 }
 
 void Player::setExtraGames(int games) {
@@ -52,12 +52,13 @@ int Player::compareGoals(const Player &p1, const Player &p2) const {
 }
 
  bool Player::compareIdPlayers(const Player &p1, const Player &p2) const {
+     if(p1.getPlayerId() == p2.getPlayerId()){
+         throw AVLStatus::AVL_Fail;
+     }
     if(p1.getPlayerId() < p2.getPlayerId()){
         return true;
-    }else if(p1.getPlayerId() > p2.getPlayerId())
+    }else{
         return false;
-    else{
-        ///exeption
     }
 }
 

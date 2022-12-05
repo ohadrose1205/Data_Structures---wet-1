@@ -82,10 +82,31 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/AVL_trees.h">
+			<Option target="prog"/>
+		</Unit>
+		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/Pair.h">
+			<Option target="prog"/>
+		</Unit>
+		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/Player.cpp">
+			<Option target="prog"/>
+		</Unit>
 		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/Player.h">
 			<Option target="prog"/>
 		</Unit>
-		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/testing.cpp">
+		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/Team.cpp">
+			<Option target="prog"/>
+		</Unit>
+		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/Team.h">
+			<Option target="prog"/>
+		</Unit>
+		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/wet1util.h">
+			<Option target="prog"/>
+		</Unit>
+		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/worldcup23a1.cpp">
+			<Option target="prog"/>
+		</Unit>
+		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/worldcup23a1.h">
 			<Option target="prog"/>
 		</Unit>
 		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/CMakeLists.txt">

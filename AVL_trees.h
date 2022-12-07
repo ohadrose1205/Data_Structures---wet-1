@@ -10,6 +10,7 @@
 #define WORLDCUP23A1_CPP_AVL_TREES_H
 #define ERROR -1
 
+using std::shared_ptr;
 using std::unique_ptr;
 using std::string;
 
@@ -20,28 +21,21 @@ class AVLTree{
 private:
     class Node;
     Node* m_dummyHead;
-//    void inOrderWithFuncAUX(Node* root, void* runFunc){
-//        if(root == nullptr){
-//            return;
-//        }
-//        inOrderWithFuncAUX(root->m_left);
-//        runFunc(root);
-//        inOrderWithFuncAUX(root->m_right);
-//    }
 
-    int inOrderScanToArrAUX(Node* root, Pair<T,K>* arr, int top) const{ ///should get an input function
+    int inOrderScanToArrAUX(Node* root, Pair<T,K>** arr, int top, const K& minKey, const K& maxKey) const{ ///should get an input function
         if(!root || top == ERROR){
             return top;
         }
-        top = inOrderScanToArrAUX(root->m_left, arr, top);
-        try {
-            arr[top] = *root->m_nodeData;
-        }catch(...){
-            return ERROR;
+        if(root->key() < minKey){
+            return inOrderScanToArrAUX(root->m_right, arr, top , minKey, maxKey);
+        }else{
+            top = inOrderScanToArrAUX(root->m_left, arr, top , minKey, maxKey);
         }
-//        root->printOut();
-        top++;
-        top = inOrderScanToArrAUX(root->m_right, arr, top);
+        if(root->key() <= maxKey){
+            arr[top] = &*root->m_nodeData;
+            top++;
+            top = inOrderScanToArrAUX(root->m_right, arr, top , minKey, maxKey);
+        }
         return top;
     }
 
@@ -80,7 +74,7 @@ private:
     }
 
     void RotationAUX(Node* rotator , const string& dir){ ///get a pointer to the unstable node (-2)
-//        Node* root = rotator->m_prev;
+        Node* root = rotator->m_prev;
         Node* rotatee;
         Node* weight_shift;
         if(dir == "l"){ //L rotation
@@ -127,7 +121,6 @@ private:
                 return;
             }
             while ((start->m_prev == m_dummyHead || abs(start->m_prev->heightDiff()) < 2)) { //climb to top
-//                std::cout<<"data :" << start->data() << std::endl;
                 start = start->m_prev;
                 updateNode(start);
                 if (start == m_dummyHead) { //top reached
@@ -186,26 +179,8 @@ private:
         if(srcCopy->m_right){
             destCopy->m_right = createCopy(srcCopy->m_right, destCopy);
         }
-      //  destCopy->printOut();
+        //  destCopy->printOut();
         return destCopy;
-    }
-
-        void inOrderConditionToArrAUX(Node* root, int* size, Pair<T,K>* pairArray, K min = NULL, K max = NULL, int ptrArr = 0) const{
-        if(root == nullptr || root->key() < min){ //avoid go to smaller keys
-            return;
-        }
-        Node* ptr = root;
-        inOrderConditionToArrAUX(ptr->m_left, size, pairArray, ptrArr, min, max);
-        if(ptr->key() >= min && ptr->key() <= max){
-            pairArray[ptrArr] = *ptr->m_nodeData;
-            ptrArr++;
-            size++;
-        }
-        else if(ptr->key() > max){ //avoid go for greater keys
-            return;
-        }
-        inOrderConditionToArrAUX(ptr->m_right, size, pairArray, ptrArr, min, max);
-        return;
     }
 public:
 
@@ -243,20 +218,18 @@ public:
     AVLStatus insert(const T& newItem,  const K& key){
         Node** newNodePlace;
         Node* ptr = m_dummyHead;
-        if (this->empty()) {
-                        printf("enter FIRST IN TREE\n");
+        if (empty()) {
             newNodePlace = &m_dummyHead->m_left;
         }else{
             ptr = m_dummyHead->m_left;
-            printf("enter while\n");
             while (true) { //add to leafs
-                if (ptr->key() > key) {
+                if (ptr->key() < key) {
                     if (!ptr->m_right) {
                         newNodePlace = &ptr->m_right;
                         break;
                     }
                     ptr = ptr->m_right;
-                } else if(key > ptr->key()){
+                } else if(ptr->key() > key){
                     if (!ptr->m_left) {
                         newNodePlace = &ptr->m_left;
                         break;
@@ -268,14 +241,10 @@ public:
                 }
             }
         }try {
-            printf("enter INIT NODE\n");
             *newNodePlace = new Node(newItem, key, ptr);
-            printf("finish INIT NODE\n");
         }catch(...){
-            printf("enter CATCH\n");
             return AVLStatus::AVL_Fail;
         }
-        printf("enter UPDATE\n");
         updatePath(*newNodePlace, false);
         return AVLStatus::AVL_Success;
     }
@@ -316,16 +285,6 @@ public:
         return AVLStatus::AVL_Success;
     }
 
-        ///----------------------help functions for knockout------------------------
-    Pair<T, K>* conditionArr(int* size, K min = NULL, K max = NULL) const{
-        if(this->empty()){
-            return nullptr;
-        }
-        Pair<T, K>* arr = new Pair<T, K>[this->size()];
-        inOrderConditionToArrAUX(m_dummyHead->m_left, size, arr, min, max);
-        return (arr);
-    }
-
     int rank(const K& dataKey) const{
         if(empty()){
             return ERROR;
@@ -334,7 +293,7 @@ public:
         int sideRank;
         int rankIndex = ptr->m_left ? ptr->m_left->m_size+1 : 1;
         while(ptr->key() != dataKey){
-            if( dataKey > ptr->key() && ptr->m_right){
+            if(ptr->key() < dataKey && ptr->m_right){
                 ptr = ptr->m_right;
                 sideRank = ptr->m_left ? ptr->m_left->m_size : 0;
                 rankIndex +=  sideRank + 1;
@@ -370,29 +329,47 @@ public:
         return *result->m_nodeData;
     }
 
-    Pair<T,K>* find(const K& dataKey) const{
+    Pair<T,K>& find(const K& dataKey) const{
         if (empty())
-            return &*(m_dummyHead->m_nodeData);
+            return *m_dummyHead->m_nodeData;
         Node* result_ptr = m_dummyHead->m_left;
         while (result_ptr->key() != dataKey) {
             result_ptr = result_ptr->key() > dataKey ? result_ptr->m_left : result_ptr->m_right;
             if (!result_ptr)
-                return nullptr;
+                return *m_dummyHead->m_nodeData;
         }
-        return &*(result_ptr->m_nodeData);
+        return *m_dummyHead->m_nodeData;
     }
+    /// @brief
+    /// @param start
+    /// @param updateRollsToRoot
 
-    Pair<T,K>* inOrderScanToArray() const{
-        Pair<T,K>* pairArray;
+    Pair<T,K>** inOrderScanToArray() const{
+        Pair<T,K>** pairArray;
         try{
-            pairArray = new Pair<T,K>[size()]();
+            pairArray = new Pair<T,K>*[size()+1]();
         }catch (std::bad_alloc& a){
             return nullptr;
         }
-        if(inOrderScanToArrAUX(m_dummyHead->m_left, pairArray, 0) == ERROR){
+        pairArray[size()] = nullptr;
+        bool stopReached = false;
+        if(inOrderScanToArrAUX(m_dummyHead->m_left, pairArray, 0, select(1).key(),select(size()).key()) == ERROR){
             delete[]pairArray;
             return nullptr;
         }
+        return pairArray;
+    }
+    Pair<T,K>** inOrderScanToArrayFromTo(const K& from, const K& to) const{
+        Pair<T,K>** pairArray;
+        try{
+            pairArray = new Pair<T,K>*[size()+1]();
+        }catch (std::bad_alloc& a){
+            return nullptr;
+        }
+        bool stopReached = false;
+        int arrSize = 0;
+        arrSize = inOrderScanToArrAUX(m_dummyHead->m_left, pairArray, 0, from,to);
+        pairArray[arrSize] = nullptr;
         return pairArray;
     }
 
@@ -416,7 +393,7 @@ private:
     class Node{
         friend AVLTree;
 
-        unique_ptr<Pair<T,K>> m_nodeData;
+        std::unique_ptr<Pair<T,K>> m_nodeData;
         Node* m_right;
         Node* m_left;
         Node* m_prev;
@@ -424,26 +401,24 @@ private:
         int m_size;
 
         Node(const T& dataPtr, const K& key, Node* previous) : m_nodeData(new Pair<T,K>(dataPtr,key)),
-                                                                    m_right(nullptr),
-                                                                    m_left(nullptr), m_prev(previous),
-                                                                    m_height(0),m_size(1){
-                                                                        printf("BUILD NODE...\n");
-                                                                    }
-        Node(const Pair<T,K>& pairData, Node* previous) : m_nodeData(new Pair<T,K>(pairData)),
                                                                m_right(nullptr),
                                                                m_left(nullptr), m_prev(previous),
                                                                m_height(0),m_size(1){}
-        Node(const Pair<T,K>& pairData, Node* previous, int height, int size) : m_nodeData(new Pair<T,K>(pairData)),
+        Node(const Pair<T,K>& pairData, Node* previous) : m_nodeData(new Pair<T,K>(pairData)),
                                                           m_right(nullptr),
                                                           m_left(nullptr), m_prev(previous),
-                                                          m_height(height),m_size(size){}
+                                                          m_height(0),m_size(1){}
+        Node(const Pair<T,K>& pairData, Node* previous, int height, int size) : m_nodeData(new Pair<T,K>(pairData)),
+                                                                                m_right(nullptr),
+                                                                                m_left(nullptr), m_prev(previous),
+                                                                                m_height(height),m_size(size){}
         Node() : m_nodeData(nullptr),
                  m_right(nullptr),
                  m_left(nullptr),
                  m_prev(nullptr),
                  m_height(0),
                  m_size(1)
-                 {}
+        {}
     public:
         Node(const Node& n) = delete;
         Node& operator= (const Node& n) = delete;
@@ -462,7 +437,7 @@ private:
         }
 
         void printOut(){
-            std::cout << "\n \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\  printOut / / / / / / / / / / / \n" <<std::endl;
+            std::cout << " \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\  printOut / / / / / / / / / / / \n" <<std::endl;
             string str1 = !m_prev->empty() ? m_prev->data() : "m_dummyNode";
             if(!empty()){
                 std::cout << "this is printing: " << data() <<", key: "<< key() <<" (prev: "<< str1+")" << std::endl;
@@ -473,9 +448,9 @@ private:
                 std::cout << "leaf" << std::endl;
             }else if(m_left && m_right){
                 std::cout << "left: " <<  m_left->data()<<
-                " (l_h: " <<m_left->m_height<<", l_s: "<< m_left->m_size <<") , right: "<<
-                m_right->data() <<" (r_h: " <<m_right->m_height<<", r_s: "<< m_right->m_size <<
-                ") "<<std::endl <<"h: " <<m_height << ", s:" << m_size<< std::endl;
+                          " (l_h: " <<m_left->m_height<<", l_s: "<< m_left->m_size <<") , right: "<<
+                          m_right->data() <<" (r_h: " <<m_right->m_height<<", r_s: "<< m_right->m_size <<
+                          ") "<<std::endl <<"h: " <<m_height << ", s:" << m_size<< std::endl;
             }else if(m_right){
                 std::cout << "right: " << m_right->data() << std::endl << "height: " <<m_height << ", size: " << m_size<< std::endl;
             }else{
@@ -530,14 +505,14 @@ private:
 };
 
 template<class T, class K>
-AVLTree<T,K>* mergeTrees(const AVLTree<T,K>* avl1 ,const AVLTree<T,K>* avl2){
-    Pair<T,K> *avl1Arr = avl1->inOrderScanToArray();
-    Pair<T,K> *avl2Arr = avl2->inOrderScanToArray();
+AVLTree<T,K>* mergeTrees(const AVLTree<T,K>& avl1 , const AVLTree<T,K>& avl2){
+    Pair<T,K>* avl1Arr = *avl1.inOrderScanToArray();
+    Pair<T,K>* avl2Arr = *avl2.inOrderScanToArray();
     if(!avl1Arr || !avl2Arr){
         return nullptr;
     }
-    int l_len = avl1->size();
-    int r_len = avl2->size();
+    int l_len = avl1.size();
+    int r_len = avl2.size();
     Pair<T, K> *destArr;
     try {
         destArr = new Pair<T, K>[l_len + r_len]();
@@ -575,5 +550,3 @@ AVLTree<T,K>* mergeTrees(const AVLTree<T,K>* avl1 ,const AVLTree<T,K>* avl2){
 //
 // Created by ohadr on 11/22/2022.
 //
-
-

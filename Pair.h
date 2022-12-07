@@ -1,11 +1,9 @@
-
+//
+// Created by shach on 11/30/2022.
+//
 
 #ifndef MIVNEWET1_PAIR_H
 #define MIVNEWET1_PAIR_H
-
-#include <memory>
-
-using std::bad_alloc;
 
 template<class T, class K>
 struct Pair{
@@ -14,10 +12,7 @@ private:
     K* m_key;
 public:
     Pair(): m_data(nullptr), m_key(nullptr){}
-    Pair(const T& data,const K& key):  m_data(new T(data)), m_key(new K(key)){
-        printf("BUILD PAIR...\n");
-    }
-    // Pair(T& data,K& key):  m_data(new T(data)), m_key(new K(key)){}
+    Pair(const T& data,const K& key):  m_data(new T(data)), m_key(new K(key)){}
     Pair(const Pair<T,K>& p):m_data(new T(*p.m_data)), m_key(new K(*p.m_key)){}
     Pair& operator= (const Pair& p){
         if(this == &p){
@@ -29,7 +24,7 @@ public:
             newKey = new K(*p.m_key);
             newData = new T(*p.m_data);
         }catch(...){
-            throw bad_alloc();
+            throw std::bad_alloc();
         }
         oldKey = this->m_key;
         oldData = this->m_data;
@@ -49,10 +44,10 @@ public:
     T& data(){
         return *m_data;
     }
-   const T& data() const{
-       return *m_data;
-   }
-    K& key() const{
+    const T& data() const{
+        return *m_data;
+    }
+    const K& key() const{
         return *m_key;
     }
 };

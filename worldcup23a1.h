@@ -1,4 +1,4 @@
-// 
+//
 // 234218 Data Structures 1.
 // Semester: 2023A (winter).
 // Wet Exercise #1.
@@ -19,8 +19,8 @@
 
 class world_cup_t {
 private:
-	//
-	// Here you may add anything you want
+    //
+    // Here you may add anything you want
     AVLTree<Team, int> m_teamsTree;
     AVLTree<Team, int> m_validTeamsTree;
     AVLTree<Player, int> m_playersById;
@@ -31,42 +31,42 @@ private:
     int m_totalGames;
 
 public:
-	// <DO-NOT-MODIFY> {
-	
-	world_cup_t();
-	virtual ~world_cup_t();
-	
-	StatusType add_team(int teamId, int points);
-	
-	StatusType remove_team(int teamId);
-	
-	StatusType add_player(int playerId, int teamId, int gamesPlayed,
-	                      int goals, int cards, bool goalKeeper);
-	
-	StatusType remove_player(int playerId);
-	
-	StatusType update_player_stats(int playerId, int gamesPlayed,
-	                                int scoredGoals, int cardsReceived);
-	
-	StatusType play_match(int teamId1, int teamId2);
-	
-	output_t<int> get_num_played_games(int playerId);
-	
-	output_t<int> get_team_points(int teamId);
-	
-	StatusType unite_teams(int teamId1, int teamId2, int newTeamId);
-	
-	output_t<int> get_top_scorer(int teamId);
-	
-	output_t<int> get_all_players_count(int teamId);
-	
-	StatusType get_all_players(int teamId, int *const output);
-	
-	output_t<int> get_closest_player(int playerId, int teamId);
-	
-	output_t<int> knockout_winner(int minTeamId, int maxTeamId);
+    // <DO-NOT-MODIFY> {
 
-	// } </DO-NOT-MODIFY>
+    world_cup_t();
+    virtual ~world_cup_t();
+
+    StatusType add_team(int teamId, int points);
+
+    StatusType remove_team(int teamId);
+
+    StatusType add_player(int playerId, int teamId, int gamesPlayed,
+                          int goals, int cards, bool goalKeeper);
+
+    StatusType remove_player(int playerId);
+
+    StatusType update_player_stats(int playerId, int gamesPlayed,
+                                   int scoredGoals, int cardsReceived);
+
+    StatusType play_match(int teamId1, int teamId2);
+
+    output_t<int> get_num_played_games(int playerId);
+
+    output_t<int> get_team_points(int teamId);
+
+    StatusType unite_teams(int teamId1, int teamId2, int newTeamId);
+
+    output_t<int> get_top_scorer(int teamId);
+
+    output_t<int> get_all_players_count(int teamId);
+
+    StatusType get_all_players(int teamId, int *const output);
+
+    output_t<int> get_closest_player(int playerId, int teamId);
+
+    output_t<int> knockout_winner(int minTeamId, int maxTeamId);
+
+    // } </DO-NOT-MODIFY>
     ///---------extra methods-------------
     StatusType updateTopScorer(Player* messi){
         if(*messi > *m_topScorer){
@@ -75,6 +75,10 @@ public:
         }
         return StatusType::FAILURE;
     }
+
+    void updateOnInsert_CP_SB(const Player& newPlayer);
+    void updateOnRemove_CP_SB(const Player& retiredPlayer);
+    void updateClosestPLayerOnScoreBoard(const Player& player);
 };
 
 

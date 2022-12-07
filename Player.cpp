@@ -4,8 +4,11 @@
 
 #include "Player.h"
 
-Player::Player(const int ID, int teamId, int gamesPlayed, int goals, int cards, const bool gkFlag)  :
-m_playerId(ID), m_playerTeamId(teamId), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards), m_gkFlag(gkFlag){}
+Player::Player(const int ID, int teamId, int gamesPlayed, int goals, int cards, const bool gkFlag, const int gamesMissed) :
+        m_playerId(ID), m_playerTeamId(teamId), m_gamesPlayedAlone(gamesPlayed), m_goals(goals), m_cards(cards), m_gkFlag(gkFlag), m_teamGamesWithOut(gamesMissed){
+    m_closestAbove = nullptr;
+    m_closestBelow = nullptr;
+}
 
 int Player::getPlayerId() const {
     return m_playerId;
@@ -20,32 +23,56 @@ void Player::setTeamId(int newTeamId) {
 }
 
 int Player::getIndividualGames() const {
-    return m_gamesPlayed;
-}
-
-void Player::setExtraGames(int games) {
-    m_gamesPlayed += games;
+    return m_gamesPlayedAlone;
 }
 
 int Player::getGoals() const {
     return m_goals;
 }
 
-void Player::setExtraGoals(int goals) {
+void Player::updatePlayer(int gamesPlayed, int goals, int cards) {
+    m_gamesPlayedAlone += gamesPlayed;
     m_goals += goals;
+    m_cards += cards;
 }
 
 int Player::getCards() const {
     return m_cards;
 }
 
-void Player::setExtraCards(int cards) {
-    m_cards += cards;
-}
 
 bool Player::isGk() const {
     return m_gkFlag;
 }
+
+Player *Player::getClosest() {
+    if(compareGoals(*m_closestAbove, *m_closestBelow) != 0){ ///option 1: if p1 has more goals
+        if(compareGoals(*m_closestAbove, *m_closestBelow) == 1){
+            return m_closestAbove;
+        }else{
+            return m_closestBelow;
+        }
+    }else{
+        if(compareCards(*m_closestAbove, *m_closestBelow) != 0) { ///option 2: if p1 has less cards
+            if (compareCards(*m_closestAbove, *m_closestBelow) == -1) {
+                return m_closestAbove;
+            } else {
+                return m_closestBelow;
+            }
+        }else{
+            if(abs(m_playerId - m_closestAbove->getPlayerId()) != abs(m_playerId - m_closestBelow->getPlayerId())){
+                if(abs(m_playerId - m_closestAbove->getPlayerId()) < abs(m_playerId - m_closestBelow->getPlayerId())){
+                    return m_closestAbove;
+                } else{
+                    return m_closestBelow;
+                }
+            } else{
+                return m_closestAbove->getPlayerId() > m_closestBelow->getPlayerId() ? m_closestAbove : m_closestBelow;
+            }
+        }
+    }
+}
+
 
 int Player::compareGoals(const Player &p1, const Player &p2) const {
     if(p1.getGoals() < p2.getGoals()){
@@ -55,10 +82,10 @@ int Player::compareGoals(const Player &p1, const Player &p2) const {
     else return -1;
 }
 
- bool Player::compareIdPlayers(const Player &p1, const Player &p2) const {
-     if(p1.getPlayerId() == p2.getPlayerId()){
-         throw AVLStatus::AVL_Fail;
-     }
+bool Player::compareIdPlayers(const Player &p1, const Player &p2) const {
+    if(p1.getPlayerId() == p2.getPlayerId()){
+        throw AVLStatus::AVL_Fail;
+    }
     if(p1.getPlayerId() < p2.getPlayerId()){
         return true;
     }else{
@@ -107,7 +134,29 @@ bool Player::operator!=(const Player &p2) const {
     }
 }
 
-//
-//bool sortFantasy(const Player &p1, const Player &p2){
-//    return (p1 > p2);
-//}
+bool Player::operator<(const Player &p2) const {
+    if(p2 > *this && p2 != *this){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+bool Player::operator==(const Player &p2) const {
+    if(!(p2 < *this) && !(p2 > *this) && !(p2 != *this)){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+bool Player::operator<=(const Player &p2) const {
+    if(*this < p2 && *this == p2){
+        return true;
+    }
+    else{
+        return false;
+    }
+}

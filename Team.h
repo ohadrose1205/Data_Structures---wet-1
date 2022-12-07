@@ -24,7 +24,7 @@ public:
     Team(int id, int initPoints);
     Team(int id, int initPoints, AVLTree<Player, int>& players, int GK, int totalGoals, int totalCards, Player* topScorer);
     ~Team()=default;
-    Team(const Team& t) =default; ///cannot copy a team, each team unique
+    Team(const Team& t) =default;
     Team& operator=(const Team& t)=default;
 
     ///-------getters-------

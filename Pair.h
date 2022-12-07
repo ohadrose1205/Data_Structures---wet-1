@@ -14,8 +14,10 @@ private:
     K* m_key;
 public:
     Pair(): m_data(nullptr), m_key(nullptr){}
-    Pair(const T& data,const K& key):  m_data(new T(data)), m_key(new K(key)){}
-    Pair(T& data,K& key):  m_data(new T(data)), m_key(new K(key)){}
+    Pair(const T& data,const K& key):  m_data(new T(data)), m_key(new K(key)){
+        printf("BUILD PAIR...\n");
+    }
+    // Pair(T& data,K& key):  m_data(new T(data)), m_key(new K(key)){}
     Pair(const Pair<T,K>& p):m_data(new T(*p.m_data)), m_key(new K(*p.m_key)){}
     Pair& operator= (const Pair& p){
         if(this == &p){
@@ -44,14 +46,14 @@ public:
         delete m_data;
         delete m_key;
     }
-    T* data() const{
-        return m_data;
+    T& data(){
+        return *m_data;
     }
-//    const T* data() const{
-//        return m_data;
-//    }
-    K* key() const{
-        return m_key;
+   const T& data() const{
+       return *m_data;
+   }
+    K& key() const{
+        return *m_key;
     }
 };
 #endif //MIVNEWET1_PAIR_H

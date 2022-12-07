@@ -8,6 +8,7 @@ Team::Team(int id, int initPoints): m_playersTree(AVLTree<Player, int>()), m_pla
 //    if(id <= 0 || initPoints < 0){
 //        throw;
 //    }
+    printf("BUILD TEAM...\n");
     m_teamId = id;
     m_points = initPoints;
     m_gamesPlayedAsTeam = 0;
@@ -20,12 +21,25 @@ Team::Team(int id, int initPoints): m_playersTree(AVLTree<Player, int>()), m_pla
 
 Team::Team(int id, int initPoints, AVLTree<Player, int> &players, int GK, int totalGoals, int totalCards,
            Player *topScorer) {
+    printf("BUILD TEAM...\n");
     m_teamId = id;
     m_points = initPoints;
     m_playersTree = players;
     m_goalKeepers = GK;
     m_totalGoals = totalGoals;
+    m_totalCards = totalCards;
     m_topScorer = topScorer;
+}
+
+Team::Team(const Team &t) : m_playersTree(*t.getPlayersTree()){
+    m_teamId = t.getTeamId();
+    m_points = t.getPoints();
+    m_gamesPlayedAsTeam = t.getTeamGames();
+    m_playersNum = t.getPlayersTree()->size();
+    m_topScorer = t.getTopScorer();
+    m_goalKeepers = t.getGK();
+    m_totalGoals = t.getTotalGoals();
+    m_totalCards = t.getTotalsCards();
 }
 
 const bool Team::isTeamValid() {
@@ -126,12 +140,12 @@ AVLStatus Team::removePlayer(int playerId) {
         return AVLStatus::AVL_Fail;
     }
     try{
-        Player* playerToRemove = m_playersTree.find(playerId)->data();
+        Pair<Player,int>* playerToRemove = m_playersTree.find(playerId);
         if(playerToRemove != nullptr){
-            m_totalGoals -= playerToRemove->getGoals();
-            m_totalCards -= playerToRemove->getCards();
+            m_totalGoals -= playerToRemove->data().getGoals();
+            m_totalCards -= playerToRemove->data().getCards();
             AVLStatus checker1 = m_playersTree.remove(playerId);
-            AVLStatus checker2 = m_playersByGoalsTree.remove(*playerToRemove);
+            AVLStatus checker2 = m_playersByGoalsTree.remove(playerToRemove->data());
             m_playersNum -= 1;
             if(checker1 == AVLStatus::AVL_Success && checker2 == AVLStatus::AVL_Success){
                 return AVLStatus::AVL_Success;

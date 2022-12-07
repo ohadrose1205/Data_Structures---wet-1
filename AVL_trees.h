@@ -20,8 +20,6 @@ class AVLTree{
 private:
     class Node;
     Node* m_dummyHead;
-    //std::function<int(const T&, const T&)> compareFunc; ///TRUE = RIGHT, FALSE = LEFT
-
 //    void inOrderWithFuncAUX(Node* root, void* runFunc){
 //        if(root == nullptr){
 //            return;
@@ -245,10 +243,12 @@ public:
     AVLStatus insert(const T& newItem,  const K& key){
         Node** newNodePlace;
         Node* ptr = m_dummyHead;
-        if (empty()) {
+        if (this->empty()) {
+                        printf("enter FIRST IN TREE\n");
             newNodePlace = &m_dummyHead->m_left;
         }else{
             ptr = m_dummyHead->m_left;
+            printf("enter while\n");
             while (true) { //add to leafs
                 if (ptr->key() > key) {
                     if (!ptr->m_right) {
@@ -268,10 +268,14 @@ public:
                 }
             }
         }try {
+            printf("enter INIT NODE\n");
             *newNodePlace = new Node(newItem, key, ptr);
+            printf("finish INIT NODE\n");
         }catch(...){
+            printf("enter CATCH\n");
             return AVLStatus::AVL_Fail;
         }
+        printf("enter UPDATE\n");
         updatePath(*newNodePlace, false);
         return AVLStatus::AVL_Success;
     }
@@ -366,7 +370,7 @@ public:
         return *result->m_nodeData;
     }
 
-    const Pair<T,K>* find(const K& dataKey) const{ ///PROBLEM BECAUSE OF UNIQUE...CANT BE ASSIGN DO IT CANT RETURN AS A VALUE
+    Pair<T,K>* find(const K& dataKey) const{
         if (empty())
             return &*(m_dummyHead->m_nodeData);
         Node* result_ptr = m_dummyHead->m_left;
@@ -378,7 +382,7 @@ public:
         return &*(result_ptr->m_nodeData);
     }
 
-    Pair<T,K>* inOrderScanToArray() const{ ///should get an input function
+    Pair<T,K>* inOrderScanToArray() const{
         Pair<T,K>* pairArray;
         try{
             pairArray = new Pair<T,K>[size()]();
@@ -422,7 +426,9 @@ private:
         Node(const T& dataPtr, const K& key, Node* previous) : m_nodeData(new Pair<T,K>(dataPtr,key)),
                                                                     m_right(nullptr),
                                                                     m_left(nullptr), m_prev(previous),
-                                                                    m_height(0),m_size(1){}
+                                                                    m_height(0),m_size(1){
+                                                                        printf("BUILD NODE...\n");
+                                                                    }
         Node(const Pair<T,K>& pairData, Node* previous) : m_nodeData(new Pair<T,K>(pairData)),
                                                                m_right(nullptr),
                                                                m_left(nullptr), m_prev(previous),
@@ -448,11 +454,11 @@ private:
             return m_nodeData == nullptr;
         }
         T& data(){
-            return *m_nodeData->data();
+            return m_nodeData->data();
         }
 
         const K& key(){
-            return *m_nodeData->key();
+            return m_nodeData->key();
         }
 
         void printOut(){

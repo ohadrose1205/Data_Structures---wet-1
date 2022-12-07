@@ -4,56 +4,71 @@
 
 #include "Player.h"
 
-Player::Player(const int ID, int teamId, int gamesPlayed, int goals, int cards, const bool gkFlag, const int gamesMissed) :
-        m_playerId(ID), m_playerTeamId(teamId), m_gamesPlayedAlone(gamesPlayed), m_goals(goals), m_cards(cards), m_gkFlag(gkFlag), m_teamGamesWithOut(gamesMissed){
-    m_closestAbove = nullptr;
-    m_closestBelow = nullptr;
-}
+Player::Player(const int ID,Team* team, int gamesPlayed, int goals, int cards, const bool gkFlag)  :
+        m_playerId(ID), m_team(team), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards), m_gkFlag(gkFlag), m_closestBelow(nullptr), m_closestAbove(nullptr){}
 
 int Player::getPlayerId() const {
     return m_playerId;
 }
 
-int Player::getTeamId() const {
-    return m_playerTeamId;
+Team* Player::getTeam() const {
+    return m_team;
 }
 
-void Player::setTeamId(int newTeamId) {
-    m_playerTeamId = newTeamId;
+void Player::setTeam(Team* newTeam) {
+    m_team = newTeam;
 }
 
 int Player::getIndividualGames() const {
-    return m_gamesPlayedAlone;
+    return m_team->getTeamGames() - m_teamsGamesWithout + m_gamesPlayed;
 }
+
+void Player::updatePlayer(int gamesPlayed, int goals, int cards) {
+    m_gamesPlayed += gamesPlayed;
+    m_goals += goals;
+    m_cards += cards;
+}
+
+//void Player::setExtraGames(int games) {
+//    m_gamesPlayed += games;
+//}
 
 int Player::getGoals() const {
     return m_goals;
 }
 
-void Player::updatePlayer(int gamesPlayed, int goals, int cards) {
-    m_gamesPlayedAlone += gamesPlayed;
-    m_goals += goals;
-    m_cards += cards;
-}
+//void Player::setExtraGoals(int goals) {
+//    m_goals += goals;
+//}
 
 int Player::getCards() const {
     return m_cards;
 }
 
+//void Player::setExtraCards(int cards) {
+//    m_cards += cards;
+//}
 
 bool Player::isGk() const {
     return m_gkFlag;
 }
-
 void Player::setClosestAbove(Player *closest) {
     m_closestAbove = closest;
+}
+
+Player *Player::getClosestAbove() const{
+    return m_closestAbove;
 }
 
 void Player::setClosestBelow(Player *closest) {
     m_closestBelow = closest;
 }
 
-Player *Player::getClosest() {
+Player *Player::getClosestBelow() const{
+    return m_closestBelow;
+}
+
+Player *Player::getClosest() const{
     if(!m_closestAbove && !m_closestBelow){
         return nullptr;
     }
@@ -92,7 +107,7 @@ Player *Player::getClosest() {
 
 
 int Player::compareGoals(const Player &p1, const Player &p2) const {
-    if(p1.getGoals() < p2.getGoals()){
+    if(p1.getGoals() > p2.getGoals()){
         return 1;
     }else if(p1.getGoals() == p2.getGoals())
         return 0;
@@ -100,10 +115,7 @@ int Player::compareGoals(const Player &p1, const Player &p2) const {
 }
 
 bool Player::compareIdPlayers(const Player &p1, const Player &p2) const {
-    if(p1.getPlayerId() == p2.getPlayerId()){
-        throw AVLStatus::AVL_Fail;
-    }
-    if(p1.getPlayerId() < p2.getPlayerId()){
+    if(p1.getPlayerId() > p2.getPlayerId()){
         return true;
     }else{
         return false;
@@ -170,7 +182,7 @@ bool Player::operator==(const Player &p2) const {
 }
 
 bool Player::operator<=(const Player &p2) const {
-    if(*this < p2 && *this == p2){
+    if(*this < p2 || *this == p2){
         return true;
     }
     else{

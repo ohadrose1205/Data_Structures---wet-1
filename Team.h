@@ -5,61 +5,66 @@
 #ifndef AVL_TREES_H_TEAM_H
 #define AVL_TREES_H_TEAM_H
 #include "Player.h"
-#include "AVL_trees.h"
-
+#include "AVL_Map.h"
+class Player;
 class Team{
 private:
     int m_teamId;
-    AVLTree<Player, int> m_playersByIdTree;
-//    AVLTree<Player, Player> m_playersByGoalsTree;
-    int m_gamesPlayedAsTeam;
-    int m_points;
-    const Player* m_topScorer;
-    int m_goalKeepers;
+    AVLTree<Player*, int> m_playersByIdTree;
+    AVLTree<Player*, Player> m_playersByGoals;
+    int m_totalGames;
     int m_totalGoals;
     int m_totalCards;
+    int m_totalGKs;
+    int m_points;
+    const Player* m_topScorer;
 
 public:
     Team(int id, int initPoints);
-    Team(int id, int initPoints, const AVLTree<Player,int>& players, int GK, int totalGoals, int totalCards,
-         const Player *topScorer);
+    Team(int id, const AVLTree<Player*,int>& players,const AVLTree<Player*,Player>& scoreBoard, int totalGames, int totalGoals, int totalCards, int totalGKs, int points, const Player *topScorer);
     ~Team()=default;
-    Team(const Team& t); ///cannot copy a team, each team unique
-    Team& operator=(const Team& t);
+    Team(const Team& t) = default; ///cannot copy a team, each team unique
+    Team& operator=(const Team& t)=default;
 
 
     ///-------getters-------
-    int teamValue() const;
-    const int getTeamId() const;
-    int getPoints() const;
     bool isTeamValid() const;
-    int getNumPlayers() const;
-    int getGK() const;
-    const Player& getTopScorer() const;
+    bool empty() const;
+    int teamValue() const;
+    int getTeamId() const;
+    int getPoints() const;
+    int getNumOfGks() const;
     int getTotalGoals() const;
     int getTotalsCards() const;
     int getTeamGames() const;
-    int getSize() const;
-    bool empty() const;
+    int getTeamSize() const;
+    const Player* getTopScorer() const;
+    const AVLTree<Player*, int>& getPlayersIdTree() const;
+    const AVLTree<Player*, Player>& getScoreBoard() const;
+
     ///--------setters-------
-    bool updateTopScorer(Player* messi);
-    bool insertPlayer(const Player& newPlayer);
-    bool removePlayer(int playerId);
+
+    StatusType insertPlayer(Player* newPlayer, int playerId);
+    StatusType removePlayer(int playerId);
+    void updateTopScorer();
     void winGame();
     void loseGame();
     void tieGame();
-    void changeGK(bool isAdded);
-    bool updateTeam(AVLTree<Player, int>& playerTree, int goals, int cards, int GK, Player* topScorer);
+    void addGk();
+    void removeGk();
+    void updatePlayerTeamTag();
 
-    Pair<Player, Player>* arrByGoals();
+    Player* findPlayer(int playerId);
 
-    const AVLTree<Player, int> &getPlayersByIdTree() const;
-    const AVLTree<Player, Player> &getPlayersByGoalsTree() const;
+    friend Team* mergeTeams(const Team& team1, const Team& team2, int uniteId);
+
+    Pair<Player*, Player>** arrByGoals();
 };
-
-int compareIdTeam(const Team& t1, const Team& t2); ///check if t1 id is greater than t2
-
-Team mergeTeams(Team& team1, Team& team2, int uniteId);
-
 std::ostream operator<<(std::ostream out, const Team& team);
+
+
+Team* mergeTeams(const Team& team1,const Team& team2, int uniteId);
+
+
+
 #endif //AVL_TREES_H_TEAM_H

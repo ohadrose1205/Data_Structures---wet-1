@@ -16,20 +16,22 @@
 #define WORLDCUP23A1_H_
 #include "wet1util.h"
 #include "Team.h"
+#include "Player.h"
+
 
 class world_cup_t {
 private:
     //
     // Here you may add anything you want
     AVLTree<Team, int> m_teamsTree;
-    AVLTree<Team, int> m_validTeamsTree;
+    AVLTree<Team*, int> m_validTeamsTree;
     AVLTree<Player, int> m_playersById;
     AVLTree<Player, Player> m_playersByGoals;
     Player* m_topScorer;
-    int m_numTeams;
-    int m_numPlayers;
     int m_totalGames;
 
+    void updateOnInsert_CP_SB(const Player& newPlayer);
+    void updateOnRemove_CP_SB(const Player& retiredPlayer);
 public:
     // <DO-NOT-MODIFY> {
 
@@ -75,10 +77,9 @@ public:
         }
         return StatusType::FAILURE;
     }
+//    void updateOnInsert_CP_SB(const Player& newPlayer);
+//    void updateOnRemove_CP_SB(const Player& retiredPlayer);
 
-    void updateOnInsert_CP_SB(const Player& newPlayer);
-    void updateOnRemove_CP_SB(const Player& retiredPlayer);
-    void updateClosestPLayerOnScoreBoard(const Player& player);
 };
 
 

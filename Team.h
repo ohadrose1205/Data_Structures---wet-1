@@ -5,7 +5,7 @@
 #ifndef AVL_TREES_H_TEAM_H
 #define AVL_TREES_H_TEAM_H
 #include "Player.h"
-#include "AVL_Map.h"
+#include "AVL_trees.h"
 
 class Team{
 private:

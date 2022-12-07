@@ -14,9 +14,8 @@
     <list default="true" id="57bf06bf-9d16-4222-9864-69ea596c7b98" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AVL_trees.h" beforeDir="false" afterPath="$PROJECT_DIR$/AVL_trees.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pair.h" beforeDir="false" afterPath="$PROJECT_DIR$/Pair.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Team.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Team.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/Player.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Team.h" beforeDir="false" afterPath="$PROJECT_DIR$/Team.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/worldcup23a1.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/worldcup23a1.cpp" afterDir="false" />
@@ -85,6 +84,7 @@
       <workItem from="1670317115783" duration="2000" />
       <workItem from="1670317464575" duration="204000" />
       <workItem from="1670317686551" duration="1763000" />
+      <workItem from="1670419356938" duration="477000" />
     </task>
     <servers />
   </component>

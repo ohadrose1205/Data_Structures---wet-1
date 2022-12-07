@@ -5,7 +5,7 @@
 #ifndef MIVNEWET1_PLAYER_H
 #define MIVNEWET1_PLAYER_H
 
-#include "AVL_Map.h"
+#include "AVL_trees.h"
 
 class Player {
 public:

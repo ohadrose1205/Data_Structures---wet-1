@@ -45,7 +45,24 @@ bool Player::isGk() const {
     return m_gkFlag;
 }
 
+void Player::setClosestAbove(Player *closest) {
+    m_closestAbove = closest;
+}
+
+void Player::setClosestBelow(Player *closest) {
+    m_closestBelow = closest;
+}
+
 Player *Player::getClosest() {
+    if(!m_closestAbove && !m_closestBelow){
+        return nullptr;
+    }
+    else if(!m_closestAbove){
+        return m_closestBelow;
+    }
+    else if(!m_closestBelow){
+        return m_closestAbove;
+    }
     if(compareGoals(*m_closestAbove, *m_closestBelow) != 0){ ///option 1: if p1 has more goals
         if(compareGoals(*m_closestAbove, *m_closestBelow) == 1){
             return m_closestAbove;
@@ -93,7 +110,7 @@ bool Player::compareIdPlayers(const Player &p1, const Player &p2) const {
     }
 }
 
-int compareCards(const Player& p1, const Player& p2){
+int Player::compareCards(const Player& p1, const Player& p2) const{
     if(p1.getCards() > p2.getCards()){
         return 1;
     }if(p1.getCards() == p2.getCards()){

@@ -129,7 +129,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId) {
     Team& team1 = teamPair1.data();
     Team& team2 = teamPair2.data();
 //    add_team(newTeamId, team1->getPoints() + team2->getPoints());
-    AVLTree<Player, int> *unitePlayersById = mergeTrees(teamPair1.data().getPlayersByIdTree(), teamPair2.data().getPlayersByIdTree());
+//    AVLTree<Player, int> *unitePlayersById = mergeTrees(teamPair1.data().getPlayersByIdTree(), teamPair2.data().getPlayersByIdTree());
 //    AVLTree<Player, int> *unitePlayersByGoals = mergeTrees(teamPair1.data().getPlayersTree(), teamPair2.data().getPlayersTree());
 
 //    Pair<Player, int> **arrPlayersById = unitePlayers->inOrderScanToArray();
@@ -392,7 +392,7 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
 //    }else{
 //        return option2.data().getPlayerId();
 //    }
-    Player* closest = playerPair.data().getClosest();
+    Player* closest = playerPair.data().getClosest(); ///check if one of the options is nullptr, and return the closest
     return closest->getPlayerId();
 }
 

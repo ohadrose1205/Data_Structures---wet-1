@@ -12,11 +12,25 @@ private:
     K* m_key;
 public:
     Pair(): m_data(nullptr), m_key(nullptr){}
-    Pair(const T& data,const K& key):  m_data(new T(data)), m_key(new K(key)){}
+
+    Pair(const T& data,const K& key):  m_data(nullptr), m_key(nullptr){
+        m_data = new T(data);
+        try{
+            m_key = new K(key);
+        }catch(std::bad_alloc& a){
+            delete m_data;
+            throw std::bad_alloc();
+        }
+    }
     Pair(const Pair<T,K>& p):m_data(nullptr), m_key(nullptr){
         if(!p.empty()) {
-            m_key = new K(*p.m_key);
-            m_data = new T(*p.m_data);
+            m_key = new K(p.key());
+            try{
+                m_data = new T(p.data());
+            }catch(std::bad_alloc& a){
+                delete m_key;
+                throw std::bad_alloc();
+            }
         }
     }
     Pair& operator= (const Pair& p){
@@ -32,8 +46,13 @@ public:
             m_key = nullptr;
             return *this;
         }
-        newKey = new K(*p.m_key);
-        newData = new T(*p.m_data);
+        newKey = new K(p.key());
+        try{
+            newData = new T(p.data());
+        }catch(std::bad_alloc& a){
+            delete newKey;
+            throw std::bad_alloc();
+        }
         oldKey = this->m_key;
         oldData = this->m_data;
         this->m_data = newData;
@@ -48,6 +67,8 @@ public:
     ~Pair(){
         delete m_data;
         delete m_key;
+        m_data = nullptr;
+        m_key = nullptr;
     }
     T& data(){
         return *m_data;

@@ -17,32 +17,31 @@ world_cup_t::~world_cup_t()
     // TODO: Your code goes here
     ///as default
 }
-void world_cup_t::updateOnInsert_CP_SB(const Player& newPlayer){
-    Player& sbPlayer = m_playersByGoals.find(newPlayer).data();
-    int scoreBoardRank = m_playersByGoals.rank(sbPlayer);
-    Pair<Player,Player> sbPlayerPairAbove =  m_playersByGoals.select(scoreBoardRank+1);
-    Pair<Player,Player> sbPlayerPairBelow =  m_playersByGoals.select(scoreBoardRank-1);
-    if(scoreBoardRank == m_playersByGoals.size()){
-        m_topScorer = &sbPlayer;
-    }
+void world_cup_t::updateOnInsert_CP_SB(const Player& keyPlayer){
+    Player* sbPlayer = m_playersByGoals.find(keyPlayer).data();
+    int scoreBoardRank = m_playersByGoals.rank(*sbPlayer);
+    Pair<Player*,Player> sbPlayerPairAbove =  m_playersByGoals.select(scoreBoardRank+1);
+    Pair<Player*,Player> sbPlayerPairBelow =  m_playersByGoals.select(scoreBoardRank-1);
     if(sbPlayerPairAbove.empty()){
-        sbPlayer.setClosestAbove(nullptr);
+        sbPlayer->setClosestAbove(nullptr);
+        m_topScorer = sbPlayer;
     }else{
-        sbPlayer.setClosestAbove(&sbPlayerPairAbove.data());
-        sbPlayerPairAbove.data().setClosestBelow(&sbPlayer);
+        sbPlayer->setClosestAbove(sbPlayerPairAbove.data());
+        sbPlayerPairAbove.data()->setClosestBelow(sbPlayer);
     }
     if(sbPlayerPairBelow.empty()){
-        sbPlayer.setClosestBelow(nullptr);
+        sbPlayer->setClosestBelow(nullptr);
     }else{
-        sbPlayer.setClosestBelow(&sbPlayerPairBelow.data());
-        sbPlayerPairBelow.data().setClosestAbove(&sbPlayer);
+        sbPlayer->setClosestBelow(sbPlayerPairBelow.data());
+        sbPlayerPairBelow.data()->setClosestAbove(sbPlayer);
     }
 }
 
-void world_cup_t::updateOnRemove_CP_SB(const Player& retiredPlayer){
-    Player* betterPlayer = retiredPlayer.getClosestAbove();
-    Player* worsePlayer = retiredPlayer.getClosestBelow();
+void world_cup_t::updateOnRemove_CP_SB(const Player& keyPlayer){
+    Player* betterPlayer = keyPlayer.getClosestAbove();
+    Player* worsePlayer = keyPlayer.getClosestBelow();
     if(!betterPlayer && !worsePlayer){
+        m_topScorer = nullptr;
         return;
     }else if(!betterPlayer){
         worsePlayer->setClosestAbove(nullptr);
@@ -57,44 +56,6 @@ void world_cup_t::updateOnRemove_CP_SB(const Player& retiredPlayer){
 
 
 
-
-StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,int scoredGoals, int cardsReceived)
-{
-    // TODO: Your code goes here
-    if(playerId <= 0 || gamesPlayed <= 0 || scoredGoals <= 0 || cardsReceived <= 0){
-        return StatusType::INVALID_INPUT;
-    }
-    Pair<Player,int>& playerPair = m_playersById.find(playerId);
-    if(playerPair.empty()){
-        return StatusType::FAILURE;
-    }
-
-    Player playerToUpdate = playerPair.data();
-    Team* teamPlayer = playerPair.data().getTeam();
-
-    StatusType checker1 = m_playersByGoals.remove(playerPair.data());
-    updateOnRemove_CP_SB(playerPair.data());
-
-    StatusType checker3 = teamPlayer->removePlayer(playerId);
-    StatusType checker2 = m_playersById.remove(playerId);
-
-    if(checker1 != StatusType::SUCCESS || checker2 != StatusType::SUCCESS || checker3 != StatusType::SUCCESS){
-        teamPlayer->insertPlayer(&playerPair.data(), playerId);
-        m_playersById.insert(playerPair.data(), playerPair.key());
-        m_playersByGoals.insert(playerPair.data(), playerPair.data());
-        return StatusType::ALLOCATION_ERROR;
-    }
-
-    playerToUpdate.updatePlayer(gamesPlayed, scoredGoals, cardsReceived);
-    checker1 = teamPlayer->insertPlayer(&playerToUpdate, playerId);
-    checker2 = m_playersById.insert(playerToUpdate, playerPair.key());
-    checker3 = m_playersByGoals.insert(playerToUpdate, playerPair.data());
-
-    if(checker1 != StatusType::SUCCESS || checker2 != StatusType::SUCCESS || checker3 != StatusType::SUCCESS){
-        return StatusType::ALLOCATION_ERROR;
-    }
-    return StatusType::SUCCESS;
-}
 
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -120,38 +81,43 @@ StatusType world_cup_t::remove_team(int teamId)
     return StatusType::SUCCESS;
 }
 
+StatusType world_cup_t::add_playerAUX(const Player& newPlayer){
+    StatusType checker1 = m_playersById.insert(newPlayer, newPlayer.getPlayerId());
+    if (checker1 == StatusType::SUCCESS) {
+        Player* newPlayerPtr = &m_playersById.find(newPlayer.getPlayerId()).data();
+        StatusType checker2 = m_playersByGoals.insert(newPlayerPtr, newPlayer);
+        if (checker2 == StatusType::SUCCESS) {
+            StatusType checker3 = newPlayer.getTeam()->insertPlayer(newPlayerPtr, newPlayer.getPlayerId());
+            if(checker3 == StatusType::SUCCESS){
+                updateOnInsert_CP_SB(newPlayer);
+            }
+            return checker3;
+        }
+        return checker2;
+    }
+    return checker1;
+}
+
 StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,int goals, int cards, bool goalKeeper)
 {
 
     // TODO: Your code goes here
-    if(playerId < 0 || teamId < 0 || goals < 0 || cards < 0 || gamesPlayed < 0 || ((goals > 0 || cards > 0) && gamesPlayed <=0)){
+    if(playerId <= 0 || teamId <= 0 || goals < 0 || cards < 0 || gamesPlayed < 0 || ((goals > 0 || cards > 0) && gamesPlayed <=0)){
         return StatusType::INVALID_INPUT;
     }
     Pair<Team,int>& playerTeamPair = m_teamsTree.find(teamId);
     if(playerTeamPair.empty()){
         return StatusType::FAILURE;
     }
-    try {
-        Player newPlayer = Player(playerId, &playerTeamPair.data(), gamesPlayed, goals, cards, goalKeeper);
-        StatusType checker1 = m_playersById.insert(newPlayer, playerId);
-        if (checker1 == StatusType::SUCCESS) {
-            StatusType checker2 = m_playersByGoals.insert(newPlayer, newPlayer);
-            if (checker2 == StatusType::SUCCESS) {
-                Player &myPlayer = m_playersById.find(playerId).data();
-                StatusType checker3 = playerTeamPair.data().insertPlayer(&myPlayer, playerId);
-                if(checker3 == StatusType::SUCCESS){
-                    if(playerTeamPair.data().isTeamValid()){
-                        m_validTeamsTree.insert(&playerTeamPair.data(), teamId);
-                    }
-                    updateOnInsert_CP_SB(myPlayer);
-                }
-            }
+    StatusType checker1 = StatusType::SUCCESS;
+    Player newPlayer = Player(playerId, &playerTeamPair.data(), gamesPlayed, goals, cards, goalKeeper);
+    checker1 = add_playerAUX(newPlayer);
+    if (checker1 == StatusType::SUCCESS) {
+        if(playerTeamPair.data().isTeamValid()){
+            m_validTeamsTree.insert(&playerTeamPair.data(), teamId);
         }
     }
-    catch (...){
-        return StatusType::ALLOCATION_ERROR;
-    }
-    return StatusType::SUCCESS;
+    return checker1;
 }
 
 StatusType world_cup_t::remove_player(int playerId){
@@ -162,21 +128,58 @@ StatusType world_cup_t::remove_player(int playerId){
     if(foundPlayer.empty()){
         return StatusType::FAILURE;
     }
-    StatusType checker1 = foundPlayer.data().getTeam()->removePlayer(playerId);
-    if(checker1 == StatusType::SUCCESS){
+    StatusType checker1 = remove_playerAUX(foundPlayer.data());
+    if(checker1 == StatusType::SUCCESS) {
         updateOnRemove_CP_SB(foundPlayer.data());
-        if(!foundPlayer.data().getTeam()->isTeamValid()){
+        if (!foundPlayer.data().getTeam()->isTeamValid()) {
             m_validTeamsTree.remove(foundPlayer.data().getTeam()->getTeamId());
         }
-        StatusType checker2 = m_playersByGoals.remove(foundPlayer.data());
+    }
+    return checker1;
+}
+StatusType world_cup_t::remove_playerAUX(const Player& pUpdate){
+    StatusType checker1 = pUpdate.getTeam()->removePlayer(pUpdate.getPlayerId());
+    if(checker1 == StatusType::SUCCESS){
+        updateOnRemove_CP_SB(pUpdate);
+        StatusType checker2 = m_playersByGoals.remove(pUpdate);
         if(checker2 == StatusType::SUCCESS){
-            StatusType checker3 = m_playersById.remove(playerId);
+            StatusType checker3 = m_playersById.remove(pUpdate.getPlayerId());
             if(checker3 ==  StatusType::SUCCESS) {
                 return StatusType::SUCCESS;
             }
+            return checker3;
         }
+        return checker2;
     }
-    return StatusType::SUCCESS;
+    return checker1;
+}
+
+StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,int scoredGoals, int cardsReceived)
+{
+    // TODO: Your code goes here
+    if(playerId <= 0 || gamesPlayed < 0 || scoredGoals < 0 || cardsReceived < 0){
+        return StatusType::INVALID_INPUT;
+    }
+    Pair<Player,int>& playerPair = m_playersById.find(playerId);
+    if(playerPair.empty()){
+        return StatusType::FAILURE;
+    }
+    Player playerBeforeUpdate = playerPair.data();
+    StatusType checker1 = remove_playerAUX(playerBeforeUpdate);
+    if(checker1 != StatusType::SUCCESS){
+        add_playerAUX(playerBeforeUpdate);
+        return StatusType::ALLOCATION_ERROR;
+    }
+    Player playerAfterUpdate = playerBeforeUpdate;
+    playerAfterUpdate.updatePlayer(gamesPlayed, scoredGoals, cardsReceived);
+    checker1 = add_playerAUX(playerAfterUpdate);
+    if(checker1 == StatusType::SUCCESS){
+        return StatusType::SUCCESS;
+    }else{
+        add_playerAUX(playerBeforeUpdate);
+        return checker1;
+    }
+
 }
 
 StatusType world_cup_t::play_match(int teamId1, int teamId2)
@@ -228,7 +231,9 @@ output_t<int> world_cup_t::get_team_points(int teamId)
     }
     return output_t<int>( teamPair.data().getPoints());
 }
+void destroyTeam(Pair<Team,int>& team){
 
+}
 StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId) {
     // TODO: Your code goes here
     if (teamId1 <= 0 || teamId2 <= 0 || teamId2 == teamId1 || newTeamId <= 0) {
@@ -236,11 +241,34 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId) {
     }
     Pair<Team,int> teamPair1 = m_teamsTree.find(teamId1);
     Pair<Team,int> teamPair2 = m_teamsTree.find(teamId2);
-    if (teamPair1.empty() || teamPair2.empty() || !m_teamsTree.find(newTeamId).empty()) {
+    if (teamPair1.empty() || teamPair2.empty() || (newTeamId != teamId1 && newTeamId != teamId2 && !m_teamsTree.find(newTeamId).empty())){
         return StatusType::FAILURE;
     }
-    ::mergeTeams(teamPair1.data(),teamPair2.data(),newTeamId);
-    return StatusType::SUCCESS;
+    Team* newTeam = ::mergeTeams(teamPair1.data(),teamPair2.data(),newTeamId);
+    if(newTeam){
+        m_teamsTree.remove(teamId1);
+        m_teamsTree.remove(teamId2);
+        m_validTeamsTree.remove(teamId1);
+        m_validTeamsTree.remove(teamId2);
+        StatusType checker1 = m_teamsTree.insert(*newTeam, newTeamId);
+        if (checker1 == StatusType::SUCCESS) {
+            if(newTeam->isTeamValid()){
+                StatusType checker2 = m_validTeamsTree.insert(&m_teamsTree.find(newTeamId).data(), newTeamId);
+                if(checker2 == StatusType::SUCCESS){
+                    delete newTeam;
+                    newTeam = nullptr;
+                    return StatusType::SUCCESS;
+                }
+                delete newTeam;
+                newTeam = nullptr;
+                return checker2;
+            }
+        }
+        delete newTeam;
+        newTeam = nullptr;
+        return checker1;
+    }
+    return StatusType::ALLOCATION_ERROR;
 }
 
 output_t<int> world_cup_t::get_top_scorer(int teamId)
@@ -249,13 +277,15 @@ output_t<int> world_cup_t::get_top_scorer(int teamId)
     if(teamId == 0){
         return StatusType::INVALID_INPUT;
     }
-    Pair<Team,int> teamPair = m_teamsTree.find(teamId);
     if(teamId > 0) {
-        if(teamPair.empty())
+        Pair<Team,int> teamPair = m_teamsTree.find(teamId);
+        if(teamPair.empty() || teamPair.data().empty())
             return StatusType::FAILURE;
-        return teamPair.data().getTeamSize();
+        return teamPair.data().getTopScorer()->getPlayerId();
     }else {
-        return m_playersById.size();
+        if(m_playersById.empty())
+            return StatusType::FAILURE;
+        return m_topScorer->getPlayerId();
     }
 }
 
@@ -263,16 +293,16 @@ output_t<int> world_cup_t::get_all_players_count(int teamId)
 {
     // TODO: Your code goes here
     if(teamId == 0){
-        return output_t<int>(StatusType::INVALID_INPUT);
+        return StatusType::INVALID_INPUT;
     }
     if(teamId < 0){
         return m_playersById.size();
     }else{
         Pair<Team,int>& teamPtr = m_teamsTree.find(teamId);
         if(teamPtr.empty()){
-            return output_t<int>(StatusType::FAILURE);
+            return StatusType::FAILURE;
         } else{
-            return output_t<int>(teamPtr.data().getTeamSize());
+            return teamPtr.data().getTeamSize();
         }
     }
 }
@@ -283,19 +313,21 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output)
         return StatusType::INVALID_INPUT;
     }
     Pair<Team,int>& teamPair = m_teamsTree.find(teamId);
-    if((teamId < 0 && m_playersById.size() == 0) || (teamId > 0 && (teamPair.empty() || teamPair.data().empty())))
+    if((teamId < 0 && m_playersById.empty()) || (teamId > 0 && (teamPair.empty() || teamPair.data().empty())))
         return StatusType::FAILURE;
     if(teamId < 0 ){
-        Pair<Player, Player>** arrOfPlayers = m_playersByGoals.inOrderScanToArray();
+        Pair<Player*, Player>** arrOfPlayers = m_playersByGoals.inOrderScanToArray();
         for(int i = m_playersByGoals.size() - 1; i >= 0 ; i--){ //because demand the biggest first
-            output[i] = arrOfPlayers[i]->data().getPlayerId();
+            output[i] = arrOfPlayers[i]->data()->getPlayerId();
         }
+        delete[] arrOfPlayers;
         return StatusType::SUCCESS;
     }else{
         Pair<Player*, Player>** arrOfPlayers = teamPair.data().arrByGoals();
         for(int i = teamPair.data().getTeamSize() - 1; i >= 0 ; i--){ //because demand the biggest first
             output[i] = arrOfPlayers[i]->data()->getPlayerId();
         }
+        delete[] arrOfPlayers;
         return StatusType::SUCCESS;
     }
 }
@@ -307,28 +339,31 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
         return StatusType::INVALID_INPUT;
     }
     Pair<Team,int>& teamPair = m_teamsTree.find(teamId);
-    if(teamPair.empty() || m_playersById.size() == 1) {
+    if(teamPair.empty() || m_playersById.size() <= 1) {
         return StatusType::FAILURE;
     }
     Player* player = teamPair.data().findPlayer(playerId);
-    return player->getClosest()->getPlayerId();
+    if(!player){
+        return StatusType::FAILURE;
+    }
+    int winner = player->getClosest()->getPlayerId();
+    return winner;
 }
 
 output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 {
     // TODO: Your code goes here
-    if(minTeamId <= 0 || maxTeamId <= 0 || maxTeamId < minTeamId){
+    if(minTeamId < 0 || maxTeamId < 0 || maxTeamId < minTeamId){
         return StatusType::INVALID_INPUT;
     }
     Pair<Team*, int> **arrayOfLegalTeam;
     Pair<int, int> *teamValuesAndId;
-    int sizeArr;
+    int sizeArr = 0;
     try {
-        arrayOfLegalTeam = m_validTeamsTree.inOrderScanToArrayFromTo(minTeamId, maxTeamId);
+        arrayOfLegalTeam = m_validTeamsTree.inOrderScanToArrayFromTo(sizeArr, minTeamId, maxTeamId);
         if (!arrayOfLegalTeam) {
             return StatusType::FAILURE;
         }
-        sizeArr = m_validTeamsTree.rank(maxTeamId) - m_validTeamsTree.rank(minTeamId) + 1;
         teamValuesAndId = new Pair<int, int>[sizeArr]();
     }catch(...){
         return StatusType::ALLOCATION_ERROR;
@@ -336,6 +371,7 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
     for(int i = 0; i < sizeArr; i++){ //good complexity cause sizeArr equal to r valid teams
         teamValuesAndId[i] = Pair<int, int>(arrayOfLegalTeam[i]->data()->teamValue(), arrayOfLegalTeam[i]->key());
     }
+    delete[]arrayOfLegalTeam;
     int roundSize = sizeArr;
     while(roundSize > 1) {
         int nextRoundSize = 0;
@@ -356,6 +392,8 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
         }
         roundSize = nextRoundSize;
     }
-    return (teamValuesAndId[0].key());
+    int winner = teamValuesAndId[0].key();
+    delete[]teamValuesAndId;
+    return (winner);
 }
 

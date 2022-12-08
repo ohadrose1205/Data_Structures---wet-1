@@ -17,8 +17,8 @@
 					<DistClean command="C:/PROGRA~1/JETBRA~1/CLION2~1.1/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="prog">
-				<Option output="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/prog.exe" prefix_auto="0" extension_auto="0"/>
+			<Target title="main">
+				<Option output="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/main.exe" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -33,14 +33,14 @@
 					<Add directory="C:/Program Files/JetBrains/CLion 2022.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/../../../../x86_64-w64-mingw32/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="C:/PROGRA~1/JETBRA~1/CLION2~1.1/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 prog"/>
+					<Build command="C:/PROGRA~1/JETBRA~1/CLION2~1.1/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 main"/>
 					<CompileFile command="C:/PROGRA~1/JETBRA~1/CLION2~1.1/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="C:/PROGRA~1/JETBRA~1/CLION2~1.1/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="C:/PROGRA~1/JETBRA~1/CLION2~1.1/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="prog/fast">
-				<Option output="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/prog.exe" prefix_auto="0" extension_auto="0"/>
+			<Target title="main/fast">
+				<Option output="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/main.exe" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -55,7 +55,7 @@
 					<Add directory="C:/Program Files/JetBrains/CLion 2022.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/../../../../x86_64-w64-mingw32/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="C:/PROGRA~1/JETBRA~1/CLION2~1.1/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 prog/fast"/>
+					<Build command="C:/PROGRA~1/JETBRA~1/CLION2~1.1/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 main/fast"/>
 					<CompileFile command="C:/PROGRA~1/JETBRA~1/CLION2~1.1/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="C:/PROGRA~1/JETBRA~1/CLION2~1.1/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="C:/PROGRA~1/JETBRA~1/CLION2~1.1/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
@@ -82,32 +82,35 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/AVL_trees.h">
-			<Option target="prog"/>
+		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/AVL_Map.h">
+			<Option target="main"/>
 		</Unit>
 		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/Pair.h">
-			<Option target="prog"/>
+			<Option target="main"/>
 		</Unit>
 		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/Player.cpp">
-			<Option target="prog"/>
+			<Option target="main"/>
 		</Unit>
 		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/Player.h">
-			<Option target="prog"/>
+			<Option target="main"/>
 		</Unit>
 		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/Team.cpp">
-			<Option target="prog"/>
+			<Option target="main"/>
 		</Unit>
 		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/Team.h">
-			<Option target="prog"/>
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/main.cpp">
+			<Option target="main"/>
 		</Unit>
 		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/wet1util.h">
-			<Option target="prog"/>
+			<Option target="main"/>
 		</Unit>
 		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/worldcup23a1.cpp">
-			<Option target="prog"/>
+			<Option target="main"/>
 		</Unit>
 		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/worldcup23a1.h">
-			<Option target="prog"/>
+			<Option target="main"/>
 		</Unit>
 		<Unit filename="C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>

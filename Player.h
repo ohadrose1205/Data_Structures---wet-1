@@ -34,6 +34,7 @@ public:
     void setTeam(Team *pTeam);
     void setClosestAbove(Player* closest);
     void setClosestBelow(Player* closest);
+    void updateGamesPlayed();
 
     bool compareIdPlayers(const Player& p1, const Player& p2) const; ///check if p1 id is greater than p2
     int compareGoals(const Player& p1, const Player& p2) const; ///check if p1 goals is greater than p2

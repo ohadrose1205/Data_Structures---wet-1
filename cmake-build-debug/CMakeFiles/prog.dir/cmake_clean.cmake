@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/prog.dir/Player.cpp.obj.d"
   "CMakeFiles/prog.dir/Team.cpp.obj"
   "CMakeFiles/prog.dir/Team.cpp.obj.d"
+  "CMakeFiles/prog.dir/main.cpp.obj"
+  "CMakeFiles/prog.dir/main.cpp.obj.d"
   "CMakeFiles/prog.dir/worldcup23a1.cpp.obj"
   "CMakeFiles/prog.dir/worldcup23a1.cpp.obj.d"
   "libprog.dll.a"

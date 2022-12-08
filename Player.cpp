@@ -5,7 +5,7 @@
 #include "Player.h"
 
 Player::Player(const int ID,Team* team, int gamesPlayed, int goals, int cards, const bool gkFlag)  :
-        m_playerId(ID), m_team(team), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards), m_gkFlag(gkFlag), m_closestBelow(nullptr), m_closestAbove(nullptr){}
+        m_playerId(ID), m_team(team), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards), m_gkFlag(gkFlag),  m_closestAbove(nullptr), m_closestBelow(nullptr){}
 
 int Player::getPlayerId() const {
     return m_playerId;
@@ -78,15 +78,15 @@ Player *Player::getClosest() const{
     else if(!m_closestBelow){
         return m_closestAbove;
     }
-    if(compareGoals(*m_closestAbove, *m_closestBelow) != 0){ ///option 1: if p1 has more goals
-        if(compareGoals(*m_closestAbove, *m_closestBelow) == 1){
+    if(abs(m_goals - m_closestAbove->getGoals()) != abs(m_goals - m_closestBelow->getGoals())){ ///option 1: if p1 has more goals
+        if(abs(m_goals - m_closestAbove->getGoals()) < abs(m_goals - m_closestBelow->getGoals())){
             return m_closestAbove;
         }else{
             return m_closestBelow;
         }
     }else{
-        if(compareCards(*m_closestAbove, *m_closestBelow) != 0) { ///option 2: if p1 has less cards
-            if (compareCards(*m_closestAbove, *m_closestBelow) == -1) {
+        if(abs(m_cards - m_closestAbove->getCards()) != abs(m_cards - m_closestBelow->getCards())) { ///option 2: if p1 has less cards
+            if (abs(m_cards - m_closestAbove->getCards()) < abs(m_cards - m_closestBelow->getCards())) {
                 return m_closestAbove;
             } else {
                 return m_closestBelow;
@@ -188,4 +188,9 @@ bool Player::operator<=(const Player &p2) const {
     else{
         return false;
     }
+}
+
+void Player::updateGamesPlayed() {
+    m_gamesPlayed = getIndividualGames();
+    m_teamsGamesWithout = 0;
 }

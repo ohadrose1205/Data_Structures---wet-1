@@ -38,17 +38,11 @@ private:
         return top;
     }
 
-    StatusType createTreeByListAUX(Node* root,Node* prev, Pair<T,K>* arr, int h,int bottom ,int top, string dir){ ///should get an input function
-        if(h == -1 || bottom == top){
-            return StatusType::SUCCESS;
-        }
+    void createTreeByListAUX(Node* root,Node* prev, Pair<T,K>* arr, int h,int bottom ,int top, string dir){ ///should get an input function
+        if(h == -1 || bottom == top) return;
         int root_index = (top - bottom) >=  pow(2,h) + pow(2,h-1) - 1? (int)pow(2,h)-1 : (top - bottom) - (int)pow(2,h-1);
         root_index += bottom;
-        try {
-            root = new Node(arr[root_index], prev);
-        }catch(std::bad_alloc& a){
-            return StatusType::ALLOCATION_ERROR;
-        }
+        root = new Node(arr[root_index], prev);
         if(dir == "l"){
             prev->m_left = root;
         }else{
@@ -57,7 +51,6 @@ private:
         createTreeByListAUX(root->m_left, root, arr,h-1,bottom , root_index,"l");
         createTreeByListAUX(root->m_right, root, arr,h-1,root_index+1 , top,"r");
         updateNode(root);
-        return StatusType::SUCCESS;
     }
 
     void FullRotation(Node* rotator, const string& dir1,const string& dir2){
@@ -156,11 +149,12 @@ private:
 //    /// @brief help-function for destroyer of AVL_tree, works on post-order
 //    /// @param ptr
     void deleter(Node* ptr){
-        if(ptr) {
-            deleter(ptr->m_left);
-            deleter(ptr->m_right);
-            delete ptr;
-        }
+        if(!ptr) return;
+
+        deleter(ptr->m_left);
+        deleter(ptr->m_right);
+
+        delete ptr;
     }
 
     ///get pointer to the head and pointer to the item we wanna find, make a recursive calls depend on the comparefunc of the tree, if didnt find / empty return nullptr.
@@ -269,6 +263,7 @@ public:
                 replacement = replacement->m_left;
             }
             ptr->m_nodeData = std::move(replacement->m_nodeData);
+            replacement->m_nodeData = nullptr;
         }
         Node** fatherLeg = replacement->m_prev->m_left == replacement ? &replacement->m_prev->m_left : &replacement->m_prev->m_right;
         if(!replacement->m_right && !replacement->m_left){
@@ -381,37 +376,43 @@ public:
         }
         pairArray[size()] = nullptr;
         if(inOrderScanToArrAUX(m_dummyHead->m_left, pairArray, 0, select(1).key(),select(size()).key()) == ERROR){
-            delete[]pairArray;
-            return nullptr;
+            delete[] pairArray;
+            pairArray = nullptr;
         }
         return pairArray;
     }
-    Pair<T,K>** inOrderScanToArrayFromTo(const K& from, const K& to) const{ ///should get an input function
+    Pair<T,K>** inOrderScanToArrayFromTo(int& arrSize, const K& from, const K& to) const{ ///should get an input function
         Pair<T,K>** pairArray;
         try{
             pairArray = new Pair<T,K>*[size()+1]();
         }catch (std::bad_alloc& a){
             return nullptr;
         }
-        bool stopReached = false;
-        int arrSize = 0;
         arrSize = inOrderScanToArrAUX(m_dummyHead->m_left, pairArray, 0, from,to);
+        if(arrSize <= 0){
+            delete[] pairArray;
+            return nullptr;
+        }
         pairArray[arrSize] = nullptr;
         return pairArray;
     }
 
     StatusType createTreeByList(int size ,Pair<T,K>* arr){
         int h = (int)log2(size + 1) ;
-        Node* newTree = nullptr;
-        Node* oldTree = m_dummyHead->m_left;
-        if(createTreeByListAUX(newTree,m_dummyHead, arr,h, 0, size,"l") == StatusType::SUCCESS){
-            deleter(oldTree);
-            return  StatusType::SUCCESS;
-        }
-        else{
+        Node* newTree = new Node();
+        try{
+            createTreeByListAUX(newTree->m_left,newTree, arr,h, 0, size,"l");
+        }catch(std::bad_alloc& ba) {
             deleter(newTree);
-            return StatusType::FAILURE;
+            newTree = nullptr;
+            return StatusType::ALLOCATION_ERROR;
         }
+        m_dummyHead->m_left = newTree->m_left;
+        updateNode(m_dummyHead);
+        delete newTree;
+        newTree = nullptr;
+        return StatusType::SUCCESS;
+
     }
 
 
@@ -420,7 +421,7 @@ private:
     class Node{
         friend AVLTree;
 
-        Pair<T,K>* m_nodeData;
+        std::unique_ptr<Pair<T,K>> m_nodeData;
         Node* m_right;
         Node* m_left;
         Node* m_prev;
@@ -527,8 +528,8 @@ private:
             }
             return delta_h;
         }
-         ~Node(){
-            delete m_nodeData;
+        ~Node(){
+            m_nodeData.reset();
         }
     };
 };
@@ -536,8 +537,14 @@ private:
 template<class T, class K>
 AVLTree<T,K>* mergeTrees(const AVLTree<T,K>& avl1 ,const AVLTree<T,K>& avl2){
     Pair<T,K> **avl1Arr = avl1.inOrderScanToArray();
+    if(!avl1Arr){
+        return nullptr;
+    }
     Pair<T,K> **avl2Arr = avl2.inOrderScanToArray();
-    if(!avl1Arr || !avl2Arr){
+    if(!avl2Arr){
+        delete[] avl1Arr;
+        avl1Arr = nullptr;
+        avl2Arr= nullptr;
         return nullptr;
     }
     int l_len = avl1.size();
@@ -546,6 +553,10 @@ AVLTree<T,K>* mergeTrees(const AVLTree<T,K>& avl1 ,const AVLTree<T,K>& avl2){
     try {
         destArr = new Pair<T, K>[l_len + r_len]();
     }catch(...){
+        delete[] avl1Arr;
+        delete[] avl2Arr;
+        avl1Arr = nullptr;
+        avl2Arr = nullptr;
         return nullptr;
     }
 
@@ -565,12 +576,15 @@ AVLTree<T,K>* mergeTrees(const AVLTree<T,K>& avl1 ,const AVLTree<T,K>& avl2){
     }
     delete[] avl1Arr;
     delete[] avl2Arr;
+    avl1Arr = nullptr;
+    avl2Arr = nullptr;
     AVLTree<T,K>* result = new AVLTree<T,K>();
     if(result->createTreeByList(l_len+r_len, destArr) != StatusType::SUCCESS){
         delete result;
         result = nullptr;
     }
     delete[] destArr;
+    destArr = nullptr;
     return result;
 }
 

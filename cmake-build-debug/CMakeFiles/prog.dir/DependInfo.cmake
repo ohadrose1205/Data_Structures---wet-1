@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/Player.cpp" "CMakeFiles/prog.dir/Player.cpp.obj" "gcc" "CMakeFiles/prog.dir/Player.cpp.obj.d"
   "C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/Team.cpp" "CMakeFiles/prog.dir/Team.cpp.obj" "gcc" "CMakeFiles/prog.dir/Team.cpp.obj.d"
+  "C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/main.cpp" "CMakeFiles/prog.dir/main.cpp.obj" "gcc" "CMakeFiles/prog.dir/main.cpp.obj.d"
   "C:/Users/ohadr/Documents/GitHub/Data_Structures---wet-1/worldcup23a1.cpp" "CMakeFiles/prog.dir/worldcup23a1.cpp.obj" "gcc" "CMakeFiles/prog.dir/worldcup23a1.cpp.obj.d"
   )
 

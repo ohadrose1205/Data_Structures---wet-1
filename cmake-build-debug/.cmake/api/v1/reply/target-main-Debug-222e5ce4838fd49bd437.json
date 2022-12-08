@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "prog.exe"
+			"path" : "main.exe"
 		},
 		{
-			"path" : "prog.pdb"
+			"path" : "main.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -56,12 +56,13 @@
 			"sourceIndexes" : 
 			[
 				0,
-				4,
-				6
+				1,
+				5,
+				7
 			]
 		}
 	],
-	"id" : "prog::@6890427a1f51a3e7e1df",
+	"id" : "main::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -81,8 +82,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "prog",
-	"nameOnDisk" : "prog.exe",
+	"name" : "main",
+	"nameOnDisk" : "main.exe",
 	"paths" : 
 	{
 		"build" : ".",
@@ -95,25 +96,32 @@
 			"sourceIndexes" : 
 			[
 				0,
-				4,
-				6
+				1,
+				5,
+				7
 			]
 		},
 		{
 			"name" : "Header Files",
 			"sourceIndexes" : 
 			[
-				1,
 				2,
 				3,
-				5,
-				7,
-				8
+				4,
+				6,
+				8,
+				9
 			]
 		}
 	],
 	"sources" : 
 	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "main.cpp",
+			"sourceGroupIndex" : 0
+		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
@@ -132,7 +140,7 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "AVL_trees.h",
+			"path" : "AVL_Map.h",
 			"sourceGroupIndex" : 1
 		},
 		{

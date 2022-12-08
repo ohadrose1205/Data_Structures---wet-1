@@ -26,13 +26,16 @@ private:
     AVLTree<Team, int> m_teamsTree;
     AVLTree<Team*, int> m_validTeamsTree;
     AVLTree<Player, int> m_playersById;
-    AVLTree<Player, Player> m_playersByGoals;
-    Player* m_topScorer;
+    AVLTree<Player*, Player> m_playersByGoals;
+    const Player* m_topScorer;
     int m_totalGames;
 
-    void updateOnInsert_CP_SB(const Player& newPlayer);
-    void updateOnRemove_CP_SB(const Player& retiredPlayer);
-public:
+    StatusType add_playerAUX(const Player& newPlayer);
+    StatusType remove_playerAUX(const Player& pUpdate);
+
+    void updateOnInsert_CP_SB(const Player& keyPlayer);
+    void updateOnRemove_CP_SB(const Player& keyPlayer);
+        public:
     // <DO-NOT-MODIFY> {
 
     world_cup_t();

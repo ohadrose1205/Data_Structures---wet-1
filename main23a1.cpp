@@ -9,7 +9,7 @@
 // This file is READ ONLY: even if you submit something else, the compiler ..
 // .. WILL use our file.
 // 
-#include "AVL_trees.h"
+
 #include "worldcup23a1.h"
 #include <string>
 #include <iostream>
@@ -34,6 +34,7 @@ int main()
 	string op;
 	while (cin >> op)
     {
+        std::cerr << op << std::endl;
         if (!op.compare("add_team")) {
             cin >> d1 >> d2;
             print(op, obj->add_team(d1, d2));

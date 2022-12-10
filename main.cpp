@@ -13,2796 +13,1742 @@
 #include "worldcup23a1.h"
 #include <string>
 #include <iostream>
-#include "AVL_Map.h"
+#include <sstream>
 
 using namespace std;
 
-#define REQUIRE(x) if(x) std::cout<< 1 <<std::endl; else std::cout<< 0 <<std::endl
-#define SECTION(x) std::cout<<std::endl << x <<std::endl;
-#define TEST_CASE(x) std::cout<<std::endl << x<<x <<x <<std::endl;
-int main() {
+void print(string cmd, StatusType res);
+void print(string cmd, output_t<int> res);
+void query_get_all_players(string cmd, world_cup_t *obj, int teamID);
 
-    TEST_CASE("Insert and remove team")
+int main()
+{
+    cin >> std::boolalpha;
+    std::streambuf* orig = std::cin.rdbuf();
+    std::istringstream input("add_team 1 5978\n"
+                             "add_team 2 1193\n"
+                             "add_team 3 3691\n"
+                             "add_team 4 2339\n"
+                             "add_team 5 10097\n"
+                             "add_team 6 10517\n"
+                             "add_team 7 12132\n"
+                             "add_team 8 5594\n"
+                             "add_team 9 5582\n"
+                             "add_team 10 5797\n"
+                             "add_team 11 11054\n"
+                             "add_team 12 6566\n"
+                             "add_team 13 10553\n"
+                             "add_team 14 4367\n"
+                             "add_team 15 8574\n"
+                             "add_team 16 8252\n"
+                             "add_team 17 9350\n"
+                             "add_team 18 3134\n"
+                             "add_team 19 1754\n"
+                             "add_team 20 8498\n"
+                             "add_player 1 12 10423 2631 7386 false\n"
+                             "add_player 2 11 7373 9655 1661 true\n"
+                             "add_player 3 11 8217 6841 8199 false\n"
+                             "add_player 4 9 8844 10005 10107 true\n"
+                             "add_player 5 3 7929 1071 8209 false\n"
+                             "add_player 6 7 2448 8426 3810 true\n"
+                             "add_player 7 12 5116 2599 10281 true\n"
+                             "add_player 8 14 3216 2497 3976 true\n"
+                             "add_player 9 3 2966 3645 7166 true\n"
+                             "add_player 10 11 10060 2079 1261 true\n"
+                             "add_player 11 17 5120 9532 479 true\n"
+                             "add_player 12 9 6845 195 6458 true\n"
+                             "add_player 13 13 341 3550 4008 true\n"
+                             "add_player 14 14 4211 12033 9033 true\n"
+                             "add_player 15 19 8580 4108 9128 true\n"
+                             "add_player 16 19 1232 7637 1053 true\n"
+                             "add_player 17 19 7188 10138 558 true\n"
+                             "add_player 18 12 2263 8511 2302 false\n"
+                             "add_player 19 15 2061 4775 5978 true\n"
+                             "add_player 20 20 4454 11921 1857 true\n"
+                             "add_player 21 18 10336 5149 1353 true\n"
+                             "add_player 22 18 461 11088 1341 true\n"
+                             "add_player 23 17 10160 7522 3091 false\n"
+                             "add_player 24 17 10244 11874 3943 true\n"
+                             "add_player 25 4 1996 7273 10886 true\n"
+                             "add_player 26 15 7179 11454 2873 true\n"
+                             "add_player 27 11 7611 6005 4852 true\n"
+                             "add_player 28 18 9556 11152 9814 false\n"
+                             "add_player 29 18 8439 11794 8006 false\n"
+                             "add_player 30 7 9511 8955 8726 true\n"
+                             "add_player 31 13 4497 5976 8101 true\n"
+                             "add_player 32 4 3531 1391 11147 false\n"
+                             "add_player 33 5 10150 2103 653 false\n"
+                             "add_player 34 14 1912 9766 5166 true\n"
+                             "add_player 35 12 8941 2180 6442 true\n"
+                             "add_player 36 12 2590 10013 10190 true\n"
+                             "add_player 37 3 10222 2219 10475 true\n"
+                             "add_player 38 18 8339 11234 3313 true\n"
+                             "add_player 39 7 11681 9458 2082 true\n"
+                             "add_player 40 19 7967 9753 9916 false\n"
+                             "add_player 41 7 1182 9191 1637 false\n"
+                             "add_player 42 9 7483 4697 8165 true\n"
+                             "add_player 43 18 9875 6989 486 true\n"
+                             "add_player 44 7 2794 9596 7018 false\n"
+                             "add_player 45 10 3512 10108 280 true\n"
+                             "add_player 46 10 510 500 1349 true\n"
+                             "add_player 47 15 3663 6811 9563 true\n"
+                             "add_player 48 13 505 10577 3835 false\n"
+                             "add_player 49 1 6060 3387 11911 true\n"
+                             "add_player 50 20 7380 7921 10348 false\n"
+                             "add_player 51 16 6195 297 11195 true\n"
+                             "add_player 52 4 6805 2570 10513 true\n"
+                             "add_player 53 8 10247 8030 6681 true\n"
+                             "add_player 54 1 3975 4924 5389 true\n"
+                             "add_player 55 20 1370 6355 5435 true\n"
+                             "add_player 56 8 8900 3500 1436 true\n"
+                             "add_player 57 3 3529 2442 3174 true\n"
+                             "add_player 58 11 871 75 11020 true\n"
+                             "add_player 59 18 8514 3613 7128 true\n"
+                             "add_player 60 6 11209 272 752 true\n"
+                             "add_player 61 14 1490 11145 3723 true\n"
+                             "add_player 62 18 5474 6734 5482 true\n"
+                             "add_player 63 19 2503 5211 10360 true\n"
+                             "add_player 64 10 6060 54 5406 true\n"
+                             "add_player 65 15 8769 8605 4583 false\n"
+                             "add_player 66 15 4584 579 10384 true\n"
+                             "add_player 67 9 3239 4309 12114 true\n"
+                             "add_player 68 1 7682 6422 32 true\n"
+                             "add_player 69 14 8367 11749 7128 true\n"
+                             "add_player 70 13 3319 2665 8215 true\n"
+                             "add_player 71 14 6854 12302 8995 true\n"
+                             "add_player 72 4 11721 10847 10536 true\n"
+                             "add_player 73 17 7529 9298 5180 true\n"
+                             "add_player 74 10 3666 336 647 true\n"
+                             "add_player 75 10 4699 5283 5139 true\n"
+                             "add_player 76 17 5205 887 3020 true\n"
+                             "add_player 77 2 4243 4094 11529 true\n"
+                             "add_player 78 5 11923 8234 2144 false\n"
+                             "add_player 79 20 1366 5121 8590 true\n"
+                             "add_player 80 13 11092 3511 3481 true\n"
+                             "add_player 81 11 2679 441 9573 true\n"
+                             "add_player 82 5 2545 5778 9275 true\n"
+                             "add_player 83 5 10889 6361 3842 true\n"
+                             "add_player 84 9 8476 9062 9287 true\n"
+                             "add_player 85 6 2692 4195 10012 true\n"
+                             "add_player 86 2 7688 10323 9863 true\n"
+                             "add_player 87 12 1760 6154 8601 false\n"
+                             "add_player 88 1 7306 997 5683 true\n"
+                             "add_player 89 1 2036 3987 12245 true\n"
+                             "add_player 90 17 1341 2611 2746 true\n"
+                             "add_player 91 3 681 1023 4869 true\n"
+                             "add_player 92 3 10092 5515 9397 true\n"
+                             "add_player 93 7 2079 4044 8224 true\n"
+                             "add_player 94 14 10662 6293 806 false\n"
+                             "add_player 95 17 12080 8099 10322 true\n"
+                             "add_player 96 15 10194 3210 8488 true\n"
+                             "add_player 97 4 10204 11889 10033 true\n"
+                             "add_player 98 3 8792 8292 7831 false\n"
+                             "add_player 99 4 4775 2124 113 true\n"
+                             "add_player 100 3 323 2512 7050 true\n"
+                             "add_player 101 6 5529 9051 7257 true\n"
+                             "add_player 102 11 9073 9122 11222 true\n"
+                             "add_player 103 2 7493 4447 5317 true\n"
+                             "add_player 104 20 1736 7919 9576 true\n"
+                             "add_player 105 7 1070 5151 6534 true\n"
+                             "add_player 106 10 5992 7377 12242 true\n"
+                             "add_player 107 7 10717 2723 2953 false\n"
+                             "add_player 108 8 1053 10866 8964 true\n"
+                             "add_player 109 20 10339 10961 4798 true\n"
+                             "add_player 110 8 586 9873 1563 true\n"
+                             "add_player 111 13 2830 4885 8016 true\n"
+                             "add_player 112 8 729 4661 10599 true\n"
+                             "add_player 113 4 12046 5311 6363 true\n"
+                             "add_player 114 8 8491 6348 7071 true\n"
+                             "add_player 115 2 12174 7762 6931 true\n"
+                             "add_player 116 18 3094 9761 3507 true\n"
+                             "add_player 117 9 10879 10929 11637 true\n"
+                             "add_player 118 10 10111 1066 7764 true\n"
+                             "add_player 119 11 6197 2417 11581 true\n"
+                             "add_player 120 10 518 11856 10457 true\n"
+                             "add_player 121 4 5089 11393 6079 true\n"
+                             "add_player 122 8 4069 6855 3752 true\n"
+                             "add_player 123 17 9266 6915 2976 true\n"
+                             "add_player 124 19 9248 6735 3328 true\n"
+                             "add_player 125 14 8805 6915 1394 true\n"
+                             "add_player 126 3 9218 1450 3154 false\n"
+                             "add_player 127 4 1559 7921 9856 true\n"
+                             "add_player 128 19 7380 4085 4559 true\n"
+                             "add_player 129 1 2503 3126 8559 true\n"
+                             "add_player 130 9 3067 999 8362 true\n"
+                             "add_player 131 17 676 10449 2743 true\n"
+                             "add_player 132 17 10519 8264 1492 true\n"
+                             "add_player 133 8 8232 1961 8677 true\n"
+                             "add_player 134 17 8640 1111 5799 false\n"
+                             "add_player 135 10 6029 9699 10864 true\n"
+                             "add_player 136 10 8576 8682 2761 true\n"
+                             "add_player 137 4 2185 3046 4705 false\n"
+                             "add_player 138 4 2999 11900 1710 true\n"
+                             "add_player 139 12 10415 5137 10075 true\n"
+                             "add_player 140 13 3753 11810 518 true\n"
+                             "add_player 141 1 900 6027 4897 false\n"
+                             "add_player 142 2 2546 5067 9530 true\n"
+                             "add_player 143 16 9071 10465 8035 true\n"
+                             "add_player 144 17 8794 8255 4566 true\n"
+                             "add_player 145 6 3731 10008 5354 true\n"
+                             "add_player 146 15 6569 2109 184 true\n"
+                             "add_player 147 7 2928 2034 11786 true\n"
+                             "add_player 148 3 12341 7823 12232 true\n"
+                             "add_player 149 16 4405 8174 2928 false\n"
+                             "add_player 150 2 4620 4142 1012 true\n"
+                             "add_player 151 13 3856 10259 9202 true\n"
+                             "add_player 152 12 11172 639 8572 true\n"
+                             "add_player 153 12 4404 3707 1645 true\n"
+                             "add_player 154 17 1810 9721 6700 true\n"
+                             "add_player 155 19 11840 5090 8337 true\n"
+                             "add_player 156 7 9626 5289 3248 true\n"
+                             "add_player 157 14 5421 7351 7585 true\n"
+                             "add_player 158 6 3913 11298 7931 true\n"
+                             "add_player 159 19 11734 9913 5876 false\n"
+                             "add_player 160 4 11837 6677 687 true\n"
+                             "add_player 161 12 11515 6573 12294 true\n"
+                             "add_player 162 19 7965 11725 6714 true\n"
+                             "add_player 163 8 12277 973 8822 true\n"
+                             "add_player 164 4 1790 11681 3863 true\n"
+                             "add_player 165 4 5123 7196 4920 true\n"
+                             "add_player 166 5 3761 389 5634 false\n"
+                             "add_player 167 11 6874 1817 2595 true\n"
+                             "add_player 168 11 3608 11124 1090 true\n"
+                             "add_player 169 19 2731 10783 8500 false\n"
+                             "add_player 170 20 6963 5904 557 false\n"
+                             "add_player 171 12 7473 490 3861 true\n"
+                             "add_player 172 19 9789 873 2691 false\n"
+                             "add_player 173 2 6855 4345 10261 true\n"
+                             "add_player 174 16 8082 6419 12123 true\n"
+                             "add_player 175 16 11229 12167 2590 true\n"
+                             "add_player 176 7 5147 9133 11340 true\n"
+                             "add_player 177 16 7452 9197 5322 true\n"
+                             "add_player 178 14 6031 3338 2000 true\n"
+                             "add_player 179 2 7401 2765 8216 true\n"
+                             "add_player 180 4 894 2060 11222 true\n"
+                             "add_player 181 14 9416 1479 2427 true\n"
+                             "add_player 182 8 427 8409 9564 true\n"
+                             "add_player 183 10 8608 11735 9583 true\n"
+                             "add_player 184 12 7393 4065 5583 false\n"
+                             "add_player 185 4 11418 3520 6652 false\n"
+                             "add_player 186 19 11545 4238 7520 false\n"
+                             "add_player 187 11 3479 4063 8147 true\n"
+                             "add_player 188 6 2782 7181 4790 true\n"
+                             "add_player 189 12 2753 3957 5660 true\n"
+                             "add_player 190 10 8750 11432 11539 true\n"
+                             "add_player 191 8 2190 11894 3812 true\n"
+                             "add_player 192 12 3119 7616 9733 true\n"
+                             "add_player 193 3 6323 9769 4628 true\n"
+                             "add_player 194 14 476 9323 9531 true\n"
+                             "add_player 195 18 2114 5649 6195 true\n"
+                             "add_player 196 19 1993 5044 3274 true\n"
+                             "add_player 197 9 989 988 2750 true\n"
+                             "add_player 198 9 3717 7620 9539 true\n"
+                             "add_player 199 10 7206 4496 3988 true\n"
+                             "add_player 200 3 2978 2243 8871 true\n"
+                             "unite_teams 12 15 16\n"
+                             "get_all_players_count 2\n"
+                             "knockout_winner 12 13\n"
+                             "knockout_winner 7 18\n"
+                             "knockout_winner 7 8\n"
+                             "knockout_winner 17 18\n"
+                             "knockout_winner 17 8\n"
+                             "unite_teams 9 14 17\n"
+                             "remove_player 32\n"
+                             "remove_player 170\n"
+                             "get_all_players 9\n"
+                             "get_top_scorer 9\n"
+                             "get_all_players_count 17\n"
+                             "play_match 16 20\n"
+                             "update_player_stats 4 9950 5387 4771\n"
+                             "get_num_played_games 20\n"
+                             "add_player 132 4 623 6492 11379 true\n"
+                             "get_top_scorer 14\n"
+                             "get_team_points 6\n"
+                             "get_all_players_count 19\n"
+                             "add_player 185 13 10378 3098 8670 true\n"
+                             "knockout_winner 2 6\n"
+                             "knockout_winner -3 11\n"
+                             "knockout_winner -3 1\n"
+                             "knockout_winner 7 11\n"
+                             "knockout_winner 7 1\n"
+                             "play_match 18 15\n"
+                             "play_match 15 17\n"
+                             "get_team_points 9\n"
+                             "remove_team 3\n"
+                             "get_num_played_games 64\n"
+                             "add_team 3 4051\n"
+                             "get_num_played_games 6\n"
+                             "unite_teams 9 8 9\n"
+                             "get_all_players_count 2\n"
+                             "get_closest_player 36 12\n"
+                             "knockout_winner 14 9\n"
+                             "knockout_winner 9 14\n"
+                             "knockout_winner 9 4\n"
+                             "knockout_winner 19 14\n"
+                             "knockout_winner 19 4\n"
+                             "knockout_winner 9 9\n"
+                             "knockout_winner 4 14\n"
+                             "knockout_winner 4 4\n"
+                             "knockout_winner 14 14\n"
+                             "knockout_winner 14 4\n"
+                             "add_player 131 15 2602 8479 10371 true\n"
+                             "get_all_players_count 19\n"
+                             "update_player_stats 79 2053 1220 11062\n"
+                             "get_all_players_count 20\n"
+                             "get_team_points 18\n"
+                             "get_num_played_games 54\n"
+                             "get_num_played_games 9\n"
+                             "get_all_players_count 4\n"
+                             "remove_team 14\n"
+                             "remove_player 91\n"
+                             "get_team_points 20\n"
+                             "get_num_played_games 49\n"
+                             "get_top_scorer 5\n"
+                             "get_all_players_count 16\n"
+                             "play_match 15 5\n"
+                             "get_all_players 12\n"
+                             "get_num_played_games 57\n"
+                             "get_all_players_count 3\n"
+                             "remove_player 15\n"
+                             "get_num_played_games 41\n"
+                             "get_closest_player 20 20\n"
+                             "get_all_players_count 10\n"
+                             "get_top_scorer 2\n"
+                             "get_all_players 1\n"
+                             "add_team 17 2857\n"
+                             "get_top_scorer 3\n"
+                             "play_match 16 2\n"
+                             "get_top_scorer 5\n"
+                             "play_match 4 3\n"
+                             "get_num_played_games 184\n"
+                             "play_match 19 15\n"
+                             "unite_teams 15 2 16\n"
+                             "add_team 16 298\n"
+                             "update_player_stats 30 2809 233 4829\n"
+                             "get_top_scorer 5\n"
+                             "remove_team 2\n"
+                             "get_all_players_count 13\n"
+                             "unite_teams 4 20 19\n"
+                             "get_all_players 15\n"
+                             "get_all_players 3\n"
+                             "get_team_points 9\n"
+                             "knockout_winner 3 16\n"
+                             "knockout_winner -2 21\n"
+                             "knockout_winner -2 11\n"
+                             "knockout_winner 8 21\n"
+                             "knockout_winner 8 11\n"
+                             "get_all_players_count 7\n"
+                             "get_top_scorer 11\n"
+                             "get_all_players 9\n"
+                             "get_num_played_games 120\n"
+                             "get_team_points 15\n"
+                             "update_player_stats 193 3846 7499 6149\n"
+                             "get_team_points 2\n"
+                             "remove_team 9\n"
+                             "add_player 159 20 3918 8042 1897 true\n"
+                             "add_team 3 748\n"
+                             "get_all_players 9\n"
+                             "get_all_players_count 6\n"
+                             "update_player_stats 199 6507 10544 5715\n"
+                             "remove_team 4\n"
+                             "remove_player 142\n"
+                             "unite_teams 5 10 6\n"
+                             "get_all_players 3\n"
+                             "unite_teams 18 12 10\n"
+                             "knockout_winner 15 15\n"
+                             "knockout_winner 10 20\n"
+                             "knockout_winner 10 10\n"
+                             "knockout_winner 20 20\n"
+                             "knockout_winner 20 10\n"
+                             "unite_teams 17 5 7\n"
+                             "get_closest_player 131 17\n"
+                             "get_all_players_count 5\n"
+                             "get_team_points 17\n"
+                             "get_closest_player 186 19\n"
+                             "remove_team 12\n"
+                             "remove_player 6\n"
+                             "remove_player 122\n"
+                             "get_top_scorer 17\n"
+                             "play_match 16 7\n"
+                             "get_top_scorer 14\n"
+                             "get_all_players 4\n"
+                             "remove_team 5\n"
+                             "remove_player 109\n"
+                             "get_closest_player 59 18\n"
+                             "add_team 16 2942\n"
+                             "get_num_played_games 51\n"
+                             "get_top_scorer 11\n"
+                             "play_match 17 9\n"
+                             "play_match 12 5\n"
+                             "add_player 88 17 3856 2404 7137 true\n"
+                             "add_team 18 6963\n"
+                             "add_player 26 16 2178 9219 2554 true\n"
+                             "get_top_scorer 16\n"
+                             "get_closest_player 73 17\n"
+                             "get_team_points 14\n"
+                             "get_num_played_games 187\n"
+                             "get_all_players 4\n"
+                             "get_num_played_games 97\n"
+                             "get_closest_player 37 3\n"
+                             "play_match 18 12\n"
+                             "add_team 10 11298\n"
+                             "play_match 4 10\n"
+                             "remove_player 36\n"
+                             "play_match 16 18\n"
+                             "get_num_played_games 134\n"
+                             "remove_team 15\n"
+                             "get_closest_player 100 3\n"
+                             "play_match 13 9\n"
+                             "get_team_points 9\n"
+                             "get_all_players_count 2\n"
+                             "add_player 164 18 4954 7105 1623 true\n"
+                             "remove_team 11\n"
+                             "update_player_stats 68 2392 8392 6760\n"
+                             "get_num_played_games 195\n"
+                             "get_num_played_games 134\n"
+                             "get_top_scorer 11\n"
+                             "add_team 10 5167\n"
+                             "get_all_players_count 3\n"
+                             "get_all_players 20\n"
+                             "get_closest_player 135 10\n"
+                             "update_player_stats 11 8212 5433 9350\n"
+                             "unite_teams 5 19 19\n"
+                             "add_player 50 2 10393 4717 10833 false\n"
+                             "update_player_stats 62 6064 10634 4004\n"
+                             "get_closest_player 92 3\n"
+                             "get_all_players_count 20\n"
+                             "unite_teams 1 18 7\n"
+                             "add_player 27 1 287 5538 848 true\n"
+                             "get_all_players 1\n"
+                             "get_num_played_games 8\n"
+                             "update_player_stats 129 1700 1203 4907\n"
+                             "play_match 3 17\n"
+                             "knockout_winner 13 9\n"
+                             "knockout_winner 8 14\n"
+                             "knockout_winner 8 4\n"
+                             "knockout_winner 18 14\n"
+                             "knockout_winner 18 4\n"
+                             "get_top_scorer 6\n"
+                             "remove_team 18\n"
+                             "play_match 6 16\n"
+                             "knockout_winner 3 11\n"
+                             "knockout_winner -2 16\n"
+                             "knockout_winner -2 6\n"
+                             "knockout_winner 8 16\n"
+                             "knockout_winner 8 6\n"
+                             "unite_teams 3 2 15\n"
+                             "get_team_points 6\n"
+                             "remove_team 17\n"
+                             "add_team 16 1135\n"
+                             "get_num_played_games 99\n"
+                             "remove_player 61\n"
+                             "add_player 87 1 6022 9175 10026 true\n"
+                             "add_team 14 5226\n"
+                             "get_all_players 12\n"
+                             "get_top_scorer 13\n"
+                             "unite_teams 1 10 9\n"
+                             "add_player 169 7 9662 1892 10528 true\n"
+                             "get_closest_player 118 10\n"
+                             "get_num_played_games 118\n"
+                             "add_team 13 11009\n"
+                             "play_match 4 16\n"
+                             "update_player_stats 60 12218 3095 8732\n"
+                             "update_player_stats 106 5492 12273 1156\n"
+                             "get_closest_player 19 15\n"
+                             "play_match 4 19\n"
+                             "get_num_played_games 53\n"
+                             "get_all_players_count 6\n"
+                             "get_top_scorer 14\n"
+                             "update_player_stats 28 4156 5621 1467\n"
+                             "get_closest_player 64 10\n"
+                             "get_team_points 10\n"
+                             "remove_team 3\n"
+                             "add_player 117 2 1860 9939 9184 true\n"
+                             "remove_player 29\n"
+                             "remove_team 11\n"
+                             "remove_team 13\n"
+                             "knockout_winner 10 16\n"
+                             "knockout_winner 5 21\n"
+                             "knockout_winner 5 11\n"
+                             "knockout_winner 15 21\n"
+                             "knockout_winner 15 11\n"
+                             "add_player 86 15 10703 10107 7059 true\n"
+                             "unite_teams 1 20 6\n"
+                             "update_player_stats 54 7138 4212 870\n"
+                             "remove_team 16\n"
+                             "remove_team 15\n"
+                             "unite_teams 14 4 15\n"
+                             "add_team 3 3207\n"
+                             "get_all_players 17\n"
+                             "get_num_played_games 184\n"
+                             "remove_team 4\n"
+                             "unite_teams 11 3 13\n"
+                             "knockout_winner 1 19\n"
+                             "knockout_winner -4 24\n"
+                             "knockout_winner -4 14\n"
+                             "knockout_winner 6 24\n"
+                             "knockout_winner 6 14\n"
+                             "get_closest_player 131 17\n"
+                             "get_all_players 17\n"
+                             "get_num_played_games 94\n"
+                             "get_team_points 2\n"
+                             "knockout_winner 15 15\n"
+                             "knockout_winner 10 20\n"
+                             "knockout_winner 10 10\n"
+                             "knockout_winner 20 20\n"
+                             "knockout_winner 20 10\n"
+                             "knockout_winner 2 2\n"
+                             "knockout_winner -3 7\n"
+                             "knockout_winner -3 -3\n"
+                             "knockout_winner 7 7\n"
+                             "knockout_winner 7 -3\n"
+                             "get_num_played_games 40\n"
+                             "get_team_points 1\n"
+                             "get_all_players_count 12\n"
+                             "unite_teams 15 1 7\n"
+                             "unite_teams 6 7 10\n"
+                             "remove_team 2\n"
+                             "get_all_players 7\n"
+                             "get_closest_player 104 20\n"
+                             "remove_player 8\n"
+                             "remove_player 47\n"
+                             "update_player_stats 80 2380 4942 1361\n"
+                             "play_match 14 1\n"
+                             "get_closest_player 73 17\n"
+                             "get_all_players_count 13\n"
+                             "get_team_points 19\n"
+                             "get_team_points 6\n"
+                             "get_team_points 2\n"
+                             "knockout_winner 19 19\n"
+                             "knockout_winner 14 24\n"
+                             "knockout_winner 14 14\n"
+                             "knockout_winner 24 24\n"
+                             "knockout_winner 24 14\n"
+                             "add_team 18 1721\n"
+                             "play_match 12 17\n"
+                             "add_team 13 11775\n"
+                             "remove_team 9\n"
+                             "knockout_winner 16 18\n"
+                             "knockout_winner 11 23\n"
+                             "knockout_winner 11 13\n"
+                             "knockout_winner 21 23\n"
+                             "knockout_winner 21 13\n"
+                             "add_team 2 8288\n"
+                             "get_closest_player 50 20\n"
+                             "get_team_points 1\n"
+                             "get_all_players 17\n"
+                             "knockout_winner 9 9\n"
+                             "knockout_winner 4 14\n"
+                             "knockout_winner 4 4\n"
+                             "knockout_winner 14 14\n"
+                             "knockout_winner 14 4\n"
+                             "get_top_scorer 4\n"
+                             "get_closest_player 200 3\n"
+                             "get_num_played_games 37\n"
+                             "play_match 10 12\n"
+                             "remove_team 20\n"
+                             "get_top_scorer 18\n"
+                             "add_team 6 4243\n"
+                             "remove_team 1\n"
+                             "remove_team 2\n"
+                             "update_player_stats 100 8249 10121 11194\n"
+                             "update_player_stats 200 7444 8988 5227\n"
+                             "get_team_points 1\n"
+                             "get_closest_player 143 16\n"
+                             "remove_team 7\n"
+                             "get_num_played_games 77\n"
+                             "remove_team 7\n"
+                             "get_all_players_count 18\n"
+                             "get_all_players 7\n"
+                             "get_top_scorer 1\n"
+                             "remove_team 11\n"
+                             "play_match 17 14\n"
+                             "update_player_stats 128 9219 2382 11423\n"
+                             "get_all_players 18\n"
+                             "get_team_points 14\n"
+                             "add_team 1 1596\n"
+                             "get_team_points 12\n"
+                             "get_all_players_count 11\n"
+                             "unite_teams 12 1 16\n"
+                             "remove_team 16\n"
+                             "get_num_played_games 68\n"
+                             "unite_teams 19 6 17\n"
+                             "get_team_points 16\n"
+                             "get_team_points 19\n"
+                             "get_all_players_count 9\n"
+                             "get_num_played_games 52\n"
+                             "get_top_scorer 6\n"
+                             "unite_teams 12 17 20\n"
+                             "remove_team 2\n"
+                             "knockout_winner 3 12\n"
+                             "knockout_winner -2 17\n"
+                             "knockout_winner -2 7\n"
+                             "knockout_winner 8 17\n"
+                             "knockout_winner 8 7\n"
+                             "unite_teams 19 12 19\n"
+                             "get_all_players_count 18\n"
+                             "get_all_players 9\n"
+                             "get_all_players_count 2\n"
+                             "get_all_players 10\n"
+                             "play_match 13 11\n"
+                             "play_match 6 16\n"
+                             "add_player 81 10 4057 2217 2857 false\n"
+                             "play_match 3 1\n"
+                             "get_all_players 13\n"
+                             "play_match 10 9\n"
+                             "remove_player 7\n"
+                             "remove_player 114\n"
+                             "add_player 147 9 4530 2584 3420 true\n"
+                             "get_all_players 14\n"
+                             "get_closest_player 54 1\n"
+                             "get_num_played_games 138\n"
+                             "update_player_stats 112 5398 11746 9795\n"
+                             "get_all_players_count 13\n"
+                             "get_team_points 7\n"
+                             "update_player_stats 34 5755 1217 9061\n"
+                             "remove_player 132\n"
+                             "get_num_played_games 77\n"
+                             "remove_team 1\n"
+                             "knockout_winner 4 15\n"
+                             "knockout_winner -1 20\n"
+                             "knockout_winner -1 10\n"
+                             "knockout_winner 9 20\n"
+                             "knockout_winner 9 10\n"
+                             "get_team_points 15\n"
+                             "get_top_scorer 19\n"
+                             "play_match 4 4\n"
+                             "get_all_players 18\n"
+                             "get_num_played_games 90\n"
+                             "add_player 79 19 4258 6177 9893 false\n"
+                             "add_player 197 17 8665 10506 6045 true\n"
+                             "remove_player 76\n"
+                             "get_closest_player 121 4\n"
+                             "update_player_stats 107 4618 3013 8141\n"
+                             "get_team_points 14\n"
+                             "get_num_played_games 163\n"
+                             "add_team 14 9766\n"
+                             "get_team_points 13\n"
+                             "add_player 69 16 1137 9540 6188 true\n"
+                             "get_closest_player 30 7\n"
+                             "add_player 108 2 5707 12218 584 true\n"
+                             "get_all_players_count 9\n"
+                             "remove_team 15\n"
+                             "remove_player 10\n"
+                             "knockout_winner 9 9\n"
+                             "knockout_winner 4 14\n"
+                             "knockout_winner 4 4\n"
+                             "knockout_winner 14 14\n"
+                             "knockout_winner 14 4\n"
+                             "get_all_players_count 18\n"
+                             "get_team_points 20\n"
+                             "update_player_stats 148 1994 12051 2722\n"
+                             "remove_team 10\n"
+                             "get_closest_player 52 4\n"
+                             "get_all_players 17\n"
+                             "update_player_stats 54 2174 3847 10773\n"
+                             "get_top_scorer 9\n"
+                             "get_num_played_games 169\n"
+                             "get_num_played_games 23\n"
+                             "get_all_players 2\n"
+                             "remove_team 15\n"
+                             "get_num_played_games 128\n"
+                             "knockout_winner 20 19\n"
+                             "knockout_winner 15 24\n"
+                             "knockout_winner 15 14\n"
+                             "knockout_winner 25 24\n"
+                             "knockout_winner 25 14\n"
+                             "get_team_points 19\n"
+                             "add_player 172 7 4265 6438 3738 true\n"
+                             "get_closest_player 96 15\n"
+                             "get_all_players_count 2\n"
+                             "add_player 1 10 7928 7217 593 true\n"
+                             "update_player_stats 43 8819 10551 4926\n"
+                             "play_match 13 6\n"
+                             "unite_teams 1 18 19\n"
+                             "get_team_points 6\n"
+                             "add_player 85 13 2904 6776 8262 true\n"
+                             "add_player 68 13 9783 6608 1206 true\n"
+                             "add_player 140 13 9569 2510 6066 true\n"
+                             "get_all_players 18\n"
+                             "play_match 4 4\n"
+                             "knockout_winner 17 9\n"
+                             "knockout_winner 12 14\n"
+                             "knockout_winner 12 4\n"
+                             "knockout_winner 22 14\n"
+                             "knockout_winner 22 4\n"
+                             "get_all_players_count 7\n"
+                             "get_num_played_games 131\n"
+                             "unite_teams 11 7 7\n"
+                             "remove_team 2\n"
+                             "get_all_players_count 20\n"
+                             "play_match 9 7\n"
+                             "add_team 10 3566\n"
+                             "play_match 6 7\n"
+                             "get_num_played_games 90\n"
+                             "add_team 17 10931\n"
+                             "unite_teams 20 15 1\n"
+                             "play_match 3 9\n"
+                             "play_match 1 4\n"
+                             "get_closest_player 200 3\n"
+                             "remove_player 1\n"
+                             "add_player 163 3 8970 10778 4579 true\n"
+                             "get_num_played_games 55\n"
+                             "knockout_winner 19 19\n"
+                             "knockout_winner 14 24\n"
+                             "knockout_winner 14 14\n"
+                             "knockout_winner 24 24\n"
+                             "knockout_winner 24 14\n"
+                             "update_player_stats 161 5392 7900 154\n"
+                             "update_player_stats 46 2530 5315 10437\n"
+                             "unite_teams 10 2 18\n"
+                             "play_match 6 16\n"
+                             "remove_player 101\n"
+                             "remove_team 6\n"
+                             "update_player_stats 112 5667 9800 8765\n"
+                             "add_player 86 13 341 8808 8703 true\n"
+                             "get_all_players_count 13\n"
+                             "get_all_players_count 6\n"
+                             "remove_team 18\n"
+                             "add_team 15 7812\n"
+                             "play_match 3 10\n"
+                             "get_all_players_count 4\n"
+                             "play_match 9 1\n"
+                             "get_closest_player 53 9\n"
+                             "add_team 9 10844\n"
+                             "get_closest_player 161 19\n"
+                             "get_team_points 6\n"
+                             "get_all_players 2\n"
+                             "add_player 108 15 4974 8738 363 true\n"
+                             "remove_player 151\n"
+                             "get_closest_player 24 17\n"
+                             "get_closest_player 148 3\n"
+                             "remove_player 112\n"
+                             "get_team_points 10\n"
+                             "remove_team 3\n"
+                             "remove_player 34\n"
+                             "remove_player 16\n"
+                             "add_team 16 4599\n"
+                             "remove_team 3\n"
+                             "remove_team 19\n"
+                             "add_team 7 5292\n"
+                             "remove_player 187\n"
+                             "get_top_scorer 20\n"
+                             "add_player 2 17 2275 4533 1856 true\n"
+                             "get_top_scorer 9\n"
+                             "knockout_winner 13 20\n"
+                             "knockout_winner 8 25\n"
+                             "knockout_winner 8 15\n"
+                             "knockout_winner 18 25\n"
+                             "knockout_winner 18 15\n"
+                             "remove_team 16\n"
+                             "get_num_played_games 37\n"
+                             "get_all_players_count 6\n"
+                             "add_team 1 5957\n"
+                             "knockout_winner 14 9\n"
+                             "knockout_winner 9 14\n"
+                             "knockout_winner 9 4\n"
+                             "knockout_winner 19 14\n"
+                             "knockout_winner 19 4\n"
+                             "get_top_scorer 14\n"
+                             "get_all_players 1\n"
+                             "get_all_players 6\n"
+                             "get_closest_player 50 20\n"
+                             "knockout_winner 16 19\n"
+                             "knockout_winner 11 24\n"
+                             "knockout_winner 11 14\n"
+                             "knockout_winner 21 24\n"
+                             "knockout_winner 21 14\n"
+                             "get_num_played_games 42\n"
+                             "add_player 156 6 2159 3264 9424 true\n"
+                             "play_match 7 16\n"
+                             "get_num_played_games 39\n"
+                             "get_num_played_games 162\n"
+                             "get_all_players 6\n"
+                             "remove_player 177\n"
+                             "get_closest_player 184 19\n"
+                             "knockout_winner 14 16\n"
+                             "knockout_winner 9 21\n"
+                             "knockout_winner 9 11\n"
+                             "knockout_winner 19 21\n"
+                             "knockout_winner 19 11\n"
+                             "get_top_scorer 2\n"
+                             "update_player_stats 135 12121 4687 10099\n"
+                             "play_match 20 13\n"
+                             "get_num_played_games 127\n"
+                             "get_all_players 9\n"
+                             "knockout_winner 4 18\n"
+                             "knockout_winner -1 23\n"
+                             "knockout_winner -1 13\n"
+                             "knockout_winner 9 23\n"
+                             "knockout_winner 9 13\n"
+                             "knockout_winner 13 20\n"
+                             "knockout_winner 8 25\n"
+                             "knockout_winner 8 15\n"
+                             "knockout_winner 18 25\n"
+                             "knockout_winner 18 15\n"
+                             "get_all_players 20\n"
+                             "get_closest_player 56 9\n"
+                             "update_player_stats 98 10603 8234 10863\n"
+                             "play_match 6 10\n"
+                             "get_closest_player 31 13\n"
+                             "get_closest_player 137 4\n"
+                             "remove_player 44\n"
+                             "unite_teams 3 6 2\n"
+                             "play_match 16 1\n"
+                             "get_all_players_count 10\n"
+                             "get_all_players_count 13\n"
+                             "remove_player 184\n"
+                             "get_top_scorer 4\n"
+                             "get_all_players_count 19\n"
+                             "get_all_players 15\n"
+                             "update_player_stats 126 2196 7626 10589\n"
+                             "unite_teams 9 6 19\n"
+                             "get_num_played_games 48\n"
+                             "remove_player 164\n"
+                             "remove_player 189\n"
+                             "remove_team 7\n"
+                             "get_team_points 7\n"
+                             "get_closest_player 58 7\n"
+                             "add_team 18 4959\n"
+                             "get_closest_player 198 9\n"
+                             "get_top_scorer 18\n"
+                             "unite_teams 18 10 14\n"
+                             "remove_team 13\n"
+                             "get_num_played_games 88\n"
+                             "update_player_stats 31 12009 9796 8698\n"
+                             "update_player_stats 69 6884 2716 11071\n"
+                             "get_closest_player 78 19\n"
+                             "remove_team 6\n"
+                             "get_all_players 7\n"
+                             "get_num_played_games 102\n"
+                             "get_team_points 16\n"
+                             "play_match 7 16\n"
+                             "knockout_winner 9 7\n"
+                             "knockout_winner 4 12\n"
+                             "knockout_winner 4 2\n"
+                             "knockout_winner 14 12\n"
+                             "knockout_winner 14 2\n"
+                             "get_num_played_games 40\n"
+                             "play_match 15 9\n"
+                             "get_num_played_games 57\n"
+                             "play_match 14 17\n"
+                             "knockout_winner 3 15\n"
+                             "knockout_winner -2 20\n"
+                             "knockout_winner -2 10\n"
+                             "knockout_winner 8 20\n"
+                             "knockout_winner 8 10\n"
+                             "get_team_points 13\n"
+                             "get_top_scorer 2\n"
+                             "update_player_stats 178 3413 6015 4109\n"
+                             "remove_player 33\n"
+                             "get_top_scorer 20\n"
+                             "get_team_points 20\n"
+                             "update_player_stats 196 4643 109 7563\n"
+                             "knockout_winner 2 2\n"
+                             "knockout_winner -3 7\n"
+                             "knockout_winner -3 -3\n"
+                             "knockout_winner 7 7\n"
+                             "knockout_winner 7 -3\n"
+                             "get_team_points 20\n"
+                             "get_num_played_games 162\n"
+                             "get_closest_player 191 9\n"
+                             "remove_player 121\n"
+                             "get_closest_player 86 2\n"
+                             "remove_team 20\n"
+                             "unite_teams 20 1 10\n"
+                             "add_team 4 2944\n"
+                             "update_player_stats 115 958 8335 12146\n"
+                             "remove_player 153\n"
+                             "remove_player 193\n"
+                             "remove_team 7\n"
+                             "knockout_winner 6 16\n"
+                             "knockout_winner 1 21\n"
+                             "knockout_winner 1 11\n"
+                             "knockout_winner 11 21\n"
+                             "knockout_winner 11 11\n"
+                             "get_top_scorer 17\n"
+                             "get_num_played_games 178\n"
+                             "add_player 51 3 4852 11379 802 true\n"
+                             "get_all_players 9\n"
+                             "remove_player 78\n"
+                             "get_all_players 1\n"
+                             "get_all_players_count 10\n"
+                             "add_team 17 8510\n"
+                             "add_team 6 132\n"
+                             "get_all_players_count 20\n"
+                             "get_top_scorer 9\n"
+                             "get_team_points 15\n"
+                             "get_top_scorer 6\n"
+                             "get_closest_player 88 1\n"
+                             "add_team 2 2796\n"
+                             "get_closest_player 130 9\n"
+                             "remove_team 2\n"
+                             "add_team 15 6316\n"
+                             "add_player 133 6 10887 9362 5038 true\n"
+                             "get_num_played_games 53\n"
+                             "knockout_winner 20 19\n"
+                             "knockout_winner 15 24\n"
+                             "knockout_winner 15 14\n"
+                             "knockout_winner 25 24\n"
+                             "knockout_winner 25 14\n"
+                             "get_all_players 16\n"
+                             "get_closest_player 22 18\n"
+                             "knockout_winner 14 20\n"
+                             "knockout_winner 9 25\n"
+                             "knockout_winner 9 15\n"
+                             "knockout_winner 19 25\n"
+                             "knockout_winner 19 15\n"
+                             "unite_teams 18 6 14\n"
+                             "get_team_points 14\n"
+                             "get_team_points 17\n"
+                             "unite_teams 3 4 18\n"
+                             "get_all_players 20\n"
+                             "knockout_winner 1 14\n"
+                             "knockout_winner -4 19\n"
+                             "knockout_winner -4 9\n"
+                             "knockout_winner 6 19\n"
+                             "knockout_winner 6 9\n"
+                             "get_num_played_games 27\n"
+                             "get_all_players_count 3\n"
+                             "get_team_points 16\n"
+                             "get_all_players 3\n"
+                             "get_closest_player 141 1\n"
+                             "remove_player 141\n"
+                             "unite_teams 6 19 18\n"
+                             "unite_teams 6 4 10\n"
+                             "remove_team 14\n"
+                             "remove_team 2\n"
+                             "remove_team 6\n"
+                             "remove_player 14\n"
+                             "play_match 14 3\n"
+                             "get_all_players_count 7\n"
+                             "update_player_stats 38 6865 6660 8176\n"
+                             "get_all_players_count 9\n"
+                             "remove_player 116\n"
+                             "remove_team 1\n"
+                             "get_num_played_games 156\n"
+                             "add_team 2 1336\n"
+                             "get_all_players 17\n"
+                             "get_num_played_games 147\n"
+                             "update_player_stats 27 238 8271 6593\n"
+                             "add_player 137 4 3434 5395 10055 true\n"
+                             "get_top_scorer 13\n"
+                             "add_team 18 2424\n"
+                             "get_team_points 19\n"
+                             "get_all_players_count 1\n"
+                             "add_player 84 15 150 43 6670 true\n"
+                             "update_player_stats 102 6849 8593 10250\n"
+                             "play_match 15 6\n"
+                             "get_all_players 6\n"
+                             "remove_team 9\n"
+                             "update_player_stats 90 5266 11181 12097\n"
+                             "add_team 17 11845\n"
+                             "knockout_winner 19 19\n"
+                             "knockout_winner 14 24\n"
+                             "knockout_winner 14 14\n"
+                             "knockout_winner 24 24\n"
+                             "knockout_winner 24 14\n"
+                             "get_top_scorer 20\n"
+                             "get_all_players_count 19\n"
+                             "remove_player 136\n"
+                             "get_closest_player 5 3\n"
+                             "add_team 3 5830\n"
+                             "get_top_scorer 16\n"
+                             "remove_team 7\n"
+                             "play_match 17 14\n"
+                             "get_top_scorer 10\n"
+                             "get_closest_player 125 14\n"
+                             "unite_teams 3 2 19\n"
+                             "remove_player 2\n"
+                             "play_match 1 17\n"
+                             "add_team 10 1518\n"
+                             "remove_team 13\n"
+                             "add_team 1 5290\n"
+                             "play_match 9 2\n"
+                             "knockout_winner 16 16\n"
+                             "knockout_winner 11 21\n"
+                             "knockout_winner 11 11\n"
+                             "knockout_winner 21 21\n"
+                             "knockout_winner 21 11\n"
+                             "get_all_players_count 2\n"
+                             "get_team_points 6\n"
+                             "remove_team 15\n"
+                             "get_closest_player 100 3\n"
+                             "get_top_scorer 15\n"
+                             "unite_teams 1 14 3\n"
+                             "play_match 7 2\n"
+                             "get_closest_player 176 7\n"
+                             "get_team_points 2\n"
+                             "get_all_players_count 13\n"
+                             "remove_player 70\n"
+                             "get_num_played_games 93\n"
+                             "remove_player 175\n"
+                             "get_all_players 1\n"
+                             "get_all_players 13\n"
+                             "play_match 16 2\n"
+                             "get_all_players 20\n"
+                             "add_team 1 7339\n"
+                             "get_num_played_games 192\n"
+                             "add_player 163 20 6754 6096 10938 true\n"
+                             "remove_team 6\n"
+                             "remove_team 20\n"
+                             "get_num_played_games 89\n"
+                             "get_all_players 17\n"
+                             "add_player 105 14 6616 3819 3721 true\n"
+                             "knockout_winner 4 18\n"
+                             "knockout_winner -1 23\n"
+                             "knockout_winner -1 13\n"
+                             "knockout_winner 9 23\n"
+                             "knockout_winner 9 13\n"
+                             "get_team_points 2\n"
+                             "get_top_scorer 15\n"
+                             "get_top_scorer 6\n"
+                             "update_player_stats 60 4701 6721 4558\n"
+                             "play_match 16 14\n"
+                             "get_team_points 9\n"
+                             "add_player 24 6 1138 9827 11592 true\n"
+                             "play_match 9 17\n"
+                             "add_team 15 6293\n"
+                             "get_top_scorer 6\n"
+                             "get_top_scorer 4\n"
+                             "remove_team 4\n"
+                             "add_team 2 8184\n"
+                             "get_closest_player 58 7\n"
+                             "add_player 200 20 12188 3831 4750 true\n"
+                             "get_all_players 2\n"
+                             "get_team_points 6\n"
+                             "get_top_scorer 1\n"
+                             "update_player_stats 77 2364 9636 8753\n"
+                             "get_all_players_count 9\n"
+                             "get_top_scorer 7\n"
+                             "remove_player 40\n"
+                             "add_player 103 15 5937 11771 9198 true\n"
+                             "get_top_scorer 18\n"
+                             "remove_team 17\n"
+                             "get_all_players_count 13\n"
+                             "get_all_players 6\n"
+                             "get_closest_player 162 19\n"
+                             "get_num_played_games 155\n"
+                             "get_all_players 9\n"
+                             "get_num_played_games 53\n"
+                             "remove_player 131\n"
+                             "add_team 16 11018\n"
+                             "knockout_winner 18 9\n"
+                             "knockout_winner 13 14\n"
+                             "knockout_winner 13 4\n"
+                             "knockout_winner 23 14\n"
+                             "knockout_winner 23 4\n"
+                             "remove_player 103\n"
+                             "knockout_winner 9 19\n"
+                             "knockout_winner 4 24\n"
+                             "knockout_winner 4 14\n"
+                             "knockout_winner 14 24\n"
+                             "knockout_winner 14 14\n"
+                             "get_team_points 14\n"
+                             "knockout_winner 20 7\n"
+                             "knockout_winner 15 12\n"
+                             "knockout_winner 15 2\n"
+                             "knockout_winner 25 12\n"
+                             "knockout_winner 25 2\n"
+                             "get_closest_player 168 7\n"
+                             "remove_team 3\n"
+                             "remove_player 48\n"
+                             "remove_team 19\n"
+                             "update_player_stats 174 9525 9906 6280\n"
+                             "get_top_scorer 15\n"
+                             "unite_teams 6 19 10\n"
+                             "get_team_points 20\n"
+                             "get_team_points 1\n"
+                             "get_all_players_count 9\n"
+                             "get_team_points 9\n"
+                             "get_all_players 4\n"
+                             "get_num_played_games 27\n"
+                             "get_all_players 2\n"
+                             "remove_team 1\n"
+                             "unite_teams 13 3 10\n"
+                             "add_team 16 5638\n"
+                             "unite_teams 7 9 9\n"
+                             "get_top_scorer 15\n"
+                             "get_num_played_games 4\n"
+                             "get_all_players 2\n"
+                             "unite_teams 18 19 15\n"
+                             "play_match 6 4\n"
+                             "add_team 16 1371\n"
+                             "unite_teams 16 4 19\n"
+                             "remove_team 15\n"
+                             "get_top_scorer 20\n"
+                             "get_num_played_games 129\n"
+                             "get_num_played_games 171\n"
+                             "get_all_players_count 14\n"
+                             "play_match 10 10\n"
+                             "get_team_points 17\n"
+                             "update_player_stats 17 1149 7764 10425\n"
+                             "unite_teams 20 18 13\n"
+                             "remove_team 13\n"
+                             "play_match 1 20\n"
+                             "get_all_players_count 9\n"
+                             "get_all_players_count 13\n"
+                             "update_player_stats 41 466 4572 4819\n"
+                             "add_team 19 40\n"
+                             "get_all_players_count 10\n"
+                             "remove_player 149\n"
+                             "get_team_points 2\n"
+                             "unite_teams 13 2 6\n"
+                             "update_player_stats 166 11466 12241 2698\n"
+                             "remove_team 4\n"
+                             "get_team_points 17\n"
+                             "remove_player 113\n"
+                             "remove_player 54\n"
+                             "get_all_players_count 9\n"
+                             "add_team 13 783\n"
+                             "get_all_players 1\n"
+                             "knockout_winner 9 9\n"
+                             "knockout_winner 4 14\n"
+                             "knockout_winner 4 4\n"
+                             "knockout_winner 14 14\n"
+                             "knockout_winner 14 4\n"
+                             "update_player_stats 115 2133 10203 7326\n"
+                             "get_top_scorer 20\n"
+                             "unite_teams 9 2 15\n"
+                             "update_player_stats 12 5512 227 2305\n"
+                             "remove_player 71\n"
+                             "remove_team 15\n"
+                             "knockout_winner 6 15\n"
+                             "knockout_winner 1 20\n"
+                             "knockout_winner 1 10\n"
+                             "knockout_winner 11 20\n"
+                             "knockout_winner 11 10\n"
+                             "get_num_played_games 160\n"
+                             "get_all_players 17\n"
+                             "add_player 168 9 6068 11467 4007 true\n"
+                             "get_top_scorer 20\n"
+                             "get_top_scorer 3\n"
+                             "remove_team 17\n"
+                             "get_all_players 9\n"
+                             "remove_team 10\n"
+                             "knockout_winner 17 19\n"
+                             "knockout_winner 12 24\n"
+                             "knockout_winner 12 14\n"
+                             "knockout_winner 22 24\n"
+                             "knockout_winner 22 14\n"
+                             "get_all_players_count 17\n"
+                             "get_top_scorer 3\n"
+                             "get_team_points 14\n"
+                             "add_team 18 2020\n"
+                             "get_top_scorer 6\n"
+                             "get_team_points 20\n"
+                             "get_team_points 20\n"
+                             "remove_team 3\n"
+                             "remove_team 20\n"
+                             "knockout_winner 14 9\n"
+                             "knockout_winner 9 14\n"
+                             "knockout_winner 9 4\n"
+                             "knockout_winner 19 14\n"
+                             "knockout_winner 19 4\n"
+                             "remove_player 167\n"
+                             "play_match 14 9\n"
+                             "unite_teams 4 17 13\n"
+                             "get_all_players 9\n"
+                             "update_player_stats 197 7603 340 8167\n"
+                             "get_closest_player 148 3\n"
+                             "update_player_stats 77 7102 11680 6215\n"
+                             "add_player 107 2 2729 7095 6141 true\n"
+                             "add_team 16 10964\n"
+                             "knockout_winner 3 10\n"
+                             "knockout_winner -2 15\n"
+                             "knockout_winner -2 5\n"
+                             "knockout_winner 8 15\n"
+                             "knockout_winner 8 5\n"
+                             "add_player 31 4 8155 12173 3095 true\n"
+                             "get_all_players_count 2\n"
+                             "add_team 1 10022\n"
+                             "get_team_points 9\n"
+                             "remove_team 20\n"
+                             "update_player_stats 3 11628 6982 5445\n"
+                             "get_all_players_count 19\n"
+                             "add_player 59 1 8569 5168 6320 true\n"
+                             "unite_teams 17 1 17\n"
+                             "get_all_players 17\n"
+                             "get_top_scorer 3\n"
+                             "get_closest_player 190 10\n"
+                             "remove_team 14\n"
+                             "get_all_players_count 3\n"
+                             "get_team_points 13\n"
+                             "knockout_winner 19 19\n"
+                             "knockout_winner 14 24\n"
+                             "knockout_winner 14 14\n"
+                             "knockout_winner 24 24\n"
+                             "knockout_winner 24 14\n"
+                             "get_team_points 6\n"
+                             "get_all_players 4\n"
+                             "get_closest_player 159 19\n"
+                             "remove_team 3\n"
+                             "remove_team 6\n"
+                             "play_match 17 13\n"
+                             "remove_team 2\n"
+                             "get_closest_player 120 10\n"
+                             "get_all_players_count 19\n"
+                             "get_all_players 6\n"
+                             "play_match 18 13\n"
+                             "get_all_players 3\n"
+                             "remove_player 100\n"
+                             "get_all_players 17\n"
+                             "unite_teams 18 17 4\n"
+                             "get_closest_player 185 4\n"
+                             "get_num_played_games 99\n"
+                             "add_player 62 6 8920 145 9963 true\n"
+                             "get_top_scorer 6\n"
+                             "remove_team 20\n"
+                             "get_all_players_count 13\n"
+                             "get_team_points 20\n"
+                             "add_team 3 12202\n"
+                             "remove_team 20\n"
+                             "get_all_players_count 6\n"
+                             "knockout_winner 9 9\n"
+                             "knockout_winner 4 14\n"
+                             "knockout_winner 4 4\n"
+                             "knockout_winner 14 14\n"
+                             "knockout_winner 14 4\n"
+                             "get_all_players 4\n"
+                             "unite_teams 9 3 20\n"
+                             "add_player 152 19 596 12247 5428 true\n"
+                             "add_player 169 17 3053 3487 2426 true\n"
+                             "get_all_players 18\n"
+                             "get_team_points 17\n"
+                             "get_all_players 20\n"
+                             "update_player_stats 56 6166 4320 9575\n"
+                             "unite_teams 20 2 19\n"
+                             "remove_team 16\n"
+                             "get_team_points 4\n"
+                             "remove_team 2\n"
+                             "unite_teams 4 15 4\n"
+                             "get_team_points 10\n"
+                             "add_team 4 10912\n"
+                             "knockout_winner 18 19\n"
+                             "knockout_winner 13 24\n"
+                             "knockout_winner 13 14\n"
+                             "knockout_winner 23 24\n"
+                             "knockout_winner 23 14\n"
+                             "get_num_played_games 143\n"
+                             "get_all_players 18\n"
+                             "get_top_scorer 13\n"
+                             "get_num_played_games 146\n"
+                             "add_team 16 11628\n"
+                             "get_team_points 2\n"
+                             "add_player 3 13 5843 6558 8227 true\n"
+                             "get_all_players_count 19\n"
+                             "get_top_scorer 18\n"
+                             "knockout_winner 18 17\n"
+                             "knockout_winner 13 22\n"
+                             "knockout_winner 13 12\n"
+                             "knockout_winner 23 22\n"
+                             "knockout_winner 23 12\n"
+                             "get_all_players_count 16\n"
+                             "get_all_players_count 6\n"
+                             "update_player_stats 37 5200 12311 2094\n"
+                             "get_all_players 13\n"
+                             "get_closest_player 195 18\n"
+                             "add_player 192 10 10251 11091 4308 true\n"
+                             "add_player 130 9 10460 4086 10989 false\n"
+                             "play_match 14 3\n"
+                             "add_player 60 6 1269 2310 6239 true\n"
+                             "play_match 10 19\n"
+                             "play_match 13 4\n"
+                             "remove_player 77\n"
+                             "remove_player 19\n"
+                             "get_all_players 20\n"
+                             "knockout_winner 10 10\n"
+                             "knockout_winner 5 15\n"
+                             "knockout_winner 5 5\n"
+                             "knockout_winner 15 15\n"
+                             "knockout_winner 15 5\n"
+                             "get_num_played_games 118\n"
+                             "knockout_winner 17 4\n"
+                             "knockout_winner 12 9\n"
+                             "knockout_winner 12 -1\n"
+                             "knockout_winner 22 9\n"
+                             "knockout_winner 22 -1\n"
+                             "get_closest_player 191 9\n"
+                             "get_all_players_count 16\n"
+                             "get_all_players_count 13\n"
+                             "get_closest_player 83 19\n"
+                             "add_team 4 6926\n"
+                             "remove_team 14\n"
+                             "get_num_played_games 21\n"
+                             "update_player_stats 66 11470 12127 10140\n"
+                             "get_team_points 16\n"
+                             "get_all_players 13\n"
+                             "add_player 80 18 6376 11803 11540 true\n"
+                             "unite_teams 19 2 13\n"
+                             "get_num_played_games 158\n"
+                             "add_player 158 3 5990 5944 402 true\n"
+                             "update_player_stats 106 1617 3302 8160\n"
+                             "get_num_played_games 163\n"
+                             "add_player 52 10 958 6917 3085 true\n"
+                             "get_closest_player 84 9\n"
+                             "knockout_winner 14 18\n"
+                             "knockout_winner 9 23\n"
+                             "knockout_winner 9 13\n"
+                             "knockout_winner 19 23\n"
+                             "knockout_winner 19 13\n"
+                             "get_top_scorer 9\n"
+                             "remove_team 13\n"
+                             "get_team_points 4\n"
+                             "add_team 13 7764\n"
+                             "get_team_points 2\n"
+                             "remove_player 192\n"
+                             "get_num_played_games 102\n"
+                             "get_all_players_count 9\n"
+                             "knockout_winner 6 14\n"
+                             "knockout_winner 1 19\n"
+                             "knockout_winner 1 9\n"
+                             "knockout_winner 11 19\n"
+                             "knockout_winner 11 9\n"
+                             "update_player_stats 79 7645 8669 2687\n"
+                             "get_num_played_games 13\n"
+                             "get_all_players_count 3\n"
+                             "update_player_stats 147 833 7872 1218\n"
+                             "remove_player 159\n"
+                             "remove_player 38\n"
+                             "get_top_scorer 13\n"
+                             "knockout_winner 6 10\n"
+                             "knockout_winner 1 15\n"
+                             "knockout_winner 1 5\n"
+                             "knockout_winner 11 15\n"
+                             "knockout_winner 11 5\n"
+                             "get_top_scorer 3\n"
+                             "get_top_scorer 10\n"
+                             "remove_team 6\n"
+                             "play_match 13 3\n"
+                             "unite_teams 18 4 9\n"
+                             "update_player_stats 191 9464 8219 8111\n"
+                             "remove_team 9\n"
+                             "get_team_points 16\n"
+                             "get_all_players 3\n"
+                             "unite_teams 2 6 2\n"
+                             "get_team_points 17\n"
+                             "get_all_players_count 17\n"
+                             "get_num_played_games 154\n"
+                             "remove_team 9\n"
+                             "remove_team 17\n"
+                             "get_all_players 2\n"
+                             "unite_teams 13 3 10\n"
+                             "get_closest_player 21 18\n"
+                             "get_all_players_count 10\n"
+                             "unite_teams 16 14 17\n"
+                             "get_all_players_count 17\n"
+                             "get_all_players 4\n"
+                             "get_top_scorer 13\n"
+                             "remove_team 16\n"
+                             "get_all_players_count 19\n"
+                             "add_team 17 6146\n"
+                             "get_all_players_count 13\n"
+                             "get_all_players 3\n"
+                             "unite_teams 10 10 16\n"
+                             "play_match 17 2\n"
+                             "update_player_stats 50 3403 9974 4957\n"
+                             "knockout_winner 16 20\n"
+                             "knockout_winner 11 25\n"
+                             "knockout_winner 11 15\n"
+                             "knockout_winner 21 25\n"
+                             "knockout_winner 21 15\n"
+                             "get_num_played_games 176\n"
+                             "add_player 28 2 10401 1761 8150 true\n"
+                             "remove_player 160\n"
+                             "update_player_stats 138 6011 8654 10186\n"
+                             "update_player_stats 185 4470 6597 11371\n"
+                             "add_player 152 13 7166 1676 355 true\n"
+                             "play_match 17 13\n"
+                             "knockout_winner 4 2\n"
+                             "knockout_winner -1 7\n"
+                             "knockout_winner -1 -3\n"
+                             "knockout_winner 9 7\n"
+                             "knockout_winner 9 -3\n"
+                             "get_num_played_games 5\n"
+                             "update_player_stats 194 11010 262 9670\n"
+                             "update_player_stats 119 10622 3835 3856\n"
+                             "get_all_players 19\n"
+                             "add_team 17 11601\n"
+                             "unite_teams 18 3 3\n"
+                             "get_top_scorer 3\n"
+                             "get_all_players_count 16\n"
+                             "remove_team 2\n"
+                             "play_match 9 10\n"
+                             "play_match 19 19\n"
+                             "update_player_stats 95 1595 9814 4289\n"
+                             "remove_team 20\n"
+                             "add_player 59 10 6629 4926 2231 true\n"
+                             "update_player_stats 162 7098 1535 46\n"
+                             "add_player 25 10 10087 3195 1613 true\n"
+                             "remove_team 19\n"
+                             "get_num_played_games 104\n"
+                             "get_num_played_games 179\n"
+                             "update_player_stats 133 2581 4590 3378\n"
+                             "remove_team 4\n"
+                             "get_team_points 10\n"
+                             "update_player_stats 182 6696 8008 395\n"
+                             "get_team_points 20\n"
+                             "add_player 89 2 10760 1064 5706 true\n"
+                             "get_all_players_count 10\n"
+                             "remove_player 20\n"
+                             "get_closest_player 98 3\n"
+                             "remove_player 155\n"
+                             "add_team 13 2056\n"
+                             "add_player 190 20 1314 8631 61 true\n"
+                             "add_team 10 7811\n"
+                             "get_all_players_count 19\n"
+                             "update_player_stats 200 5824 10223 6547\n"
+                             "remove_player 42\n"
+                             "get_top_scorer 4\n"
+                             "remove_team 13\n"
+                             "play_match 13 9\n"
+                             "get_all_players_count 20\n"
+                             "remove_player 59\n"
+                             "knockout_winner 17 17\n"
+                             "knockout_winner 12 22\n"
+                             "knockout_winner 12 12\n"
+                             "knockout_winner 22 22\n"
+                             "knockout_winner 22 12\n"
+                             "get_all_players_count 10\n"
+                             "get_top_scorer 9\n"
+                             "play_match 14 20\n"
+                             "add_team 3 8009\n"
+                             "unite_teams 17 3 19\n"
+                             "add_team 4 6295\n"
+                             "get_team_points 10\n"
+                             "unite_teams 17 16 17\n"
+                             "get_num_played_games 35\n"
+                             "unite_teams 14 2 19\n"
+                             "get_all_players 14\n"
+                             "get_all_players_count 19\n"
+                             "get_top_scorer 17\n"
+                             "get_team_points 4\n"
+                             "unite_teams 19 10 17\n"
+                             "knockout_winner 14 4\n"
+                             "knockout_winner 9 9\n"
+                             "knockout_winner 9 -1\n"
+                             "knockout_winner 19 9\n"
+                             "knockout_winner 19 -1\n"
+                             "get_closest_player 74 10\n"
+                             "play_match 13 3\n"
+                             "get_top_scorer 20\n"
+                             "add_player 125 13 2100 4095 3352 true\n"
+                             "add_player 63 19 1055 10317 8599 false\n"
+                             "unite_teams 19 9 20\n"
+                             "play_match 14 9\n"
+                             "get_all_players 17\n"
+                             "get_all_players_count 9\n"
+                             "knockout_winner 20 19\n"
+                             "knockout_winner 15 24\n"
+                             "knockout_winner 15 14\n"
+                             "knockout_winner 25 24\n"
+                             "knockout_winner 25 14\n"
+                             "add_player 172 20 926 7474 9327 true\n"
+                             "get_closest_player 87 19\n"
+                             "add_team 13 10699\n"
+                             "update_player_stats 58 1302 5770 8118\n"
+                             "remove_team 10\n"
+                             "get_all_players_count 14\n"
+                             "get_all_players_count 4\n"
+                             "knockout_winner 19 17\n"
+                             "knockout_winner 14 22\n"
+                             "knockout_winner 14 12\n"
+                             "knockout_winner 24 22\n"
+                             "knockout_winner 24 12\n"
+                             "add_player 174 3 7172 8889 6563 true\n"
+                             "get_closest_player 158 2\n"
+                             "knockout_winner 13 9\n"
+                             "knockout_winner 8 14\n"
+                             "knockout_winner 8 4\n"
+                             "knockout_winner 18 14\n"
+                             "knockout_winner 18 4\n"
+                             "get_team_points 14\n"
+                             "remove_team 10\n"
+                             "get_num_played_games 94\n"
+                             "remove_player 196\n"
+                             "get_team_points 9\n"
+                             "get_all_players_count 14\n"
+                             "knockout_winner 2 2\n"
+                             "knockout_winner -3 7\n"
+                             "knockout_winner -3 -3\n"
+                             "knockout_winner 7 7\n"
+                             "knockout_winner 7 -3\n"
+                             "get_all_players 14\n"
+                             "update_player_stats 150 10991 6784 5985\n"
+                             "play_match 13 3\n"
+                             "remove_player 144\n"
+                             "update_player_stats 157 11961 7915 10556\n"
+                             "get_all_players 10\n"
+                             "remove_player 163\n"
+                             "update_player_stats 172 3262 621 4887\n"
+                             "remove_player 64\n"
+                             "update_player_stats 96 6614 2661 6032\n"
+                             "get_all_players 19\n"
+                             "remove_player 182\n"
+                             "remove_player 186\n"
+                             "get_all_players 3\n"
+                             "add_team 17 7761\n"
+                             "play_match 2 3\n"
+                             "knockout_winner 3 17\n"
+                             "knockout_winner -2 22\n"
+                             "knockout_winner -2 12\n"
+                             "knockout_winner 8 22\n"
+                             "knockout_winner 8 12\n"
+                             "remove_player 80\n"
+                             "unite_teams 2 9 20\n"
+                             "add_team 2 11686\n"
+                             "remove_player 3\n"
+                             "remove_player 4\n"
+                             "remove_player 5\n"
+                             "remove_player 9\n"
+                             "remove_player 11\n"
+                             "remove_player 12\n"
+                             "remove_player 13\n"
+                             "remove_player 17\n"
+                             "remove_player 18\n"
+                             "remove_player 21\n"
+                             "remove_player 22\n"
+                             "remove_player 23\n"
+                             "remove_player 24\n"
+                             "remove_player 25\n"
+                             "remove_player 26\n"
+                             "remove_player 27\n"
+                             "remove_player 28\n"
+                             "remove_player 30\n"
+                             "remove_player 31\n"
+                             "remove_player 35\n"
+                             "remove_player 37\n"
+                             "remove_player 39\n"
+                             "remove_player 41\n"
+                             "remove_player 43\n"
+                             "remove_player 45\n"
+                             "remove_player 46\n"
+                             "remove_player 49\n"
+                             "remove_player 50\n"
+                             "remove_player 51\n"
+                             "remove_player 52\n"
+                             "remove_player 53\n"
+                             "remove_player 55\n"
+                             "remove_player 56\n"
+                             "remove_player 57\n"
+                             "remove_player 58\n"
+                             "remove_player 60\n"
+                             "remove_player 62\n"
+                             "remove_player 63\n"
+                             "remove_player 65\n"
+                             "remove_player 66\n"
+                             "remove_player 67\n"
+                             "remove_player 68\n"
+                             "remove_player 69\n"
+                             "remove_player 72\n"
+                             "remove_player 73\n"
+                             "remove_player 74\n"
+                             "remove_player 75\n"
+                             "remove_player 79\n"
+                             "remove_player 81\n"
+                             "remove_player 82\n"
+                             "remove_player 83\n"
+                             "remove_player 84\n"
+                             "remove_player 85\n"
+                             "remove_player 86\n"
+                             "remove_player 87\n"
+                             "remove_player 88\n"
+                             "remove_player 89\n"
+                             "remove_player 90\n"
+                             "remove_player 92\n"
+                             "remove_player 93\n"
+                             "remove_player 94\n"
+                             "remove_player 95\n"
+                             "remove_player 96\n"
+                             "remove_player 97\n"
+                             "remove_player 98\n"
+                             "remove_player 99\n"
+                             "remove_player 102\n"
+                             "remove_player 104\n"
+                             "remove_player 105\n"
+                             "remove_player 106\n"
+                             "remove_player 107\n"
+                             "remove_player 108\n"
+                             "remove_player 110\n"
+                             "remove_player 111\n"
+                             "remove_player 115\n"
+                             "remove_player 117\n"
+                             "remove_player 118\n"
+                             "remove_player 119\n"
+                             "remove_player 120\n"
+                             "remove_player 123\n"
+                             "remove_player 124\n"
+                             "remove_player 125\n"
+                             "remove_player 126\n"
+                             "remove_player 127\n"
+                             "remove_player 128\n"
+                             "remove_player 129\n"
+                             "remove_player 130\n"
+                             "remove_player 133\n"
+                             "remove_player 134\n"
+                             "remove_player 135\n"
+                             "remove_player 137\n"
+                             "remove_player 138\n"
+                             "remove_player 139\n"
+                             "remove_player 140\n"
+                             "remove_player 143\n"
+                             "remove_player 145\n"
+                             "remove_player 146\n"
+                             "remove_player 147\n"
+                             "remove_player 148\n"
+                             "remove_player 150\n"
+                             "remove_player 152\n"
+                             "remove_player 154\n"
+                             "remove_player 156\n"
+                             "remove_player 157\n"
+                             "remove_player 158\n"
+                             "remove_player 161\n"
+                             "remove_player 162\n"
+                             "remove_player 165\n"
+                             "remove_player 166\n"
+                             "remove_player 168\n"
+                             "remove_player 169\n"
+                             "remove_player 171\n"
+                             "remove_player 172\n"
+                             "remove_player 173\n"
+                             "remove_player 174\n"
+                             "remove_player 176\n"
+                             "remove_player 178\n"
+                             "remove_player 179\n"
+                             "remove_player 180\n"
+                             "remove_player 181\n"
+                             "remove_player 183\n"
+                             "remove_player 185\n"
+                             "remove_player 188\n"
+                             "remove_player 190\n"
+                             "remove_player 191\n"
+                             "remove_player 194\n"
+                             "remove_player 195\n"
+                             "remove_player 197\n"
+                             "remove_player 198\n"
+                             "remove_player 199\n"
+                             "remove_player 200\n"
+                             "remove_team 10\n"
+                             "remove_team 13\n"
+                             "remove_team 14\n"
+                             "remove_team 20\n"
+                             "remove_team 19\n"
+                             "remove_team 9\n"
+                             "remove_team 4\n"
+                             "remove_team 2\n"
+                             "remove_team 3\n"
+                             "remove_team 17");
+    std::cin.rdbuf(input.rdbuf());
+    // tests go here
+    int d1, d2, d3, d4, d5;
+    bool b1;
+
+    // Init
+    world_cup_t *obj = new world_cup_t();
+
+    // Execute all commands in file
+    string op;
+    while (cin >> op)
     {
-        SECTION("simple insert team")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            delete obj;
+        if (!op.compare("add_team")) {
+            cin >> d1 >> d2;
+            print(op, obj->add_team(d1, d2));
+        } else if (!op.compare("remove_team")) {
+            cin >> d1;
+            print(op, obj->remove_team(d1));
+        } else if (!op.compare("add_player")) {
+            cin >> d1 >> d2 >> d3 >> d4 >> d5 >> b1;
+            print(op, obj->add_player(d1, d2, d3, d4, d5, b1));
+        } else if (!op.compare("remove_player")) {
+            cin >> d1;
+            print(op, obj->remove_player(d1));
+        } else if (!op.compare("update_player_stats")) {
+            cin >> d1 >> d2 >> d3 >> d4;
+            print(op, obj->update_player_stats(d1, d2, d3, d4));
+        } else if (!op.compare("play_match")) {
+            cin >> d1 >> d2;
+            print(op, obj->play_match(d1, d2));
+        } else if (!op.compare("get_num_played_games")) {
+            cin >> d1;
+            print(op, obj->get_num_played_games(d1));
+        } else if (!op.compare("get_team_points")) {
+            cin >> d1;
+            print(op, obj->get_team_points(d1));
+        } else if (!op.compare("unite_teams")) {
+            cin >> d1 >> d2 >> d3;
+            print(op, obj->unite_teams(d1, d2, d3));
+        } else if (!op.compare("get_top_scorer")) {
+            cin >> d1;
+            print(op, obj->get_top_scorer(d1));
+        } else if (!op.compare("get_all_players_count")) {
+            cin >> d1;
+            print(op, obj->get_all_players_count(d1));
+        } else if (!op.compare("get_all_players")) {
+            cin >> d1;
+            query_get_all_players(op, obj, d1);
+        } else if (!op.compare("get_closest_player")) {
+            cin >> d1 >> d2;
+            print(op, obj->get_closest_player(d1, d2));
+        } else if (!op.compare("knockout_winner")) {
+            cin >> d1 >> d2;
+            print(op, obj->knockout_winner(d1, d2));
+        } else {
+            cout << "Unknown command: " << op << endl;
+            return -1;
         }
-
-        SECTION("insert team with negative id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(-1, 2);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("insert team with negative points")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, -2);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("insert team with zero points")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 0);
-            REQUIRE(res == StatusType::SUCCESS);
-            delete obj;
-        }
-
-        SECTION("insert team with 0 id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(0, 5);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("insert team with 0 id and 0 points")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(0, 0);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("insert team that exists")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(1, 5);
-            REQUIRE(res == StatusType::FAILURE);
-            delete obj;
-        }
-
-        SECTION("simple remove team")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_team(1);
-            REQUIRE(res == StatusType::SUCCESS);
-            delete obj;
-        }
-
-        SECTION("remove team that doesn't exist")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->remove_team(1);
-            REQUIRE(res == StatusType::FAILURE);
-            delete obj;
-        }
-
-        SECTION("remove team twice")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_team(1);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_team(1);
-            REQUIRE(res == StatusType::FAILURE);
-            delete obj;
-        }
-
-        SECTION("remove team with negative id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->remove_team(-1);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("remove team with 0 id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->remove_team(0);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
+        // Verify no faults
+        if (cin.fail()){
+            cout << "Invalid input format" << endl;
+            return -1;
         }
     }
 
-    TEST_CASE("add and remove player")
-    {
+    // Quit
+    std::cin.rdbuf(orig);
+    delete obj;
+    return 0;
+}
 
-        SECTION("simple add player")
+// Helpers
+static const char *StatusTypeStr[] =
         {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 1, 3, 3, 3, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            delete obj;
-        }
+                "SUCCESS",
+                "ALLOCATION_ERROR",
+                "INVALID_INPUT",
+                "FAILURE"
+        };
 
-        SECTION("simple add goal keeper player")
+void print(string cmd, StatusType res)
+{
+    cout << cmd << ": " << StatusTypeStr[(int) res] << endl;
+}
+
+void print(string cmd, output_t<int> res)
+{
+    if (res.status() == StatusType::SUCCESS) {
+        cout << cmd << ": " << StatusTypeStr[(int) res.status()] << ", " << res.ans() << endl;
+    } else {
+        cout << cmd << ": " << StatusTypeStr[(int) res.status()] << endl;
+    }
+}
+
+void query_get_all_players(string cmd, world_cup_t *obj, int teamID)
+{
+    output_t<int> count = obj->get_all_players_count(teamID);
+    // Allocate if okay
+    int *out_mem = nullptr;
+    if (count.status() == StatusType::SUCCESS && (count.ans() > 0)) {
+        out_mem = new int[count.ans()];
+        for (int i = 0; i < count.ans(); ++i) out_mem[i] = -1;
+    }
+    // Call function
+    StatusType status = obj->get_all_players(teamID, out_mem);
+    print(cmd, status);
+    if (status == StatusType::SUCCESS) {
+        for (int i = 0; i < count.ans(); ++i)
         {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 2, 3, 3, 3, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            delete obj;
-        }
-
-        SECTION("add player with negative id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(-1, 2, 3, 3, 3, true);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("add player with negative team id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, -2, 3, 3, 3, true);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("add player with negative games")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 2, -3, 3, 3, true);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("add player with 0 id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(0, 2, 3, 3, 3, true);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("add player with 0 team id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 0, 3, 3, 3, true);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("add player with negative cards")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 2, 3, 3, -3, true);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("add player with 0 games and positive goals")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 2, 0, 3, 0, true);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("add player with 0 games and positive cards")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 2, 0, 0, 3, true);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("add player with 0 games and positive goals and cards")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 2, 0, 3, 3, true);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("add player with 0 id and 0 team id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(0, 0, 3, 3, 3, true);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("add player with many zeroes")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(0, 2, 0, 0, 0, true);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("add player with zero all")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(0, 0, 0, 0, 0, true);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("add player that exists")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 1, 3, 3, 3, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 1, 3, 3, 3, true);
-            REQUIRE(res == StatusType::FAILURE);
-            delete obj;
-        }
-
-        SECTION("add player with team that doesn't exist")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 1, 3, 3, 3, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(4, 4, 4, 4, 4, true);
-            REQUIRE(res == StatusType::FAILURE);
-            delete obj;
-        }
-
-        SECTION("add teams and players - segel test")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 10000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 20000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(3, 30000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(4, 40000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 10, 0, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 1, 10, 4, 3, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 1, 10, 0, 0, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1011, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1012, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(2001, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2002, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2003, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2004, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2005, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2006, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2007, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2008, 2, 20, 6, 4, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2009, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2010, 2, 0, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2011, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(3001, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3002, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3003, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3004, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3005, 3, 30, 2, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3006, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3007, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3008, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3009, 3, 30, 0, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3010, 3, 30, 0, 0, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3011, 3, 30, 0, 0, true);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(4001, 4, 2, 1, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(4002, 4, 2, 2, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            delete obj;
-        }
-
-        SECTION("simple remove player")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 1, 3, 3, 3, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(1);
-            REQUIRE(res == StatusType::SUCCESS);
-            delete obj;
-        }
-
-        SECTION("remove player that doesn't exist")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->remove_player(1);
-            REQUIRE(res == StatusType::FAILURE);
-            delete obj;
-        }
-
-        SECTION("remove player twice")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 1, 3, 3, 3, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(1);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(1);
-            REQUIRE(res == StatusType::FAILURE);
-            delete obj;
-        }
-
-        SECTION("remove player with negative id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->remove_player(-1);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("remove player with 0 id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->remove_player(0);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("add teams and players - segel test - remove at random stages")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 10000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 20000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(3, 30000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(4, 40000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 10, 0, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 1, 10, 4, 3, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(1007);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(1002);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 1, 10, 0, 0, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1011, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(1001);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1012, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(2001, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2002, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2003, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2004, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2005, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(1011);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2006, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2007, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2008, 2, 20, 6, 4, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2009, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(2001);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2010, 2, 0, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2011, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(2010);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(3001, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3002, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3003, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3004, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3005, 3, 30, 2, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3006, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3007, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3008, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3009, 3, 30, 0, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3010, 3, 30, 0, 0, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3011, 3, 30, 0, 0, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(3011);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(3008);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(3002);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(3010);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(3009);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(3005);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(3004);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(3006);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(3007);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(3001);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(3003);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(4001, 4, 2, 1, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(4002, 4, 2, 2, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            delete obj;
+            cout << out_mem[i] << endl;
         }
     }
-
-    TEST_CASE("update player stats")
-    {
-        SECTION("simple update player stats")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 1, 3, 3, 3, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->update_player_stats(1, 1, 1, 1);
-            REQUIRE(res == StatusType::SUCCESS);
-            delete obj;
-        }
-
-        SECTION("update player stats with negative id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->update_player_stats(-1, 1, 1, 1);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("update player stats with 0 id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->update_player_stats(0, 1, 1, 1);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("update player stats with negative games")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->update_player_stats(1, -1, 1, 1);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("update player stats with negative goals")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->update_player_stats(1, 1, -1, 1);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("update player stats with negative cards")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->update_player_stats(1, 1, 1, -1);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("update player stats of a player that doesn't exist")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->update_player_stats(1, 1, 1, 1);
-            REQUIRE(res == StatusType::FAILURE);
-            delete obj;
-        }
-
-        SECTION("update player stats of a player that was removed")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 1, 3, 3, 3, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(1);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->update_player_stats(1, 1, 1, 1);
-            REQUIRE(res == StatusType::FAILURE);
-            delete obj;
-        }
-
-        SECTION("update player stats of a player that was removed and added again")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 1, 3, 3, 3, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->remove_player(1);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 1, 3, 3, 3, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->update_player_stats(1, 1, 1, 1);
-            REQUIRE(res == StatusType::SUCCESS);
-            delete obj;
-        }
-
-        SECTION("update twice player stats")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1, 1, 3, 3, 3, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->update_player_stats(1, 1, 1, 1);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->update_player_stats(1, 1, 1, 1);
-            REQUIRE(res == StatusType::SUCCESS);
-            delete obj;
-        }
-
-        SECTION("add teams and players - segel test")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 10000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 20000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(3, 30000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(4, 40000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 10, 0, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 1, 10, 4, 3, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 1, 10, 0, 0, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1011, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1012, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(2001, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2002, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2003, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2004, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2005, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2006, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2007, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2008, 2, 20, 6, 4, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2009, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2010, 2, 0, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2011, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(3001, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3002, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3003, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3004, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3005, 3, 30, 2, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3006, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3007, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3008, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3009, 3, 30, 0, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3010, 3, 30, 0, 0, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3011, 3, 30, 0, 0, true);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(4001, 4, 2, 1, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(4002, 4, 2, 2, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->update_player_stats(3001, 2, 1, 1);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->update_player_stats(3011, 2, 1, 1);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->update_player_stats(1001, 2, 1, 1);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->update_player_stats(4001, 2, 1, 1);
-            REQUIRE(res == StatusType::SUCCESS);
-            // play_match 2 3 play_match 1 2 get_num_played_games 2003 get_team_points 3 unite_teams 1 2 2 get_top_scorer - 1 get_all_players_count 3 get_all_players 4 get_closest_player 2008 2 knockout_winner 0 3 remove_team 2 remove_player 3008
-
-            delete obj;
-        }
-    }
-
-    TEST_CASE("get num played games")
-    {
-        SECTION("simple get played")
-        {
-            world_cup_t *obj = new world_cup_t();
-
-            StatusType res = obj->add_team(1, 3);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 0, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn = obj->get_num_played_games(1001);
-            REQUIRE(resn.status() == StatusType::SUCCESS);
-            REQUIRE(resn.ans() == 10);
-
-            delete obj;
-        }
-
-        SECTION("simple get played")
-        {
-            world_cup_t *obj = new world_cup_t();
-
-            StatusType res = obj->add_team(1, 3);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 0, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn = obj->get_num_played_games(1002);
-            REQUIRE(resn.status() == StatusType::SUCCESS);
-            REQUIRE(resn.ans() == 0);
-
-            delete obj;
-        }
-
-        SECTION("get num played for non exist player")
-        {
-            world_cup_t *obj = new world_cup_t();
-
-            StatusType res = obj->add_team(1, 3);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 0, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn = obj->get_num_played_games(1003);
-            REQUIRE(resn.status() == StatusType::FAILURE);
-
-            delete obj;
-        }
-
-        SECTION("get num played for non exist player2")
-        {
-            world_cup_t *obj = new world_cup_t();
-            output_t<int> resn = obj->get_num_played_games(1003);
-            REQUIRE(resn.status() == StatusType::FAILURE);
-
-            delete obj;
-        }
-
-        SECTION("get_num_played for negative player id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            output_t<int> resn = obj->get_num_played_games(-1);
-            REQUIRE(resn.status() == StatusType::INVALID_INPUT);
-
-            delete obj;
-        }
-
-        SECTION("get_num_played for 0 player id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            output_t<int> resn = obj->get_num_played_games(0);
-            REQUIRE(resn.status() == StatusType::INVALID_INPUT);
-
-            delete obj;
-        }
-
-        SECTION("segel test")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 10000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 20000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(3, 30000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(4, 40000);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            output_t<int> resn1 = obj->get_num_played_games(1002);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 10);
-
-            res = obj->add_player(1003, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 10, 0, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 1, 10, 4, 3, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            output_t<int> resn2 = obj->get_num_played_games(1006);
-            REQUIRE(resn2.status() == StatusType::SUCCESS);
-            REQUIRE(resn2.ans() == 10);
-
-            res = obj->add_player(1008, 1, 10, 0, 0, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 1, 10, 0, 0, false);
-
-            output_t<int> resn3 = obj->get_num_played_games(1010);
-            REQUIRE(resn3.status() == StatusType::SUCCESS);
-            REQUIRE(resn3.ans() == 10);
-
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1011, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1012, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(2001, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2002, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2003, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2004, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2005, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2006, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2007, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2008, 2, 20, 6, 4, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2009, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2010, 2, 0, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2011, 2, 20, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(3001, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3002, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3003, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3004, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3005, 3, 30, 2, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3006, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3007, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3008, 3, 30, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3009, 3, 30, 0, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3010, 3, 30, 0, 0, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3011, 3, 30, 0, 0, true);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(4001, 4, 2, 1, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(4002, 4, 2, 2, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            output_t<int> resn4 = obj->get_num_played_games(3001);
-            REQUIRE(resn4.status() == StatusType::SUCCESS);
-            REQUIRE(resn4.ans() == 30);
-
-            output_t<int> resn5 = obj->get_num_played_games(3011);
-            REQUIRE(resn5.status() == StatusType::SUCCESS);
-            REQUIRE(resn5.ans() == 30);
-
-            output_t<int> resn6 = obj->get_num_played_games(1001);
-            REQUIRE(resn6.status() == StatusType::SUCCESS);
-            REQUIRE(resn6.ans() == 10);
-
-            output_t<int> resn7 = obj->get_num_played_games(4001);
-            REQUIRE(resn7.status() == StatusType::SUCCESS);
-            REQUIRE(resn7.ans() == 2);
-
-            res = obj->update_player_stats(3001, 2, 1, 1);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->update_player_stats(3011, 2, 1, 1);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->update_player_stats(1001, 2, 1, 1);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->update_player_stats(4001, 2, 1, 1);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            output_t<int> resn8 = obj->get_num_played_games(3001);
-            REQUIRE(resn8.status() == StatusType::SUCCESS);
-            REQUIRE(resn8.ans() == 32);
-
-            output_t<int> resn9 = obj->get_num_played_games(3011);
-            REQUIRE(resn9.status() == StatusType::SUCCESS);
-            REQUIRE(resn9.ans() == 32);
-
-            output_t<int> resn10 = obj->get_num_played_games(1001);
-            REQUIRE(resn10.status() == StatusType::SUCCESS);
-            REQUIRE(resn10.ans() == 12);
-
-            output_t<int> resn11 = obj->get_num_played_games(4001);
-            REQUIRE(resn11.status() == StatusType::SUCCESS);
-            REQUIRE(resn11.ans() == 4);
-
-            delete obj;
-        }
-    }
-
-    TEST_CASE("get team points")
-    {
-        SECTION("simple get_team_points")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_team_points(1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 2);
-
-            delete obj;
-        }
-
-        SECTION("get_team_points negative teamid")
-        {
-            world_cup_t *obj = new world_cup_t();
-            output_t<int> resn1 = obj->get_team_points(-6);
-            REQUIRE(resn1.status() == StatusType::INVALID_INPUT);
-
-            delete obj;
-        }
-
-        SECTION("get_team_points 0 teamid")
-        {
-            world_cup_t *obj = new world_cup_t();
-            output_t<int> resn1 = obj->get_team_points(0);
-            REQUIRE(resn1.status() == StatusType::INVALID_INPUT);
-
-            delete obj;
-        }
-
-        SECTION("get_team_points no team id")
-        {
-            world_cup_t *obj = new world_cup_t();
-            output_t<int> resn1 = obj->get_team_points(1);
-            REQUIRE(resn1.status() == StatusType::FAILURE);
-
-            delete obj;
-        }
-
-        SECTION("get_team_points 2 teams")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 3);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_team_points(1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 2);
-            output_t<int> resn2 = obj->get_team_points(2);
-            REQUIRE(resn2.status() == StatusType::SUCCESS);
-            REQUIRE(resn2.ans() == 3);
-
-            delete obj;
-        }
-
-        SECTION("get_team_points with add player")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_team_points(1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 2);
-
-            delete obj;
-        }
-
-        SECTION("get_team_points with 10 teams")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 3);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(3, 4);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(4, 5);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(5, 6);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(6, 7);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(7, 8);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(8, 9);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(9, 10);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(10, 11);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_team_points(1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 2);
-            output_t<int> resn2 = obj->get_team_points(2);
-            REQUIRE(resn2.status() == StatusType::SUCCESS);
-            REQUIRE(resn2.ans() == 3);
-            output_t<int> resn3 = obj->get_team_points(3);
-            REQUIRE(resn3.status() == StatusType::SUCCESS);
-            REQUIRE(resn3.ans() == 4);
-            output_t<int> resn4 = obj->get_team_points(4);
-            REQUIRE(resn4.status() == StatusType::SUCCESS);
-            REQUIRE(resn4.ans() == 5);
-            output_t<int> resn5 = obj->get_team_points(5);
-            REQUIRE(resn5.status() == StatusType::SUCCESS);
-            REQUIRE(resn5.ans() == 6);
-            output_t<int> resn6 = obj->get_team_points(6);
-            REQUIRE(resn6.status() == StatusType::SUCCESS);
-            REQUIRE(resn6.ans() == 7);
-            output_t<int> resn7 = obj->get_team_points(7);
-            REQUIRE(resn7.status() == StatusType::SUCCESS);
-            REQUIRE(resn7.ans() == 8);
-            output_t<int> resn8 = obj->get_team_points(8);
-            REQUIRE(resn8.status() == StatusType::SUCCESS);
-            REQUIRE(resn8.ans() == 9);
-            output_t<int> resn9 = obj->get_team_points(9);
-            REQUIRE(resn9.status() == StatusType::SUCCESS);
-            REQUIRE(resn9.ans() == 10);
-            output_t<int> resn10 = obj->get_team_points(10);
-            REQUIRE(resn10.status() == StatusType::SUCCESS);
-            REQUIRE(resn10.ans() == 11);
-
-            delete obj;
-        }
-    }
-
-    TEST_CASE("get_top_scorer")
-    {
-        SECTION("simple get_top_scorer in specific team")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_top_scorer(1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 1001);
-
-            delete obj;
-        }
-
-        SECTION("get_top_scorer zero team")
-        {
-            world_cup_t *obj = new world_cup_t();
-            output_t<int> resn1 = obj->get_top_scorer(0);
-            REQUIRE(resn1.status() == StatusType::INVALID_INPUT);
-
-            delete obj;
-        }
-
-        SECTION("get_top_scorer not exist team")
-        {
-            world_cup_t *obj = new world_cup_t();
-            output_t<int> resn1 = obj->get_top_scorer(1);
-            REQUIRE(resn1.status() == StatusType::FAILURE);
-
-            delete obj;
-        }
-
-        SECTION("get_top_scorer in empty team")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_top_scorer(1);
-            REQUIRE(resn1.status() == StatusType::FAILURE);
-
-            delete obj;
-        }
-
-        SECTION("get_top_scorer in empy all")
-        {
-            world_cup_t *obj = new world_cup_t();
-            output_t<int> resn1 = obj->get_top_scorer(-1);
-            REQUIRE(resn1.status() == StatusType::FAILURE);
-
-            delete obj;
-        }
-
-        SECTION("get_top_scorer 1 team 5 players")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 20, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 10, 3, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 10, 33, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_top_scorer(1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 1004);
-
-            delete obj;
-        }
-
-        SECTION("get_top_scorer from all 5 players")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 33, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 10, 3, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 10, 20, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_top_scorer(-10);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 1002);
-
-            delete obj;
-        }
-
-        SECTION("get_top_scorer 1 team 5 players tie on goals")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 33, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 10, 3, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 10, 33, 6, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_top_scorer(1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 1002);
-
-            delete obj;
-        }
-
-        SECTION("get_top_scorer 1 team 5 players tie on goals2")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 33, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 10, 3, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 10, 33, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_top_scorer(1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 1004);
-
-            delete obj;
-        }
-
-        SECTION("get_top_scorer from all 5 players tie on goals")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 33, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 10, 33, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 1, 10, 3, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 10, 33, 5, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_top_scorer(-8);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 1002);
-
-            delete obj;
-        }
-
-        SECTION("get_top_scorer 1 team 5 players tie on goals and cards")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 33, 5, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 10, 3, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 10, 33, 5, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_top_scorer(1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 1004);
-
-            delete obj;
-        }
-
-        SECTION("get_top_scorer 5 teams 0 players")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(3, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(4, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(5, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_top_scorer(1);
-            REQUIRE(resn1.status() == StatusType::FAILURE);
-
-            delete obj;
-        }
-
-        SECTION("get_top_scorer 2 teams 5 players each")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 36, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 10, 3, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 10, 33, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(1006, 2, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 2, 10, 33, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 2, 10, 3, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 2, 10, 33, 3, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 2, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_top_scorer(1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 1002);
-            output_t<int> resn2 = obj->get_top_scorer(2);
-            REQUIRE(resn2.status() == StatusType::SUCCESS);
-            REQUIRE(resn2.ans() == 1007);
-
-            output_t<int> resn3 = obj->get_top_scorer(-1);
-            REQUIRE(resn3.status() == StatusType::SUCCESS);
-            REQUIRE(resn3.ans() == 1002);
-
-            delete obj;
-        }
-
-        SECTION("long one")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 36, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 10, 3, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 10, 33, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(1006, 2, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 2, 10, 38, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 2, 10, 3, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 2, 10, 33, 3, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 2, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_top_scorer(1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 1002);
-            output_t<int> resn2 = obj->get_top_scorer(2);
-            REQUIRE(resn2.status() == StatusType::SUCCESS);
-            REQUIRE(resn2.ans() == 1007);
-
-            output_t<int> resn3 = obj->get_top_scorer(-1);
-            REQUIRE(resn3.status() == StatusType::SUCCESS);
-            REQUIRE(resn3.ans() == 1007);
-
-            res = obj->remove_player(1007);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn4 = obj->get_top_scorer(-1);
-            REQUIRE(resn4.status() == StatusType::SUCCESS);
-            REQUIRE(resn4.ans() == 1002);
-
-            res = obj->add_player(1007, 2, 10, 38, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn5 = obj->get_top_scorer(-1);
-            REQUIRE(resn5.status() == StatusType::SUCCESS);
-            REQUIRE(resn5.ans() == 1007);
-
-            res = obj->update_player_stats(1001, 23, 50, 0);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn6 = obj->get_top_scorer(-1);
-            REQUIRE(resn6.status() == StatusType::SUCCESS);
-            REQUIRE(resn6.ans() == 1001);
-            output_t<int> resn7 = obj->get_top_scorer(1);
-            REQUIRE(resn7.status() == StatusType::SUCCESS);
-            REQUIRE(resn7.ans() == 1001);
-            output_t<int> resn8 = obj->get_top_scorer(2);
-            REQUIRE(resn8.status() == StatusType::SUCCESS);
-            REQUIRE(resn8.ans() == 1007);
-
-            delete obj;
-        }
-    }
-
-    TEST_CASE("get_all_players_count")
-    {
-        SECTION("simple get_all_players_count")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_all_players_count(1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 1);
-            output_t<int> resn2 = obj->get_all_players_count(2);
-            REQUIRE(resn2.status() == StatusType::SUCCESS);
-            REQUIRE(resn2.ans() == 0);
-            output_t<int> resn3 = obj->get_all_players_count(-1);
-            REQUIRE(resn3.status() == StatusType::SUCCESS);
-            REQUIRE(resn3.ans() == 1);
-            delete obj;
-        }
-
-        SECTION("get_all_players_count big")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 36, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 10, 3, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 10, 33, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->add_player(1006, 2, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 2, 10, 38, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 2, 10, 3, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 2, 10, 33, 3, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 2, 10, 0, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_all_players_count(1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 5);
-            output_t<int> resn2 = obj->get_all_players_count(2);
-            REQUIRE(resn2.status() == StatusType::SUCCESS);
-            REQUIRE(resn2.ans() == 5);
-            output_t<int> resn3 = obj->get_all_players_count(-1);
-            REQUIRE(resn3.status() == StatusType::SUCCESS);
-            REQUIRE(resn3.ans() == 10);
-
-            res = obj->remove_player(1007);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn4 = obj->get_all_players_count(-1);
-            REQUIRE(resn4.status() == StatusType::SUCCESS);
-            REQUIRE(resn4.ans() == 9);
-            output_t<int> resn5 = obj->get_all_players_count(2);
-            REQUIRE(resn5.status() == StatusType::SUCCESS);
-            REQUIRE(resn5.ans() == 4);
-
-            delete obj;
-        }
-
-        SECTION("get_all_players_count 0 teamId")
-        {
-            world_cup_t *obj = new world_cup_t();
-            output_t<int> resn1 = obj->get_all_players_count(0);
-            REQUIRE(resn1.status() == StatusType::INVALID_INPUT);
-
-            delete obj;
-        }
-
-        SECTION("get_all_players_count 0 teamId")
-        {
-            world_cup_t *obj = new world_cup_t();
-            output_t<int> resn1 = obj->get_all_players_count(5);
-            REQUIRE(resn1.status() == StatusType::FAILURE);
-
-            delete obj;
-        }
-    }
-
-    TEST_CASE("get_closest_player")
-    {
-        SECTION("get_closest_player one player")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_closest_player(1001, 1);
-            REQUIRE(resn1.status() == StatusType::FAILURE);
-            delete obj;
-        }
-
-        SECTION("get_closest_player no player")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_closest_player(1001, 1);
-            REQUIRE(resn1.status() == StatusType::FAILURE);
-            delete obj;
-        }
-
-        SECTION("get_closest_player invalid input")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_closest_player(1001, 0);
-            REQUIRE(resn1.status() == StatusType::INVALID_INPUT);
-            output_t<int> resn3 = obj->get_closest_player(1001, -1);
-            REQUIRE(resn3.status() == StatusType::INVALID_INPUT);
-            output_t<int> resn4 = obj->get_closest_player(-1, 5);
-            REQUIRE(resn4.status() == StatusType::INVALID_INPUT);
-            output_t<int> resn5 = obj->get_closest_player(0, 2);
-            REQUIRE(resn5.status() == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("get_closest_player 2 players")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 36, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn1 = obj->get_closest_player(1001, 1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 1002);
-            output_t<int> resn2 = obj->get_closest_player(1002, 1);
-            REQUIRE(resn2.status() == StatusType::SUCCESS);
-            REQUIRE(resn2.ans() == 1001);
-            delete obj;
-        }
-
-        SECTION("get_closest_player - all failure or invalid_input")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1061, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1032, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1033, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1054, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1065, 1, 10, 15, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            output_t<int> resn1 = obj->get_closest_player(55, 1);
-            REQUIRE(resn1.status() == StatusType::FAILURE);
-            output_t<int> resn2 = obj->get_closest_player(1001, 60);
-            REQUIRE(resn2.status() == StatusType::FAILURE);
-
-            output_t<int> resn3 = obj->get_closest_player(-1, 1);
-            REQUIRE(resn3.status() == StatusType::INVALID_INPUT);
-            output_t<int> resn4 = obj->get_closest_player(1001, -1);
-            REQUIRE(resn4.status() == StatusType::INVALID_INPUT);
-            output_t<int> resn5 = obj->get_closest_player(0, 1);
-            REQUIRE(resn5.status() == StatusType::INVALID_INPUT);
-            output_t<int> resn6 = obj->get_closest_player(1001, 0);
-            REQUIRE(resn6.status() == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("segel example")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(3, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(4, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(5, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(6, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            // add players
-            res = obj->add_player(21, 1, 10, 1, 20, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(25, 1, 10, 1, 20, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(3, 1, 10, 1, 5, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(4, 4, 10, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(5, 5, 10, 2, 5, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(6, 6, 10, 2, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(24, 1, 10, 2, 3, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(7, 5, 10, 2, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(8, 6, 10, 2, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(9, 3, 10, 5, 30, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(10, 2, 10, 5, 29, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(11, 2, 10, 5, 28, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(12, 2, 10, 5, 27, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(51, 5, 10, 6, 40, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(52, 6, 10, 6, 40, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(53, 3, 10, 6, 40, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(54, 2, 10, 6, 10, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(60, 2, 10, 6, 5, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(70, 2, 10, 6, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(100, 2, 10, 8, 6, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(80, 2, 10, 10, 7, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(90, 2, 10, 10, 7, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            // check all closest
-            output_t<int> resn1 = obj->get_closest_player(21, 1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 25);
-            output_t<int> resn2 = obj->get_closest_player(25, 1);
-            REQUIRE(resn2.status() == StatusType::SUCCESS);
-            REQUIRE(resn2.ans() == 21);
-            output_t<int> resn3 = obj->get_closest_player(3, 1);
-            REQUIRE(resn3.status() == StatusType::SUCCESS);
-            REQUIRE(resn3.ans() == 4);
-            output_t<int> resn4 = obj->get_closest_player(4, 4);
-            REQUIRE(resn4.status() == StatusType::SUCCESS);
-            REQUIRE(resn4.ans() == 3);
-            output_t<int> resn5 = obj->get_closest_player(5, 5);
-            REQUIRE(resn5.status() == StatusType::SUCCESS);
-            REQUIRE(resn5.ans() == 6);
-            output_t<int> resn6 = obj->get_closest_player(6, 6);
-            REQUIRE(resn6.status() == StatusType::SUCCESS);
-            REQUIRE(resn6.ans() == 5);
-            output_t<int> resn7 = obj->get_closest_player(24, 1);
-            REQUIRE(resn7.status() == StatusType::SUCCESS);
-            REQUIRE(resn7.ans() == 7);
-            output_t<int> resn8 = obj->get_closest_player(7, 5);
-            REQUIRE(resn8.status() == StatusType::SUCCESS);
-            REQUIRE(resn8.ans() == 8);
-            output_t<int> resn9 = obj->get_closest_player(8, 6);
-            REQUIRE(resn9.status() == StatusType::SUCCESS);
-            REQUIRE(resn9.ans() == 7);
-            output_t<int> resn10 = obj->get_closest_player(9, 3);
-            REQUIRE(resn10.status() == StatusType::SUCCESS);
-            REQUIRE(resn10.ans() == 10);
-            output_t<int> resn11 = obj->get_closest_player(10, 2);
-            REQUIRE(resn11.status() == StatusType::SUCCESS);
-            REQUIRE(resn11.ans() == 11);
-            output_t<int> resn12 = obj->get_closest_player(11, 2);
-            REQUIRE(resn12.status() == StatusType::SUCCESS);
-            REQUIRE(resn12.ans() == 12);
-            output_t<int> resn13 = obj->get_closest_player(12, 2);
-            REQUIRE(resn13.status() == StatusType::SUCCESS);
-            REQUIRE(resn13.ans() == 11);
-            output_t<int> resn14 = obj->get_closest_player(51, 5);
-            REQUIRE(resn14.status() == StatusType::SUCCESS);
-            REQUIRE(resn14.ans() == 52);
-            output_t<int> resn15 = obj->get_closest_player(52, 6);
-            REQUIRE(resn15.status() == StatusType::SUCCESS);
-            REQUIRE(resn15.ans() == 53);
-            output_t<int> resn16 = obj->get_closest_player(53, 3);
-            REQUIRE(resn16.status() == StatusType::SUCCESS);
-            REQUIRE(resn16.ans() == 52);
-            output_t<int> resn17 = obj->get_closest_player(54, 2);
-            REQUIRE(resn17.status() == StatusType::SUCCESS);
-            REQUIRE(resn17.ans() == 60);
-            output_t<int> resn18 = obj->get_closest_player(60, 2);
-            REQUIRE(resn18.status() == StatusType::SUCCESS);
-            REQUIRE(resn18.ans() == 70);
-            output_t<int> resn19 = obj->get_closest_player(70, 2);
-            REQUIRE(resn19.status() == StatusType::SUCCESS);
-            REQUIRE(resn19.ans() == 60);
-            output_t<int> resn20 = obj->get_closest_player(100, 2);
-            REQUIRE(resn20.status() == StatusType::SUCCESS);
-            REQUIRE(resn20.ans() == 80);
-            output_t<int> resn21 = obj->get_closest_player(80, 2);
-            REQUIRE(resn21.status() == StatusType::SUCCESS);
-            REQUIRE(resn21.ans() == 90);
-            output_t<int> resn22 = obj->get_closest_player(90, 2);
-            REQUIRE(resn22.status() == StatusType::SUCCESS);
-            REQUIRE(resn22.ans() == 80);
-
-            delete obj;
-        }
-    }
-
-    TEST_CASE("play_match")
-    {
-        SECTION("simple play_match")
-        {
-            world_cup_t *obj = new world_cup_t();
-
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            // first team players
-            res = obj->add_player(1001, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1011, 1, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            // second team players
-            res = obj->add_player(2001, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2002, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2003, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2004, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2005, 2, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2006, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2007, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2008, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2009, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2010, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2011, 2, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->play_match(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            delete obj;
-        }
-
-        SECTION("play_match invalid input")
-        {
-            world_cup_t *obj = new world_cup_t();
-
-            StatusType res = obj->play_match(0, 1);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            res = obj->play_match(1, 0);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            res = obj->play_match(0, 0);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            res = obj->play_match(3, 3);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-
-            delete obj;
-        }
-
-        SECTION("play_match failure")
-        {
-            world_cup_t *obj = new world_cup_t();
-
-            StatusType res = obj->play_match(1, 2);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->play_match(2, 1);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->play_match(1, 2);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->add_player(1001, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2001, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2002, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->play_match(1, 2);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->add_player(1003, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2003, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->play_match(1, 2);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->add_player(1004, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 1, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2004, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2005, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2006, 2, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->play_match(1, 2);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->add_player(1007, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1011, 1, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn = obj->get_all_players_count(1);
-            REQUIRE(resn.status() == StatusType::SUCCESS);
-            REQUIRE(resn.ans() == 11);
-            res = obj->play_match(1, 2);
-            REQUIRE(res == StatusType::FAILURE);
-
-            delete obj;
-        }
-
-        SECTION("play_match no goal keepers")
-        {
-            world_cup_t *obj = new world_cup_t();
-
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            // first team players
-            res = obj->add_player(1001, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1011, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            // second team players
-            res = obj->add_player(2001, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2002, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2003, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2004, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2005, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2006, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2007, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2008, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2009, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2010, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2011, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->play_match(1, 2);
-            REQUIRE(res == StatusType::FAILURE);
-
-            delete obj;
-        }
-
-        SECTION("play_match goal keepers only on one")
-        {
-            world_cup_t *obj = new world_cup_t();
-
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            // first team players
-            res = obj->add_player(1001, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1011, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            // second team players
-            res = obj->add_player(2001, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2002, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2003, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2004, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2005, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2006, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2007, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2008, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2009, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2010, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2011, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->play_match(1, 2);
-            REQUIRE(res == StatusType::FAILURE);
-
-            delete obj;
-        }
-
-        SECTION("play_match start with goal keepers then no then yes")
-        {
-            world_cup_t *obj = new world_cup_t();
-
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            // first team players
-            res = obj->add_player(1001, 1, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1011, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            // second team players
-            res = obj->add_player(2001, 2, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2002, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2003, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2004, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2005, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2006, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2007, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2008, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2009, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2010, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(2011, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->play_match(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->remove_player(1001);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->play_match(1, 2);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->add_player(1001, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->play_match(1, 2);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->add_player(1020, 1, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->play_match(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            delete obj;
-        }
-    }
-
-    TEST_CASE("get_all_players")
-    {
-        SECTION("get_all_players invalid input")
-        {
-            world_cup_t *obj = new world_cup_t();
-            int players[4] = {};
-
-            StatusType res = obj->get_all_players(1, nullptr);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            res = obj->get_all_players(0, players);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            delete obj;
-        }
-
-        SECTION("get_all_players failure")
-        {
-            world_cup_t *obj = new world_cup_t();
-            int players[4] = {};
-
-            StatusType res = obj->get_all_players(1, players);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->get_all_players(-1, players);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->add_team(1, 3);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->get_all_players(1, players);
-            REQUIRE(res == StatusType::FAILURE);
-            delete obj;
-        }
-
-        SECTION("get_all_players 1 team all with same grades")
-        {
-            world_cup_t *obj = new world_cup_t();
-            int players[10] = {};
-
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->get_all_players(1, players);
-            REQUIRE(res == StatusType::SUCCESS);
-            REQUIRE(players[0] == 1001);
-            for (int i = 1; i < 10; i++)
-            {
-                REQUIRE(players[i] == 0);
-            }
-
-            res = obj->add_player(1002, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->get_all_players(1, players);
-            REQUIRE(res == StatusType::SUCCESS);
-            for (int i = 0; i < 10; i++)
-            {
-                REQUIRE(players[i] == 1001 + i);
-            }
-            for (int i = 0; i < 10; i++)
-            {
-                players[i] = 0;
-            }
-            res = obj->get_all_players(-1, players);
-            REQUIRE(res == StatusType::SUCCESS);
-            for (int i = 0; i < 10; i++)
-            {
-                REQUIRE(players[i] == 1001 + i);
-            }
-            delete obj;
-        }
-
-        SECTION("get_all_players 1 team all with same grades")
-        {
-            world_cup_t *obj = new world_cup_t();
-            int players[10] = {};
-
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 1, 10, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->get_all_players(1, players);
-            REQUIRE(res == StatusType::SUCCESS);
-            REQUIRE(players[0] == 1001);
-            for (int i = 1; i < 10; i++)
-            {
-                REQUIRE(players[i] == 0);
-            }
-
-            res = obj->add_player(1002, 1, 1, 9, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 1, 8, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 1, 7, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 1, 6, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 1, 1, 5, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 1, 1, 4, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 1, 1, 3, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 1, 1, 2, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            res = obj->get_all_players(1, players);
-            REQUIRE(res == StatusType::SUCCESS);
-            for (int i = 0; i < 10; i++)
-            {
-                REQUIRE(players[i] == 1010 - i);
-            }
-            for (int i = 0; i < 10; i++)
-            {
-                players[i] = 0;
-            }
-            res = obj->get_all_players(-1, players);
-            REQUIRE(res == StatusType::SUCCESS);
-            for (int i = 0; i < 10; i++)
-            {
-                REQUIRE(players[i] == 1010 - i);
-            }
-            delete obj;
-        }
-
-        SECTION("get_all_players goals")
-        {
-            world_cup_t *obj = new world_cup_t();
-            int players[10] = {};
-
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 1, 5, 2, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 1, 3, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->get_all_players(1, players);
-            REQUIRE(res == StatusType::SUCCESS);
-            REQUIRE(players[0] == 1003);
-            REQUIRE(players[1] == 1002);
-            REQUIRE(players[2] == 1001);
-
-            for (int i = 3; i < 10; i++)
-            {
-                REQUIRE(players[i] == 0);
-            }
-
-            delete obj;
-        }
-
-        SECTION("get_all_players big")
-        {
-            world_cup_t *obj = new world_cup_t();
-            int players[10] = {};
-
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 1, 5, 2, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 1, 3, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 1, 2, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 1, 1, 2, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 1, 1, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->get_all_players(1, players);
-            REQUIRE(res == StatusType::SUCCESS);
-            REQUIRE(players[0] == 1005);
-            REQUIRE(players[1] == 1004);
-            REQUIRE(players[2] == 1006);
-            REQUIRE(players[3] == 1007);
-            REQUIRE(players[4] == 1003);
-            REQUIRE(players[5] == 1002);
-            REQUIRE(players[6] == 1001);
-            REQUIRE(players[7] == 0);
-            REQUIRE(players[8] == 0);
-            REQUIRE(players[9] == 0);
-
-            delete obj;
-        }
-    }
-
-    TEST_CASE("unite_teams")
-    {
-        SECTION("unite_teams failure")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->unite_teams(1, 2, 1);
-            REQUIRE(res == StatusType::FAILURE);
-
-            res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->unite_teams(1, 2, 5);
-            REQUIRE(res == StatusType::FAILURE);
-
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(5, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->unite_teams(1, 2, 5);
-            REQUIRE(res == StatusType::FAILURE);
-
-            delete obj;
-        }
-
-        SECTION("unite_teams invalid input")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->unite_teams(0, 1, 1);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            res = obj->unite_teams(1, 0, 1);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            res = obj->unite_teams(1, 2, 0);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            res = obj->unite_teams(-1, 1, 1);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            res = obj->unite_teams(1, -1, 1);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            res = obj->unite_teams(1, 3, -1);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-            res = obj->unite_teams(1, 1, 1);
-            REQUIRE(res == StatusType::INVALID_INPUT);
-
-            delete obj;
-        }
-
-        SECTION("unite_teams simple")
-        {
-            world_cup_t *obj = new world_cup_t();
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 1, 5, 2, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 2, 1, 3, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->unite_teams(1, 2, 3);
-            REQUIRE(res == StatusType::SUCCESS);
-            int players[10] = {};
-            res = obj->get_all_players(3, players);
-            REQUIRE(res == StatusType::SUCCESS);
-            REQUIRE(players[0] == 1002);
-            REQUIRE(players[1] == 1001);
-            REQUIRE(players[2] == 0);
-            REQUIRE(players[3] == 0);
-            REQUIRE(players[4] == 0);
-            REQUIRE(players[5] == 0);
-            REQUIRE(players[6] == 0);
-            REQUIRE(players[7] == 0);
-            REQUIRE(players[8] == 0);
-            REQUIRE(players[9] == 0);
-
-            res = obj->add_team(3, 2);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(4, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 3, 1, 5, 2, true);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->add_player(1002, 3, 1, 3, 4, false);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->add_player(1003, 3, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 4, 1, 1, 2, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 4, 1, 1, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 4, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 4, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->unite_teams(3, 4, 5);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(5, 2);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->add_team(3, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(4, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 3, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 3, 1, 1, 1, false);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->add_player(1009, 4, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 4, 1, 1, 1, false);
-            REQUIRE(res == StatusType::FAILURE);
-            res = obj->unite_teams(3, 4, 3);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(3, 2);
-            REQUIRE(res == StatusType::FAILURE);
-
-            res = obj->add_team(4, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 3, 1, 1, 1, false);
-            REQUIRE(res == StatusType::FAILURE);
-
-            delete obj;
-        }
-
-        SECTION("unite_teams that makes it legal team")
-        {
-            world_cup_t *obj = new world_cup_t();
-
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 1, 5, 2, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 1, 3, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 1, 1, 2, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 1, 1, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1011, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1012, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1013, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1014, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1015, 2, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1016, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1017, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn3 = obj->knockout_winner(1, 4);
-            REQUIRE(resn3.status() == StatusType::SUCCESS);
-            REQUIRE(resn3.ans() == 2);
-
-            res = obj->unite_teams(1, 2, 3);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            output_t<int> resn1 = obj->get_all_players_count(3);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 17);
-            output_t<int> resn2 = obj->knockout_winner(1, 4);
-            REQUIRE(resn2.status() == StatusType::SUCCESS);
-            REQUIRE(resn2.ans() == 3);
-
-            delete obj;
-        }
-
-        SECTION("unite_teams two legal teams")
-        {
-            world_cup_t *obj = new world_cup_t();
-
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 1, 5, 2, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 1, 3, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1004, 1, 1, 1, 2, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1005, 1, 1, 1, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1301, 1, 1, 5, 2, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1302, 1, 1, 3, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1303, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1304, 1, 1, 1, 2, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1305, 1, 1, 1, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(101, 1, 1, 5, 2, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(333, 1, 1, 3, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(103, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(6004, 1, 1, 1, 2, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(19005, 1, 1, 1, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1011, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1012, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1013, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1014, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1015, 2, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1016, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1017, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn3 = obj->knockout_winner(1, 4);
-            REQUIRE(resn3.status() == StatusType::SUCCESS);
-            REQUIRE(resn3.ans() == 2);
-
-            res = obj->unite_teams(1, 2, 3);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            output_t<int> resn1 = obj->get_all_players_count(3);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 27);
-            output_t<int> resn2 = obj->knockout_winner(1, 4);
-            REQUIRE(resn2.status() == StatusType::SUCCESS);
-            REQUIRE(resn2.ans() == 3);
-
-            delete obj;
-        }
-
-        SECTION("unite_teams legal and not legal teams to the not legal")
-        {
-            world_cup_t *obj = new world_cup_t();
-
-            StatusType res = obj->add_team(1, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1001, 1, 1, 5, 2, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1002, 1, 1, 3, 4, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1003, 1, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(2, 2);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1006, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1007, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1008, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1009, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1010, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1011, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1012, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1013, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1014, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1015, 2, 1, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1016, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(1017, 2, 1, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            output_t<int> resn3 = obj->knockout_winner(1, 4);
-            REQUIRE(resn3.status() == StatusType::SUCCESS);
-            REQUIRE(resn3.ans() == 2);
-
-            res = obj->unite_teams(1, 2, 1);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            output_t<int> resn1 = obj->get_all_players_count(1);
-            REQUIRE(resn1.status() == StatusType::SUCCESS);
-            REQUIRE(resn1.ans() == 15);
-            output_t<int> resn2 = obj->knockout_winner(1, 4);
-            REQUIRE(resn2.status() == StatusType::SUCCESS);
-            REQUIRE(resn2.ans() == 1);
-
-            delete obj;
-        }
-    }
-
-    TEST_CASE("knockout")
-    {
-        SECTION("ILLIGAL_INPUTS")
-        {
-            world_cup_t *obj = new world_cup_t();
-
-            output_t<int> res1 = obj->knockout_winner(-1, 0);
-            REQUIRE(res1.status() == StatusType::INVALID_INPUT);
-
-            output_t<int> res2 = obj->knockout_winner(-4, -1);
-            REQUIRE(res2.status() == StatusType::INVALID_INPUT);
-
-            output_t<int> res3 = obj->knockout_winner(0, -1);
-            REQUIRE(res3.status() == StatusType::INVALID_INPUT);
-
-            output_t<int> res4 = obj->knockout_winner(-1, -1);
-            REQUIRE(res4.status() == StatusType::INVALID_INPUT);
-
-            output_t<int> res5 = obj->knockout_winner(10, 9);
-            REQUIRE(res5.status() == StatusType::INVALID_INPUT);
-
-            output_t<int> res5andahalf = obj->knockout_winner(0, 1);
-            REQUIRE(res5andahalf.status() == StatusType::FAILURE);
-
-            StatusType res = obj->add_team(7, 10);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_team(9, 10);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(69, 7, 9, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            output_t<int> res6 = obj->knockout_winner(0, 10);
-            REQUIRE(res6.status() == StatusType::FAILURE);
-
-            output_t<int> res7 = obj->knockout_winner(7, 7);
-            REQUIRE(res7.status() == StatusType::FAILURE);
-
-            output_t<int> res8 = obj->knockout_winner(7, 9);
-            REQUIRE(res8.status() == StatusType::FAILURE);
-
-            output_t<int> res9 = obj->knockout_winner(7, 10);
-            REQUIRE(res9.status() == StatusType::FAILURE);
-
-            output_t<int> res10 = obj->knockout_winner(6, 9);
-            REQUIRE(res10.status() == StatusType::FAILURE);
-
-            output_t<int> res11 = obj->knockout_winner(0, 1);
-            REQUIRE(res11.status() == StatusType::FAILURE);
-
-            res = obj->add_player(70, 7, 9, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(71, 7, 9, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(72, 7, 9, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(73, 7, 9, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(74, 7, 9, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(75, 7, 9, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(76, 7, 9, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(77, 7, 9, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(78, 7, 9, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(79, 7, 9, 1, 1, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            res = obj->add_player(80, 7, 9, 1, 1, true);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            output_t<int> res12 = obj->knockout_winner(0, 6);
-            REQUIRE(res12.status() == StatusType::FAILURE);
-
-            output_t<int> res13 = obj->knockout_winner(8, 9);
-            REQUIRE(res13.status() == StatusType::FAILURE);
-
-            delete obj;
-        }
-
-        SECTION("Basic Tournements")
-        {
-            world_cup_t *obj = new world_cup_t();
-            int playerId = 1;
-            StatusType res;
-            for (int teamId = 1; teamId < 10; teamId += 2) {
-                res = obj->add_team(teamId, 1000 / ((6 - teamId) * (6 - teamId)));
-                REQUIRE(res == StatusType::SUCCESS);
-
-                for (int startingId = playerId; playerId < startingId + 10 + teamId; ++playerId) {
-                    res = obj->add_player(playerId, teamId, 1, playerId, 3, true);
-                    REQUIRE(res == StatusType::SUCCESS);
-                }
-                ++playerId;
-            }
-            // Strengths team1:73 team3:319 team5:1485 team7:1816 team9:1384
-
-            res = obj->add_team(4, 1000000);
-            REQUIRE(res == StatusType::SUCCESS);
-
-            output_t<int> res1 = obj->knockout_winner(8, 9);
-            REQUIRE(res1.status() == StatusType::SUCCESS);
-            REQUIRE(res1.ans() == 9);
-
-            output_t<int> res2 = obj->knockout_winner(1, 1);
-            REQUIRE(res2.status() == StatusType::SUCCESS);
-            REQUIRE(res2.ans() == 1);
-
-            output_t<int> res3 = obj->knockout_winner(2, 4);
-            REQUIRE(res3.status() == StatusType::SUCCESS);
-            REQUIRE(res3.ans() == 3);
-
-            output_t<int> res4 = obj->knockout_winner(3, 9);
-            REQUIRE(res4.status() == StatusType::SUCCESS);
-            REQUIRE(res4.ans() == 7);
-
-            output_t<int> res5 = obj->knockout_winner(2, 8);
-            REQUIRE(res5.status() == StatusType::SUCCESS);
-            REQUIRE(res5.ans() == 7);
-
-            output_t<int> res6 = obj->knockout_winner(0, 5);
-            REQUIRE(res6.status() == StatusType::SUCCESS);
-            REQUIRE(res6.ans() == 5);
-
-            output_t<int> res7 = obj->knockout_winner(1, 9);
-            REQUIRE(res7.status() == StatusType::SUCCESS);
-            REQUIRE(res7.ans() == 7);
-
-            res = obj->add_player(999, 3, 1, 3000, 200, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            // Strengths team1:73 team3:3119 team5:1485 team7:1816 team9:1384
-
-            output_t<int> res8 = obj->knockout_winner(1, 999);
-            REQUIRE(res8.status() == StatusType::SUCCESS);
-            REQUIRE(res8.ans() == 7);
-
-            res = obj->add_player(998, 3, 1, 2000, 0, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            // Strengths team1:73 team3: 5119 team5:1485 team7:1816 team9:1384
-
-            output_t<int> res9 = obj->knockout_winner(0, 13);
-            REQUIRE(res9.status() == StatusType::SUCCESS);
-            REQUIRE(res9.ans() == 3);
-
-            res = obj->add_player(997, 3, 1, 1, 5001, false);
-            REQUIRE(res == StatusType::SUCCESS);
-            // Strengths team1:73 team3:119 team5:1485 team7:1816 team9:1384
-
-            output_t<int> res9andahalf = obj->knockout_winner(0, 13);
-            REQUIRE(res9andahalf.status() == StatusType::SUCCESS);
-            REQUIRE(res9andahalf.ans() == 7);
-
-            res = obj->update_player_stats(79, 1, 10000, 0);
-            REQUIRE(res == StatusType::SUCCESS);
-            // Strengths team1:73 team3:119 team5:1485 team7:1816 team9:11384
-
-            output_t<int> res10 = obj->knockout_winner(1, 9);
-            REQUIRE(res10.status() == StatusType::SUCCESS);
-
-            REQUIRE(res10.ans() == 9);
-
-            delete obj;
-        }
-    }
+    delete[] out_mem;
 }

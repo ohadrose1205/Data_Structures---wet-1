@@ -53,7 +53,6 @@ public:
     void addGk();
     void removeGk();
     void updateAllPlayerTeamTag();
-    void updateAllPlayersGames() const;
     Player* findPlayer(int playerId);
 
     friend Team* mergeTeams(const Team& team1, const Team& team2, int uniteId);

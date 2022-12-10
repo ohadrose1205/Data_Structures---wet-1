@@ -31,18 +31,28 @@ private:
             top = inOrderScanToArrAUX(root->m_left, arr, top , minKey, maxKey);
         }
         if(root->key() <= maxKey){
-            arr[top] = &*root->m_nodeData;
+            arr[top] = root->m_nodeData;
             top++;
             top = inOrderScanToArrAUX(root->m_right, arr, top , minKey, maxKey);
         }
         return top;
     }
+    int inOrderScanFullArrAUX(Node* root, Pair<T,K>** arr, int top) const{ ///should get an input function
+        if(!root || top == ERROR){
+            return top;
+        }
+        top = inOrderScanFullArrAUX(root->m_left, arr, top);
+        arr[top] = root->m_nodeData;
+        top++;
+        top = inOrderScanFullArrAUX(root->m_right, arr, top);
+        return top;
+    }
 
-    void createTreeByListAUX(Node* root,Node* prev, Pair<T,K>* arr, int h,int bottom ,int top, string dir){ ///should get an input function
+    void createTreeByListAUX(Node* root,Node* prev, Pair<T,K>** arr, int h,int bottom ,int top, string dir){ ///should get an input function
         if(h == -1 || bottom == top) return;
         int root_index = (top - bottom) >=  pow(2,h) + pow(2,h-1) - 1? (int)pow(2,h)-1 : (top - bottom) - (int)pow(2,h-1);
         root_index += bottom;
-        root = new Node(arr[root_index], prev);
+        root = new Node(*arr[root_index], prev);
         if(dir == "l"){
             prev->m_left = root;
         }else{
@@ -198,7 +208,7 @@ public:
         m_dummyHead->m_left = createCopy(ptrCopyTree,m_dummyHead);
     }
 
-    AVLTree& operator= (const AVLTree& tree){
+    AVLTree& operator=(const AVLTree& tree){
         if(this == &tree)
             return *this;
         AVLTree<T,K> tempTree(tree);
@@ -209,7 +219,7 @@ public:
     }
 
     bool empty() const{
-        return !m_dummyHead->m_left;
+        return (!size());
     }
 
     int size() const{
@@ -220,7 +230,7 @@ public:
         Node** newNodePlace;
         Node* ptr = m_dummyHead;
         if (empty()) {
-            newNodePlace = &m_dummyHead->m_left;
+            newNodePlace = &(m_dummyHead->m_left);
         }else{
             ptr = m_dummyHead->m_left;
             while (true) { //add to leafs
@@ -244,6 +254,7 @@ public:
         }try {
             *newNodePlace = new Node(newItem, key, ptr);
         }catch(...){
+            *newNodePlace = nullptr;
             return StatusType::ALLOCATION_ERROR;
         }
         updatePath(*newNodePlace, false);
@@ -253,7 +264,6 @@ public:
     StatusType remove(const K& keyDelete) {
         Node* ptr = findAUX(keyDelete);
         Node* lowestInPath;
-        Node* toDelete;
         if (!ptr) //ptr to delete not found
             return StatusType::FAILURE;
         Node* replacement = ptr;
@@ -262,27 +272,24 @@ public:
             while (replacement->m_left) {
                 replacement = replacement->m_left;
             }
-            ptr->m_nodeData = std::move(replacement->m_nodeData);
+            ptr->m_nodeData = replacement->m_nodeData;
             replacement->m_nodeData = nullptr;
         }
         Node** fatherLeg = replacement->m_prev->m_left == replacement ? &replacement->m_prev->m_left : &replacement->m_prev->m_right;
         if(!replacement->m_right && !replacement->m_left){
             lowestInPath = replacement->m_prev;
             *fatherLeg = nullptr;
-            toDelete = replacement;
         }
         else if(replacement->m_right) { //go to next node in inorder if has children
             lowestInPath = replacement->m_right;
             *fatherLeg = replacement->m_right;
             replacement->m_right->m_prev = replacement->m_prev;
-            toDelete = replacement;
         }else{
             lowestInPath = replacement->m_left;
             *fatherLeg = replacement->m_left;
             replacement->m_left->m_prev = replacement->m_prev;
-            toDelete = replacement;
         }
-        delete toDelete;
+        delete replacement;
         updatePath(lowestInPath,true);
         return StatusType::SUCCESS;
     }
@@ -310,9 +317,9 @@ public:
         return rankIndex;
     }
 
-    const Pair<T,K>& select(int rank) const{
+    const Pair<T,K>* select(int rank) const{
         if(rank < 1 || rank > size()){
-            return *m_dummyHead->m_nodeData;
+            return nullptr;
         }
         Node* ptr = m_dummyHead->m_left;
         int leftSideSize;
@@ -328,12 +335,12 @@ public:
                 ptr = ptr->m_left;
             }
         }
-        return *result->m_nodeData;
+        return result->m_nodeData;
     }
 
-    Pair<T,K>& select(int rank){
+    Pair<T,K>* select(int rank){
         if(rank < 1 || rank > size()){
-            return *m_dummyHead->m_nodeData;
+            return nullptr;
         }
         Node* ptr = m_dummyHead->m_left;
         int leftSideSize;
@@ -349,56 +356,62 @@ public:
                 ptr = ptr->m_left;
             }
         }
-        return *result->m_nodeData;
+        return result->m_nodeData;
     }
 
-    Pair<T,K>& find(const K& dataKey) const{
-        if (empty())
-            return *m_dummyHead->m_nodeData;
-        Node* result_ptr = m_dummyHead->m_left;
-        while (result_ptr->key() != dataKey) {
-            result_ptr = result_ptr->key() > dataKey ? result_ptr->m_left : result_ptr->m_right;
-            if (!result_ptr)
-                return *m_dummyHead->m_nodeData;
+    Pair<T,K>* find(const K& dataKey) const{
+        Node* result = findAUX(dataKey);
+        if(result){
+            return result->m_nodeData;
         }
-        return *result_ptr->m_nodeData;
+        return nullptr;
     }
     /// @brief
     /// @param start
     /// @param updateRollsToRoot
 
-    Pair<T,K>** inOrderScanToArray() const{ ///should get an input function
-        Pair<T,K>** pairArray;
+    bool inOrderScanToArray(Pair<T,K>**& arr) const{ ///should get an input function
+        if(arr) return false;
         try{
-            pairArray = new Pair<T,K>*[size()+1]();
+            arr = new Pair<T, K> *[size()]();
         }catch (std::bad_alloc& a){
-            return nullptr;
+            return false;
         }
-        pairArray[size()] = nullptr;
-        if(inOrderScanToArrAUX(m_dummyHead->m_left, pairArray, 0, select(1).key(),select(size()).key()) == ERROR){
-            delete[] pairArray;
-            pairArray = nullptr;
+        if(inOrderScanFullArrAUX(m_dummyHead->m_left, arr, 0) == ERROR){
+            delete[] arr;
+            arr = nullptr;
         }
-        return pairArray;
+        return true;
     }
-    Pair<T,K>** inOrderScanToArrayFromTo(int& arrSize, const K& from, const K& to) const{ ///should get an input function
+
+    bool inOrderScanToArrayFromTo(Pair<T,K>**& arr, int& arrSize, const K& from, const K& to) const{ ///should get an input function
         Pair<T,K>** pairArray;
+        if(arr) return false;
         try{
-            pairArray = new Pair<T,K>*[size()+1]();
+            pairArray = new Pair<T,K>*[size()]();
         }catch (std::bad_alloc& a){
-            return nullptr;
+            arr = nullptr;
+            return false;
         }
         arrSize = inOrderScanToArrAUX(m_dummyHead->m_left, pairArray, 0, from,to);
         if(arrSize <= 0){
             delete[] pairArray;
-            return nullptr;
+            arr = nullptr;
+            return false;
         }
-        pairArray[arrSize] = nullptr;
-        return pairArray;
+        arr = new Pair<T,K>*[arrSize]();
+        for(int i = 0; i < arrSize; i++){
+            arr[i] = pairArray[i];
+        }
+        delete[] pairArray;
+        return true;
     }
 
-    StatusType createTreeByList(int size ,Pair<T,K>* arr){
-        int h = (int)log2(size + 1) ;
+    StatusType createTreeByList(int size ,Pair<T,K>** arr){
+        int h = (int)log2(size + 1);
+        if(h == 0){
+            return StatusType::SUCCESS;
+        }
         Node* newTree = new Node();
         try{
             createTreeByListAUX(newTree->m_left,newTree, arr,h, 0, size,"l");
@@ -421,26 +434,32 @@ private:
     class Node{
         friend AVLTree;
 
-        std::unique_ptr<Pair<T,K>> m_nodeData;
+        Pair<T,K>* m_nodeData;
         Node* m_right;
         Node* m_left;
         Node* m_prev;
         int m_height;
         int m_size;
 
-        Node(const T& dataPtr, const K& key, Node* previous) : m_nodeData(new Pair<T,K>(dataPtr,key)),
+        Node(const T& dataPtr, const K& key, Node* previous) : m_nodeData(nullptr),
                                                                m_right(nullptr),
                                                                m_left(nullptr), m_prev(previous),
-                                                               m_height(0),m_size(1){}
-        Node(const Pair<T,K>& pairData, Node* previous) : m_nodeData(new Pair<T,K>(pairData)),
+                                                               m_height(0),m_size(1){
+            m_nodeData = new Pair<T,K>(dataPtr,key);
+        }
+        Node(const Pair<T,K>& pairData, Node* previous) : m_nodeData(nullptr),
                                                           m_right(nullptr),
                                                           m_left(nullptr), m_prev(previous),
-                                                          m_height(0),m_size(1){}
-        Node(const Pair<T,K>& pairData, Node* previous, int height, int size) : m_nodeData(new Pair<T,K>(pairData)),
+                                                          m_height(0),m_size(1){
+            m_nodeData = new Pair<T,K>(pairData);
+        }
+        Node(const Pair<T,K>& pairData, Node* previous, int height, int size) : m_nodeData(nullptr),
                                                                                 m_right(nullptr),
                                                                                 m_left(nullptr), m_prev(previous),
-                                                                                m_height(height),m_size(size){}
-        Node() : m_nodeData(new Pair<T,K>()),
+                                                                                m_height(height),m_size(size){
+            m_nodeData = new Pair<T,K>(pairData);
+        }
+        Node() : m_nodeData(nullptr),
                  m_right(nullptr),
                  m_left(nullptr),
                  m_prev(nullptr),
@@ -454,7 +473,7 @@ private:
         /// @brief getter for height
         /// @return
         bool empty(){
-            return m_nodeData->empty();
+            return (!m_nodeData);
         }
         T& data(){
             return m_nodeData->data();
@@ -529,29 +548,28 @@ private:
             return delta_h;
         }
         ~Node(){
-            m_nodeData.reset();
+            delete m_nodeData;
         }
     };
 };
 
 template<class T, class K>
 AVLTree<T,K>* mergeTrees(const AVLTree<T,K>& avl1 ,const AVLTree<T,K>& avl2){
-    Pair<T,K> **avl1Arr = avl1.inOrderScanToArray();
-    if(!avl1Arr){
+    Pair<T,K> **avl1Arr = nullptr;
+    if(!avl1.inOrderScanToArray(avl1Arr))
         return nullptr;
-    }
-    Pair<T,K> **avl2Arr = avl2.inOrderScanToArray();
-    if(!avl2Arr){
+    Pair<T,K> **avl2Arr = nullptr;
+    if(!avl2.inOrderScanToArray(avl2Arr)) {
         delete[] avl1Arr;
         avl1Arr = nullptr;
-        avl2Arr= nullptr;
+        avl2Arr = nullptr;
         return nullptr;
     }
     int l_len = avl1.size();
     int r_len = avl2.size();
-    Pair<T, K> *destArr;
+    Pair<T, K>** destArr;
     try {
-        destArr = new Pair<T, K>[l_len + r_len]();
+        destArr = new Pair<T, K>*[l_len + r_len]();
     }catch(...){
         delete[] avl1Arr;
         delete[] avl2Arr;
@@ -563,16 +581,16 @@ AVLTree<T,K>* mergeTrees(const AVLTree<T,K>& avl1 ,const AVLTree<T,K>& avl2){
     int k= 0,l = 0, r = 0;
     while(l < l_len && r < r_len){
         if(avl1Arr[l]->key() < avl2Arr[r]->key())
-            destArr[k++] = *avl1Arr[l++];
+            destArr[k++] = avl1Arr[l++];
         else
-            destArr[k++] = *avl2Arr[r++];
+            destArr[k++] = avl2Arr[r++];
     }
     //add leftovers already sorted
     while (l < l_len) {
-        destArr[k++] = *avl1Arr[l++];
+        destArr[k++] = avl1Arr[l++];
     }
     while (r < r_len) {
-        destArr[k++] = *avl2Arr[r++];
+        destArr[k++] = avl2Arr[r++];
     }
     delete[] avl1Arr;
     delete[] avl2Arr;

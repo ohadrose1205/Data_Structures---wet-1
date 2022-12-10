@@ -5,7 +5,7 @@
 #include "Player.h"
 
 Player::Player(const int ID,Team* team, int gamesPlayed, int goals, int cards, const bool gkFlag)  :
-        m_playerId(ID), m_team(team), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards), m_gkFlag(gkFlag),  m_closestAbove(nullptr), m_closestBelow(nullptr){}
+        m_playerId(ID), m_team(team), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards), m_gkFlag(gkFlag), m_closestAbove(nullptr), m_closestBelow(nullptr){}
 
 int Player::getPlayerId() const {
     return m_playerId;
@@ -17,6 +17,7 @@ Team* Player::getTeam() const {
 
 void Player::setTeam(Team* newTeam) {
     m_team = newTeam;
+    m_teamsGamesWithout = m_team->getTeamGames();
 }
 
 int Player::getIndividualGames() const {
@@ -192,5 +193,4 @@ bool Player::operator<=(const Player &p2) const {
 
 void Player::updateGamesPlayed() {
     m_gamesPlayed = getIndividualGames();
-    m_teamsGamesWithout = 0;
 }

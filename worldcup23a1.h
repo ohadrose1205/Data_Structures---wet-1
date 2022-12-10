@@ -35,7 +35,7 @@ private:
 
     void updateOnInsert_CP_SB(const Player& keyPlayer);
     void updateOnRemove_CP_SB(const Player& keyPlayer);
-        public:
+public:
     // <DO-NOT-MODIFY> {
 
     world_cup_t();

@@ -86,55 +86,55 @@ StatusType Team::insertPlayer(Player* playerToInsert, int playerId) {
     if(!playerToInsert)
         return StatusType::INVALID_INPUT;
     StatusType checker1 = m_playersByIdTree.insert(playerToInsert, playerId);
-    StatusType checker2 = m_playersByGoals.insert(playerToInsert, *playerToInsert);
-    if(checker1 == StatusType::SUCCESS && checker2 == StatusType::SUCCESS){
-        if(playerToInsert->isGk())
-            addGk();
-        m_totalGoals += playerToInsert->getGoals();
-        m_totalCards += playerToInsert->getCards();
-        playerToInsert->setTeam(this);
-        updateTopScorer();
+    if(checker1 == StatusType::SUCCESS){
+        StatusType checker2 = m_playersByGoals.insert(playerToInsert, *playerToInsert);
+        if(checker2 == StatusType::SUCCESS){
+            if(playerToInsert->isGk())
+                addGk();
+            m_totalGoals += playerToInsert->getGoals();
+            m_totalCards += playerToInsert->getCards();
+            playerToInsert->setTeam(this);
+            updateTopScorer();
+        }
+        return checker2;
     }
     return checker1;
 }
 
 StatusType Team::removePlayer(int playerId) {
-    Pair<Player *, int> playerFound = m_playersByIdTree.find(playerId);
-    if(playerFound.empty()){
-        return StatusType::INVALID_INPUT;
+    Pair<Player *, int>* playerFound = m_playersByIdTree.find(playerId);
+    if(!playerFound){
+        return StatusType::FAILURE;
     }
-    StatusType checker1 = m_playersByIdTree.remove(playerId);
-    m_playersByGoals.remove(*playerFound.data());
-    if(checker1 == StatusType::SUCCESS) {
-        Player *playerToRemove = playerFound.data();
-        m_totalGoals -= playerToRemove->getGoals();
-        m_totalCards -= playerToRemove->getCards();
-        if(playerToRemove->isGk())
-            removeGk();
-        m_playersByGoals.remove(*playerToRemove);
-        updateTopScorer();
-    }
-    return checker1;
+    Player toDelete = *playerFound->data();
+    m_playersByGoals.remove(toDelete);
+    m_playersByIdTree.remove(playerId);
+    m_totalGoals -= toDelete.getGoals();
+    m_totalCards -= toDelete.getCards();
+    if(toDelete.isGk())
+        removeGk();
+    updateTopScorer();
+    return StatusType::SUCCESS;
 }
 
 void Team::updateTopScorer() {
-    if(m_playersByGoals.size() > 0)
-        m_topScorer = m_playersByGoals.select(m_playersByGoals.size()).data();
+    if(!m_playersByGoals.empty())
+        m_topScorer = m_playersByGoals.select(m_playersByGoals.size())->data();
     else
         m_topScorer = nullptr;
 }
 
 void Team::loseGame() {
-    m_totalGames += 1;
+    m_totalGames++;
 }
 
 void Team::tieGame() {
-    m_totalGames += 1;
-    m_points += 1;
+    m_totalGames++;
+    m_points++;
 }
 
 void Team::winGame() {
-    m_totalGames += 1;
+    m_totalGames++;
     m_points += 3;
 }
 
@@ -147,19 +147,12 @@ void Team::removeGk() {
 }
 
 void Team::updateAllPlayerTeamTag(){
-    Pair<Player*,int>** arr = m_playersByIdTree.inOrderScanToArray();
-    if(!arr)
+    Pair<Player*,int>** arr = nullptr;
+    if(!m_playersByIdTree.inOrderScanToArray(arr))
         return;
-    for(int i = 0; arr[i]; i++){
+    for(int i = 0; i < m_playersByIdTree.size(); i++){
         arr[i]->data()->updateGamesPlayed();
         arr[i]->data()->setTeam(this);
-    }
-    delete[] arr;
-}
-void Team::updateAllPlayersGames() const{
-    Pair<Player*, int>** arr = m_playersByIdTree.inOrderScanToArray();
-    for(int i = 0; arr[i]; i++){
-        arr[i]->data()->updateGamesPlayed();
     }
     delete[] arr;
 }
@@ -183,9 +176,9 @@ std::ostream& operator<<(std::ostream& out, const Team* team) {
 
 
 Player *Team::findPlayer(int playerId) {
-    Pair<Player*,int> playerPair = m_playersByIdTree.find(playerId);
-    if(!playerPair.empty()){
-        return playerPair.data();
+    Pair<Player*,int>* playerPair = m_playersByIdTree.find(playerId);
+    if(playerPair){
+        return playerPair->data();
     }
     else{
         return nullptr;
@@ -193,9 +186,11 @@ Player *Team::findPlayer(int playerId) {
 }
 
 Pair<Player*, Player>** Team::arrByGoals() {
-    Pair<Player*, Player>** arr = this->m_playersByGoals.inOrderScanToArray();
+    Pair<Player*, Player>** arr = nullptr;
+    this->m_playersByGoals.inOrderScanToArray(arr);
     return arr;
 }
+
 Team* mergeTeams(const Team& team1,const Team& team2, int uniteId) {
     AVLTree<Player*, int>* unitePlayersById = mergeTrees(team1.m_playersByIdTree, team2.m_playersByIdTree);
     if(!unitePlayersById)
@@ -217,9 +212,12 @@ Team* mergeTeams(const Team& team1,const Team& team2, int uniteId) {
     }else{
         uniteTopScorer = *team1.getTopScorer() > *team2.getTopScorer() ? team1.getTopScorer() : team2.getTopScorer();
     }
-    Team* uniteTeam = new Team(uniteId, *unitePlayersById, *unitePlayersByGoals, 0, totalGoals, totalCards,totalGK, totalPoints, uniteTopScorer);
-    if(uniteTeam) {
-        uniteTeam->updateAllPlayerTeamTag();
+    Team* uniteTeam;
+    try{
+        uniteTeam = new Team(uniteId, *unitePlayersById, *unitePlayersByGoals, 0, totalGoals, totalCards,totalGK, totalPoints, uniteTopScorer);
+    }
+    catch(...){
+        uniteTeam = nullptr;
     }
     delete unitePlayersById;
     delete unitePlayersByGoals;
